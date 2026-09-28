@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="ProfitKit helps freelancers price projects, protect profit, and create a client-ready quote in minutes." />
+  <title>ProfitKit — Price projects with confidence</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="nav wrap">
+  <a class="brand" href="#">ProfitKit</a>
+  <nav><a href="#calculator">Calculator</a><a href="#pro">Pro</a></nav>
+</header>
+<main>
+  <section class="hero wrap">
+    <div>
+      <span class="eyebrow">Freelance pricing, minus the guesswork</span>
+      <h1>Know what to charge before you send the quote.</h1>
+      <p class="lead">Calculate a profitable project price, reserve for tax, and generate a clean quote you can send to a client.</p>
+      <a class="cta" href="#calculator">Calculate my price</a>
+      <p class="micro">Free. No signup. Takes about 60 seconds.</p>
+    </div>
+    <div class="hero-card">
+      <div class="metric"><span>Target hourly rate</span><strong>$75</strong></div>
+      <div class="metric"><span>Estimated project</span><strong>$2,250</strong></div>
+      <div class="metric"><span>Profit buffer</span><strong>20%</strong></div>
+      <div class="metric total"><span>Recommended quote</span><strong>$2,700</strong></div>
+    </div>
+  </section>
+  <section class="section wrap" id="calculator">
+    <div class="section-head"><span class="eyebrow">Free calculator</span><h2>Build a profitable quote</h2></div>
+    <div class="grid">
+      <form id="calc" class="panel">
+        <label>Hours you expect to work<input id="hours" type="number" min="1" value="30"></label>
+        <label>Your target hourly rate ($)<input id="rate" type="number" min="1" value="75"></label>
+        <label>Profit / risk buffer (%)<input id="buffer" type="number" min="0" value="20"></label>
+        <label>Tax reserve (%)<input id="tax" type="number" min="0" value="20"></label>
+        <label>Project / client name<input id="project" type="text" placeholder="Website redesign"></label>
+      </form>
+      <div class="panel result">
+        <p>Recommended quote</p>
+        <div class="big" id="quote">$2,700</div>
+        <div class="rows">
+          <div><span>Base work</span><strong id="base">$2,250</strong></div>
+          <div><span>Profit buffer</span><strong id="bufferValue">$450</strong></div>
+          <div><span>Tax reserve</span><strong id="taxValue">$540</strong></div>
+          <div><span>After reserve</span><strong id="takeHome">$2,160</strong></div>
+        </div>
+        <button id="copyQuote" class="cta button" type="button">Copy client quote</button>
+        <span id="copyStatus" class="micro"></span>
+      </div>
+    </div>
+  </section>
+  <section class="section alt" id="pro">
+    <div class="wrap pro">
+      <div><span class="eyebrow">Coming next</span><h2>ProfitKit Pro</h2><p class="lead">A paid toolkit with polished proposal templates, invoice packs, pricing scripts, and branded quote exports.</p></div>
+      <div class="price-card"><span>Launch offer</span><strong>$19</strong><p>One-time purchase</p><button class="cta button disabled" disabled>Join waitlist soon</button></div>
+    </div>
+  </section>
+</main>
+<footer class="wrap footer">© <span id="year"></span> ProfitKit · Built to make pricing less foggy.</footer>
+<script src="app.js"></script>
+</body>
+</html>
