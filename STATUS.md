@@ -13,6 +13,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Cross-upload duplicate detection using browser-local history
 - [x] Local history clear control
 - [x] Missing invoice/vendor/date/currency checks
+- [x] Invalid and unexpectedly future invoice-date checks
 - [x] Invalid/non-positive total detection
 - [x] Subtotal + tax vs total arithmetic check
 - [x] Findings table with severity
