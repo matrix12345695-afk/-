@@ -12,16 +12,17 @@ Build a small, useful web product that can earn from a paid digital toolkit firs
 - [x] Responsive design
 - [x] Basic SEO description
 - [x] Vercel deployment config
+- [x] Multi-currency support (USD, EUR, GBP, UZS, KZT, AED)
+- [x] Printable / Save-as-PDF client quote
 
 ## Next
 - [ ] Deploy public preview
 - [ ] Add waitlist capture
-- [ ] Add downloadable quote / PDF
-- [ ] Add multi-currency support
 - [ ] Build paid template bundle
 - [ ] Connect Lemon Squeezy checkout
 - [ ] Add analytics
 - [ ] Add SEO landing pages and articles
+- [ ] Add richer branded PDF export in Pro tier
 
 ## Monetization
 Launch target: $19 one-time Pro pack. Later add $7–12/month SaaS tier for saved clients, branded exports, recurring invoices, and history.
