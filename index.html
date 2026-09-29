@@ -32,13 +32,19 @@
     <div class="section-head"><span class="eyebrow">Free calculator</span><h2>Build a profitable quote</h2></div>
     <div class="grid">
       <form id="calc" class="panel">
+        <label>Currency
+          <select id="currency">
+            <option value="USD">USD — $</option><option value="EUR">EUR — €</option><option value="GBP">GBP — £</option>
+            <option value="UZS">UZS — soʻm</option><option value="KZT">KZT — ₸</option><option value="AED">AED — د.إ</option>
+          </select>
+        </label>
         <label>Hours you expect to work<input id="hours" type="number" min="1" value="30"></label>
-        <label>Your target hourly rate ($)<input id="rate" type="number" min="1" value="75"></label>
+        <label>Your target hourly rate<input id="rate" type="number" min="1" value="75"></label>
         <label>Profit / risk buffer (%)<input id="buffer" type="number" min="0" value="20"></label>
         <label>Tax reserve (%)<input id="tax" type="number" min="0" value="20"></label>
         <label>Project / client name<input id="project" type="text" placeholder="Website redesign"></label>
       </form>
-      <div class="panel result">
+      <div class="panel result" id="quoteCard">
         <p>Recommended quote</p>
         <div class="big" id="quote">$2,700</div>
         <div class="rows">
@@ -47,7 +53,10 @@
           <div><span>Tax reserve</span><strong id="taxValue">$540</strong></div>
           <div><span>After reserve</span><strong id="takeHome">$2,160</strong></div>
         </div>
-        <button id="copyQuote" class="cta button" type="button">Copy client quote</button>
+        <div class="actions">
+          <button id="copyQuote" class="cta button" type="button">Copy client quote</button>
+          <button id="printQuote" class="secondary button" type="button">Save quote as PDF</button>
+        </div>
         <span id="copyStatus" class="micro"></span>
       </div>
     </div>
