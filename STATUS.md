@@ -17,7 +17,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Subtotal + tax vs total arithmetic check
 - [x] Findings table with severity
 - [x] At-risk value summary
-- [x] Downloadable findings CSV
+- [x] Downloadable findings CSV with invoice date and duplicate context
 - [x] Built-in sample audit using human-friendly headers
 - [x] Responsive UI
 - [x] Normalized accountant-friendly invoice CSV export
@@ -30,6 +30,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Add privacy/security documentation
 - [ ] Deploy public MVP
 - [ ] Add usage analytics
+- [ ] Add audit summary export for approval/review
 - [ ] Validate willingness-to-pay and pricing
 - [ ] Connect payments only after product validation
 
