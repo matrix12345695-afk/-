@@ -1,23 +1,10 @@
-const $=id=>document.getElementById(id);
-const currencyDefaults={USD:75,EUR:70,GBP:60,UZS:900000,KZT:35000,AED:275};
-let lastCurrency="USD";
-const money=n=>new Intl.NumberFormat(undefined,{style:"currency",currency:$("currency").value,maximumFractionDigits:0}).format(Math.max(0,n||0));
-function update(){
-  const hours=+$( "hours").value||0, rate=+$( "rate").value||0, buffer=+$( "buffer").value||0, tax=+$( "tax").value||0;
-  const base=hours*rate, bufferAmount=base*(buffer/100), quote=base+bufferAmount, taxAmount=quote*(tax/100), takeHome=quote-taxAmount;
-  $("base").textContent=money(base); $("bufferValue").textContent=money(bufferAmount); $("quote").textContent=money(quote); $("taxValue").textContent=money(taxAmount); $("takeHome").textContent=money(takeHome);
-  return {hours,rate,buffer,tax,base,bufferAmount,quote,taxAmount,takeHome};
-}
-["hours","rate","buffer","tax","project"].forEach(id=>$(id).addEventListener("input",update));
-$("currency").addEventListener("change",()=>{
-  const next=$("currency").value;
-  if(+$("rate").value===currencyDefaults[lastCurrency]) $("rate").value=currencyDefaults[next];
-  lastCurrency=next; update();
-});
-$("copyQuote").addEventListener("click",async()=>{
-  const v=update(), project=$("project").value.trim()||"Project";
-  const quoteText=project+"\n\nEstimated scope: "+v.hours+" hours\nProject quote: "+money(v.quote)+"\n\nThis price includes a "+v.buffer+"% delivery/risk buffer and is based on a target rate of "+money(v.rate)+"/hour.";
-  try{await navigator.clipboard.writeText(quoteText);$("copyStatus").textContent="Copied. Ready to paste into email or chat."}catch{$("copyStatus").textContent="Copy is unavailable in this browser."}
-});
-$("printQuote").addEventListener("click",()=>window.print());
-$("year").textContent=new Date().getFullYear(); update();
+const $=id=>document.getElementById(id);let current=[];
+function parseCSV(text){const lines=text.trim().split(/\r?\n/);if(lines.length<2)return[];const split=line=>{let out=[],v="",q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'&&line[i+1]==='"'){v+='"';i++;}else if(c==='"')q=!q;else if(c===','&&!q){out.push(v.trim());v="";}else v+=c}out.push(v.trim());return out};const h=split(lines[0]).map(x=>x.toLowerCase().replace(/\s+/g,"_"));return lines.slice(1).filter(Boolean).map((l,i)=>Object.fromEntries(split(l).map((v,j)=>[h[j]||"col"+j,v]).concat([["_row",i+2]])))}
+function num(v){return Number(String(v??"").replace(/[^0-9.-]/g,""))}
+function audit(rows){const seen=new Map(),find=[];rows.forEach(r=>{const no=(r.invoice_number||r.invoice||"").trim(),vendor=(r.vendor||r.supplier||"").trim(),total=num(r.total),sub=num(r.subtotal),tax=num(r.tax);const add=(severity,msg)=>find.push({row:r._row,no:no||"—",vendor:vendor||"—",severity,msg,total:Number.isFinite(total)?total:0,currency:r.currency||""});if(!no)add("High","Missing invoice number");if(!vendor)add("High","Missing vendor");if(!r.date)add("Medium","Missing invoice date");if(!r.currency)add("Medium","Missing currency");if(!Number.isFinite(total)||total<=0)add("High","Invalid or non-positive total");if(Number.isFinite(sub)&&Number.isFinite(tax)&&Number.isFinite(total)&&Math.abs((sub+tax)-total)>.02)add("High","Subtotal + tax does not match total");if(no){const key=(vendor+"|"+no).toLowerCase();if(seen.has(key)){add("High","Possible duplicate invoice number");const first=seen.get(key);if(!first.flagged){find.push({row:first.row,no,vendor:vendor||"—",severity:"High",msg:"Possible duplicate invoice number",total:first.total,currency:r.currency||""});first.flagged=true}}else seen.set(key,{row:r._row,total:Number.isFinite(total)?total:0,flagged:false})}});return find}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function render(rows){current=audit(rows);$("results").classList.remove("hidden");$("count").textContent=rows.length;$("issues").textContent=current.length;const risk=current.filter(x=>x.severity==="High").reduce((s,x)=>s+x.total,0);$("risk").textContent=new Intl.NumberFormat(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0}).format(risk);$("findings").innerHTML=current.length?current.map(x=>`<tr><td>${x.row}</td><td>${esc(x.no)}</td><td>${esc(x.vendor)}</td><td class="sev-${x.severity.toLowerCase()}">${x.severity}</td><td>${esc(x.msg)}</td><td>${esc(x.currency)} ${x.total.toLocaleString()}</td></tr>`).join(""):`<tr><td colspan="6">No issues found in the supported checks.</td></tr>`;location.hash="results"}
+function load(text){const rows=parseCSV(text);if(!rows.length){alert("No invoice rows found. Please check the CSV.");return}render(rows)}
+$("file").addEventListener("change",e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader;r.onload=()=>load(r.result);r.readAsText(f)});
+$("demo").addEventListener("click",()=>load("invoice_number,vendor,date,subtotal,tax,total,currency\nINV-101,Acme Ltd,2026-09-01,1000,100,1100,USD\nINV-101,Acme Ltd,2026-09-02,1000,100,1100,USD\nINV-102,,2026-09-03,500,50,600,USD\n,North Star,,250,25,-275,"));
+$("download").addEventListener("click",()=>{const q=s=>'"'+String(s).replaceAll('"','""')+'"';const csv=["row,invoice,vendor,severity,finding,total,currency",...current.map(x=>[x.row,x.no,x.vendor,x.severity,x.msg,x.total,x.currency].map(q).join(","))].join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="invoiceguard-findings.csv";a.click();URL.revokeObjectURL(a.href)});
