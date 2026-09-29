@@ -1,31 +1,38 @@
-# ProfitKit status
+# InvoiceGuard status
 
-## Goal
-Build a small, useful web product that can earn from a paid digital toolkit first, then expand into recurring SaaS revenue.
+## Product
+InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookkeeping teams. It focuses on catching costly mistakes before money leaves the account, rather than competing as a generic OCR product.
 
 ## Done
-- [x] Product concept selected
-- [x] GitHub repository initialized
-- [x] Conversion-focused landing page
-- [x] Interactive freelance pricing calculator
-- [x] Client quote copy generator
-- [x] Responsive design
-- [x] Basic SEO description
-- [x] Vercel deployment config
-- [x] Multi-currency support (USD, EUR, GBP, UZS, KZT, AED)
-- [x] Printable / Save-as-PDF client quote
+- [x] ProfitKit preserved on branch archive/profitkit
+- [x] InvoiceGuard positioning and landing page
+- [x] Browser-local CSV invoice upload
+- [x] CSV parser with quoted field support
+- [x] Duplicate invoice-number detection per vendor
+- [x] Missing invoice/vendor/date/currency checks
+- [x] Invalid/non-positive total detection
+- [x] Subtotal + tax vs total arithmetic check
+- [x] Findings table with severity
+- [x] At-risk value summary
+- [x] Downloadable findings CSV
+- [x] Built-in sample audit
+- [x] Responsive UI
 
 ## Next
-- [ ] Deploy public preview
-- [ ] Add waitlist capture
-- [ ] Build paid template bundle
-- [ ] Connect Lemon Squeezy checkout
-- [ ] Add analytics
-- [ ] Add SEO landing pages and articles
-- [ ] Add richer branded PDF export in Pro tier
+- [ ] Validate arbitrary CSV column mappings
+- [ ] Add configurable audit rules and tolerances
+- [ ] Add cross-file/history duplicate detection
+- [ ] Add PDF/image invoice ingestion
+- [ ] Add accountant-friendly clean export
+- [ ] Add privacy/security documentation
+- [ ] Deploy public MVP
+- [ ] Add usage analytics
+- [ ] Validate willingness-to-pay and pricing
+- [ ] Connect payments only after product validation
 
-## Monetization
-Launch target: $19 one-time Pro pack. Later add $7–12/month SaaS tier for saved clients, branded exports, recurring invoices, and history.
+## Commercial direction
+Free: limited CSV audit and downloadable findings.
+Target Pro: $29/month for saved audit history, batch documents, custom rules, vendor history, approval workflow and richer exports.
 
-## Rule for recurring improvements
-Each improvement cycle should inspect the current repository, choose the highest-value unfinished item, implement it safely, update this file, and avoid touching payment/legal identity settings that require the owner.
+## Recurring build rule
+Choose the highest-value unfinished improvement that makes the tool safer, more useful, easier to validate, or more sellable. Keep main deployable. Never touch owner-only KYC, banking, secrets or paid domain actions.
