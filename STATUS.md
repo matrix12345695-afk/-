@@ -30,7 +30,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Add privacy/security documentation
 - [ ] Deploy public MVP
 - [ ] Add usage analytics
-- [ ] Add audit summary export for approval/review
+- [x] Add audit summary export for approval/review
 - [ ] Validate willingness-to-pay and pricing
 - [ ] Connect payments only after product validation
 
