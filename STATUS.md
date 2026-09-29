@@ -19,13 +19,13 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] At-risk value summary
 - [x] Downloadable findings CSV
 - [x] Built-in sample audit using human-friendly headers
-- [x] Responsive UI
+- [x] Responsive UI\n- [x] Normalized accountant-friendly invoice CSV export
 
 ## Next
-- [ ] Add explicit mapping UI for unknown columns
+- [x] Add explicit mapping UI for unknown columns
 - [ ] Add configurable audit rules and tolerances
 - [ ] Add PDF/image invoice ingestion
-- [ ] Add accountant-friendly clean export
+- [x] Add accountant-friendly clean export
 - [ ] Add privacy/security documentation
 - [ ] Deploy public MVP
 - [ ] Add usage analytics
