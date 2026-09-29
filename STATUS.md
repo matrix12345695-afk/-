@@ -23,7 +23,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 
 ## Next
 - [x] Add explicit mapping UI for unknown columns
-- [ ] Add configurable audit rules and tolerances
+- [x] Add configurable audit rules and tolerances
 - [ ] Add PDF/image invoice ingestion
 - [x] Add accountant-friendly clean export
 - [ ] Add privacy/security documentation
