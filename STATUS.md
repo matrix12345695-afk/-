@@ -21,34 +21,104 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] At-risk value summary
 - [x] Downloadable findings CSV with invoice date and duplicate context
 - [x] Built-in sample audit using human-friendly headers
-- [x] Responsive UI
+- [x] Responsive UI foundation
 - [x] Normalized accountant-friendly invoice CSV export
 - [x] Seven-language selector and persistent localization foundation (EN/RU/UZ/ES/DE/FR/PT)
 - [x] Complete static UI dictionaries for EN/RU/UZ/ES/DE/FR/PT with no English fallback required for the current data-i18n surface
 - [x] Dynamic audit findings, severities, validation alerts and local status messages localized in EN/RU/UZ/ES/DE/FR/PT
 - [x] Findings CSV exports use the active language for severities and finding descriptions
-- [x] Switching language now refreshes already-rendered dynamic findings and at-risk values immediately
+- [x] Switching language refreshes already-rendered dynamic findings and at-risk values immediately
 - [x] Audit summary export labels, headings, dates and high-severity findings localized in EN/RU/UZ/ES/DE/FR/PT
 - [x] Audit summary text export includes UTF-8 BOM for reliable multilingual opening in desktop tools
+- [x] Explicit mapping UI for unknown columns
+- [x] Configurable audit rules and tolerances
+- [x] Privacy/security documentation
+- [x] Audit summary export for approval/review
 
-## Next
+## Roadmap to sellable MVP
+Work strictly top to bottom unless a blocking regression requires an earlier fix.
+
+### Phase 1 — Input reliability (NOW)
+- [ ] Replace line-based CSV parsing with a state-machine parser supporting multiline quoted cells
+- [ ] Strip UTF-8 BOM safely
+- [ ] Auto-detect comma, semicolon and tab delimiters
+- [ ] Preserve escaped quotes and embedded delimiters/newlines inside quoted cells
+- [ ] Detect malformed/unclosed quoted records and fail safely instead of shifting columns silently
+- [ ] Surface row-width mismatches clearly instead of auditing corrupted column alignment
+- [ ] Re-check number parsing for decimal comma/thousands separators
+
+### Phase 2 — Regression safety
+- [ ] Add focused fixtures/tests for CSV edge cases
+- [ ] Add duplicate normalization fixtures: case, punctuation, whitespace, Unicode and cross-upload history
+- [ ] Add arithmetic tolerance fixtures
+- [ ] Add tax threshold/negative tax fixtures
+- [ ] Add currency allow-list fixtures
+- [ ] Add missing-field and date fixtures
+- [ ] Add export regression checks
+
+### Phase 3 — Audit quality
+- [ ] Review severity policy so high-risk means payment-blocking and medium means review
+- [ ] Add duplicate context: first occurrence/current occurrence and previous-audit context
+- [ ] Improve suspicious currency checks and currency normalization
+- [ ] Improve date sanity checks without locale ambiguity
+- [ ] Add configurable required-field policy
+- [ ] Make every finding explain why it matters and what the accountant should verify
+
+### Phase 4 — Accountant-ready output
+- [ ] Improve approval summary into a concise payment-review artifact
+- [ ] Include audit settings/tolerances and source filename in evidence exports
+- [ ] Add deterministic audit timestamp/session identifier
+- [ ] Improve clean CSV export formatting and multilingual spreadsheet compatibility
+- [ ] Add printable report view before considering PDF generation
+
+### Phase 5 — Complete localization
 - [ ] Audit every remaining visible/generated string for mixed-language edge cases
-- [ ] Harden CSV parsing for multiline quoted cells, BOMs, delimiters and malformed rows
-- [ ] Add focused regression fixtures for duplicate normalization, arithmetic/tax/currency/date/missing-field rules and cross-upload history
-- [x] Add explicit mapping UI for unknown columns
-- [x] Add configurable audit rules and tolerances
-- [ ] Add PDF/image invoice ingestion
-- [x] Add accountant-friendly clean export
-- [x] Add privacy/security documentation
-- [ ] Deploy public MVP
-- [ ] Add usage analytics
-- [x] Add audit summary export for approval/review
-- [ ] Validate willingness-to-pay and pricing
-- [ ] Connect payments only after product validation
+- [ ] Localize mapping UI labels/options and parser error messages
+- [ ] Localize export headers where appropriate while keeping machine-readable clean CSV stable
+- [ ] Verify EN/RU/UZ/ES/DE/FR/PT manually across empty, demo, error and results states
+
+### Phase 6 — Product polish
+- [ ] Polish first-run onboarding and sample-data path
+- [ ] Add clear empty/loading/error/success states
+- [ ] Finish mobile/table overflow behavior
+- [ ] Accessibility pass: labels, keyboard flow, focus states, contrast and status announcements
+- [ ] FAQ/trust/privacy/conversion copy pass to Spreadsheet Doctor quality
+- [ ] Remove any placeholder or premature Pro/payment wording that reduces trust
+
+### Phase 7 — Commercial validation readiness
+- [ ] Add privacy-safe usage analytics only after choosing a provider/config that needs no exposed secret
+- [ ] Define measurable activation event: successful audit with results viewed/exported
+- [ ] Add feedback/willingness-to-pay capture without activating payments
+- [ ] Validate pricing and Pro feature demand with users
+- [ ] Keep target Pro hypothesis ($29/month) provisional until validation
+
+### Phase 8 — Release
+- [ ] Run full smoke/regression pass on supported browsers/screen sizes
+- [ ] Verify no mixed-language UI on all seven languages
+- [ ] Verify sample and representative real-world CSV exports
+- [ ] Deploy public MVP when hosting tools permit
+- [ ] Verify the deployed build, not just the source repository
+- [ ] Freeze a release checklist and known limitations in STATUS.md
+
+### Later, only after MVP validation
+- [ ] PDF/image invoice ingestion
+- [ ] Saved team history/backend accounts if customers require them
+- [ ] Batch document workflows
+- [ ] Payment integration only after product validation
+
+## Definition of "ready for owner"
+The technical MVP is ready to hand back only when the public build is verified, seven-language flows have no mixed-language defects, representative CSV edge cases pass, core audit rules have regression coverage, accountant exports are usable, mobile/accessibility smoke checks pass, and remaining tasks require owner-only commercial actions rather than product engineering.
+
+## Owner-only actions — do not perform autonomously
+- Payment activation or merchant onboarding
+- KYC/banking details
+- Secret/API-key entry
+- Paid domain purchase/transfer
+- Legal/tax/account ownership decisions
 
 ## Commercial direction
 Free: limited CSV audit and downloadable findings.
-Target Pro: $29/month for saved audit history, batch documents, custom rules, vendor history, approval workflow and richer exports.
+Target Pro hypothesis: $29/month for saved audit history, batch documents, custom rules, vendor history, approval workflow and richer exports. Validate before payment activation.
 
 ## Recurring build rule
-Choose the highest-value unfinished improvement that makes the tool safer, more useful, easier to validate, or more sellable. Keep main deployable. Never touch owner-only KYC, banking, secrets or paid domain actions.
+Choose the highest-value unfinished improvement in the roadmap that makes the tool safer, more useful, easier to validate, or more sellable. Keep main deployable. Never revert to ProfitKit. Never touch owner-only KYC, banking, secrets or paid domain actions.
