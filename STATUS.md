@@ -10,6 +10,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] CSV parser with quoted field support
 - [x] Automatic mapping for common invoice column names
 - [x] Duplicate invoice-number detection per vendor
+- [x] Duplicate matching hardened for case, whitespace, punctuation and Unicode formatting differences in vendor/invoice identifiers
 - [x] Cross-upload duplicate detection using browser-local history
 - [x] Local history clear control
 - [x] Missing invoice/vendor/date/currency checks
@@ -24,6 +25,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Normalized accountant-friendly invoice CSV export
 
 ## Next
+- [ ] Complete EN/RU/UZ/ES/DE/FR/PT localization across the GitHub production source, including findings/errors/exports, with no mixed-language UI
 - [x] Add explicit mapping UI for unknown columns
 - [x] Add configurable audit rules and tolerances
 - [ ] Add PDF/image invoice ingestion
