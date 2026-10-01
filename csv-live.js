@@ -11,14 +11,26 @@
     fr:{UNCLOSED_QUOTE:"Le CSV contient un champ entre guillemets non fermé près de la ligne {line}. Corrigez le fichier puis réessayez.",ROW_WIDTH_MISMATCH:"La ligne CSV {line} contient {actual} colonnes au lieu de {expected}. L’audit a été arrêté pour éviter des données décalées.",EMPTY_HEADER:"L’en-tête CSV est vide.",GENERIC:"Le CSV n’a pas pu être analysé en toute sécurité. Vérifiez le fichier puis réessayez."},
     pt:{UNCLOSED_QUOTE:"O CSV contém um campo entre aspas não fechado perto da linha {line}. Corrija o arquivo e tente novamente.",ROW_WIDTH_MISMATCH:"A linha CSV {line} tem {actual} colunas; eram esperadas {expected}. A auditoria foi interrompida para evitar dados deslocados.",EMPTY_HEADER:"O cabeçalho CSV está vazio.",GENERIC:"Não foi possível analisar o CSV com segurança. Verifique o arquivo e tente novamente."}
   };
+  const fieldLabels={
+    en:{invoice_number:"Invoice number",vendor:"Vendor",date:"Invoice date",subtotal:"Subtotal",tax:"Tax",total:"Total",currency:"Currency"},
+    ru:{invoice_number:"Номер счёта",vendor:"Поставщик",date:"Дата счёта",subtotal:"Подытог",tax:"Налог",total:"Итого",currency:"Валюта"},
+    uz:{invoice_number:"Hisob raqami",vendor:"Yetkazib beruvchi",date:"Hisob sanasi",subtotal:"Oraliq summa",tax:"Soliq",total:"Jami",currency:"Valyuta"},
+    es:{invoice_number:"Número de factura",vendor:"Proveedor",date:"Fecha de factura",subtotal:"Subtotal",tax:"Impuesto",total:"Total",currency:"Moneda"},
+    de:{invoice_number:"Rechnungsnummer",vendor:"Lieferant",date:"Rechnungsdatum",subtotal:"Zwischensumme",tax:"Steuer",total:"Gesamt",currency:"Währung"},
+    fr:{invoice_number:"Numéro de facture",vendor:"Fournisseur",date:"Date de facture",subtotal:"Sous-total",tax:"Taxe",total:"Total",currency:"Devise"},
+    pt:{invoice_number:"Número da fatura",vendor:"Fornecedor",date:"Data da fatura",subtotal:"Subtotal",tax:"Imposto",total:"Total",currency:"Moeda"}
+  };
+  const language=()=>window.invoiceGuardI18n?.lang||"en";
+  const label=key=>(fieldLabels[language()]||fieldLabels.en)[key]||String(key).replaceAll("_"," ");
 
   function errorText(err){
     const code=err&&err.code||"GENERIC";
-    const language=window.invoiceGuardI18n?.lang||"en";
-    let text=(parserErrors[language]||parserErrors.en)[code]||(parserErrors[language]||parserErrors.en).GENERIC;
+    const dict=parserErrors[language()]||parserErrors.en;
+    let text=dict[code]||dict.GENERIC;
     return text.replace("{line}",err?.line??"?").replace("{actual}",err?.actual??"?").replace("{expected}",err?.expected??"?");
   }
 
+  window.InvoiceGuardFieldLabel=label;
   window.parseCSV=function(text){
     let parsed;
     try{parsed=window.InvoiceGuardCSV.parse(text);}
@@ -26,7 +38,7 @@
     if(parsed.header.length<1||parsed.rows.length<1)return[];
     const raw=parsed.header;
     const h=raw.map(canonical);
-    $("mapping").textContent=raw.map((x,i)=>x+" → "+h[i]).join(" · ");
+    $("mapping").textContent=raw.map((x,i)=>x+" → "+label(h[i])).join(" · ");
     showUnknown(raw,h);
     return parsed.rows.map(record=>Object.fromEntries(record.cells.map((v,j)=>[h[j]||"col"+j,v]).concat([["_row",record.line]])));
   };
