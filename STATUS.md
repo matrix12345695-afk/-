@@ -23,10 +23,11 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Built-in sample audit using human-friendly headers
 - [x] Responsive UI
 - [x] Normalized accountant-friendly invoice CSV export
-- [x] Seven-language selector and persistent static-UI localization foundation (EN/RU/UZ/ES/DE/FR/PT)
+- [x] Seven-language selector and persistent localization foundation (EN/RU/UZ/ES/DE/FR/PT)
+- [x] Complete static UI dictionaries for EN/RU/UZ/ES/DE/FR/PT with no English fallback required for the current data-i18n surface
 
 ## Next
-- [ ] Finish EN/RU/UZ/ES/DE/FR/PT localization for dynamic audit findings/errors/status messages and exported reports; expand ES/DE/FR/PT strings so no English fallback remains
+- [ ] Localize dynamic audit findings, validation/status messages and exported reports in EN/RU/UZ/ES/DE/FR/PT
 - [x] Add explicit mapping UI for unknown columns
 - [x] Add configurable audit rules and tolerances
 - [ ] Add PDF/image invoice ingestion
