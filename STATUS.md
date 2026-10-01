@@ -34,27 +34,32 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Configurable audit rules and tolerances
 - [x] Privacy/security documentation
 - [x] Audit summary export for approval/review
+- [x] Added isolated hardened CSV core with BOM stripping, comma/semicolon/tab detection, multiline quoted fields, escaped quotes and strict malformed-row errors
+- [x] Added focused CSV core regression fixtures for BOM, delimiter detection, multiline fields, escaped quotes, unclosed quotes and row-width mismatch
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
 
 ### Phase 1 — Input reliability (NOW)
-- [ ] Replace line-based CSV parsing with a state-machine parser supporting multiline quoted cells
-- [ ] Strip UTF-8 BOM safely
-- [ ] Auto-detect comma, semicolon and tab delimiters
-- [ ] Preserve escaped quotes and embedded delimiters/newlines inside quoted cells
-- [ ] Detect malformed/unclosed quoted records and fail safely instead of shifting columns silently
-- [ ] Surface row-width mismatches clearly instead of auditing corrupted column alignment
+- [ ] Integrate hardened csv-core.js into the live upload/audit path without regressing mapping or exports
+- [x] Implement state-machine CSV core supporting multiline quoted cells
+- [x] Strip UTF-8 BOM safely in hardened core
+- [x] Auto-detect comma, semicolon and tab delimiters in hardened core
+- [x] Preserve escaped quotes and embedded delimiters/newlines inside quoted cells in hardened core
+- [x] Detect malformed/unclosed quoted records in hardened core
+- [x] Detect row-width mismatches in hardened core instead of silently shifting columns
 - [ ] Re-check number parsing for decimal comma/thousands separators
+- [ ] Localize parser error presentation once live integration is complete
 
 ### Phase 2 — Regression safety
-- [ ] Add focused fixtures/tests for CSV edge cases
+- [x] Add focused fixtures/tests for CSV parser edge cases
 - [ ] Add duplicate normalization fixtures: case, punctuation, whitespace, Unicode and cross-upload history
 - [ ] Add arithmetic tolerance fixtures
 - [ ] Add tax threshold/negative tax fixtures
 - [ ] Add currency allow-list fixtures
 - [ ] Add missing-field and date fixtures
 - [ ] Add export regression checks
+- [ ] Add a repeatable repository test command/CI-safe smoke runner
 
 ### Phase 3 — Audit quality
 - [ ] Review severity policy so high-risk means payment-blocking and medium means review
