@@ -38,6 +38,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Added focused CSV core regression fixtures for BOM, delimiter detection, multiline fields, escaped quotes, unclosed quotes and row-width mismatch
 - [x] Integrated hardened CSV core into the live upload/audit path while preserving existing mapping/audit/export flow
 - [x] Localized hardened-parser safety errors in EN/RU/UZ/ES/DE/FR/PT
+- [x] Localized CSV mapping display, canonical accounting field labels and unknown-column mapping options in EN/RU/UZ/ES/DE/FR/PT
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
@@ -80,7 +81,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 
 ### Phase 5 — Complete localization
 - [ ] Audit every remaining visible/generated string for mixed-language edge cases
-- [ ] Localize mapping UI labels/options and parser error messages
+- [x] Localize mapping UI labels/options and parser error messages
 - [ ] Localize export headers where appropriate while keeping machine-readable clean CSV stable
 - [ ] Verify EN/RU/UZ/ES/DE/FR/PT manually across empty, demo, error and results states
 
