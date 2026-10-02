@@ -5,33 +5,20 @@ const source = fs.readFileSync(new URL('../privacy.html', import.meta.url), 'utf
 const script = source.match(/<script>([\s\S]*?)<\/script>/)?.[1];
 if (!script) throw new Error('privacy.html inline localization script not found');
 
-const elements = new Map([
-  ['back', { textContent: '' }],
-  ['content', { innerHTML: '' }],
-]);
-const store = new Map();
-const document = {
-  documentElement: { lang: 'en' },
-  title: '',
-  getElementById(id) { return elements.get(id) ?? null; },
-};
-const context = {
-  document,
-  localStorage: {
-    getItem: key => store.get(key) ?? null,
-    setItem: (key, value) => store.set(key, String(value)),
-  },
-};
-vm.createContext(context);
-
 const locales = ['en', 'ru', 'uz', 'es', 'de', 'fr', 'pt'];
 const failures = [];
 for (const locale of locales) {
-  store.set('invoiceguard_lang', locale);
-  document.documentElement.lang = 'en';
-  document.title = '';
-  elements.get('back').textContent = '';
-  elements.get('content').innerHTML = '';
+  const elements = new Map([['back', { textContent: '' }], ['content', { innerHTML: '' }]]);
+  const document = {
+    documentElement: { lang: 'en' },
+    title: '',
+    getElementById(id) { return elements.get(id) ?? null; },
+  };
+  const context = {
+    document,
+    localStorage: { getItem: key => key === 'invoiceguard_lang' ? locale : null, setItem() {} },
+  };
+  vm.createContext(context);
   try {
     vm.runInContext(script, context, { filename: `privacy.html:${locale}` });
   } catch (error) {
