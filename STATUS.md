@@ -40,6 +40,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Localized hardened-parser safety errors in EN/RU/UZ/ES/DE/FR/PT
 - [x] Localized CSV mapping display, canonical accounting field labels and unknown-column mapping options in EN/RU/UZ/ES/DE/FR/PT
 - [x] Hardened international accounting-number parser supports decimal comma/dot, thousands separators, NBSP/narrow spaces, apostrophes, currency symbols and accounting negatives
+- [x] Accounting-number parser rejects non-numeric labels instead of collapsing them to zero
 - [x] Added focused accounting-number regression coverage for international formats and invalid values
 - [x] Added production-path duplicate normalization/cross-upload regression coverage
 - [x] Added production audit regression coverage for arithmetic tolerance, tax thresholds/negative tax, currency allow-list and localized accounting numbers
