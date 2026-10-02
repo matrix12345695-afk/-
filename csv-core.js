@@ -63,10 +63,24 @@
   function detectDelimiter(text){
     text=stripBom(text);
     const candidates=[",",";","\t"];
+    const firstLine=(text.split(/\r?\n/,1)[0]||"");
+    const headerCounts=new Map(candidates.map(d=>[d,firstLine.split(d).length-1]));
     let best=",",bestScore=-Infinity;
     for(const delimiter of candidates){
       const score=scoreDelimiter(text,delimiter);
       if(score>bestScore){best=delimiter;bestScore=score;}
+    }
+    // A malformed quoted row can make the real delimiter score -Infinity while a
+    // wrong delimiter appears superficially valid as a one-column file. When no
+    // candidate produced a real multi-column parse, trust the delimiter visible
+    // in the header so parseRecords can surface the structural CSV error.
+    if(bestScore<=-1000){
+      let headerBest=",",headerBestCount=0;
+      for(const delimiter of candidates){
+        const count=headerCounts.get(delimiter)||0;
+        if(count>headerBestCount){headerBest=delimiter;headerBestCount=count;}
+      }
+      if(headerBestCount>0)return headerBest;
     }
     return best;
   }
