@@ -1,23 +1,20 @@
-# ProfitKit
+# InvoiceGuard
 
-A lightweight commercial web project focused on freelancers and small businesses.
+InvoiceGuard is a browser-first pre-payment invoice audit product for small businesses and bookkeeping teams. It helps catch duplicate invoices, missing critical fields, suspicious totals, tax/currency issues and other payment-review risks before money leaves the account.
 
-## Product
-ProfitKit helps users calculate freelance pricing, project profit, taxes reserve, and generate a client-ready quote.
+## Current product
+- Browser-local CSV invoice audit
+- Hardened CSV and accounting-number parsing
+- Duplicate detection within a file and across local audit history
+- Arithmetic, tax, currency, date and missing-field checks
+- Accountant-friendly findings, clean invoice export and approval summary
+- EN/RU/UZ/ES/DE/FR/PT localization foundation
+- No invoice data upload required for the current CSV workflow
 
-## Monetization plan
-1. Free calculators and quote builder for SEO/traffic.
-2. Pro template pack sold as a one-time digital product.
-3. Later: paid plan for saved clients, branded PDFs, recurring invoices, and analytics.
+## Development
+`main` is the source of truth for InvoiceGuard. See `STATUS.md` for the ordered sellable-MVP roadmap and current engineering state.
 
-## Current status
-- MVP landing page + calculator: in progress
-- GitHub is the source of truth
-- Deployment: Vercel planned
-- Payments: Lemon Squeezy planned
+The previous ProfitKit project is intentionally preserved on the `archive/profitkit` branch and must not replace InvoiceGuard on `main`.
 
-## Working rule
-Every meaningful improvement should be committed here and this README/status log updated.
-
-## Owner action at launch
-Connect payment account, legal/business identity, payout details, and custom domain if desired.
+## Commercial safety
+Pricing is a validation hypothesis only. Payment activation, KYC, banking details, secret entry and paid-domain actions are owner-only and are not performed autonomously.
