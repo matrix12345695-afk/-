@@ -19,7 +19,9 @@ const same = [
   ['ACME LTD', 'INV-001', 'acme ltd', 'inv 001', 'case, punctuation and whitespace'],
   ['  ACME   LTD  ', ' INV / 001 ', 'ACME-LTD', 'INV001', 'repeated whitespace and separators'],
   ['ＡＣＭＥ', 'ＩＮＶ－００１', 'acme', 'inv-001', 'Unicode NFKC full-width forms'],
-  ['Café S.A.', '№ 42', 'CAFÉ SA', '42', 'Unicode letters and symbols'],
+  // NFKC expands the numero sign to "No". Keep those letters rather than
+  // collapsing potentially meaningful invoice identifiers to bare digits.
+  ['Café S.A.', '№ 42', 'CAFÉ SA', 'No. 42', 'Unicode letters and numero-sign compatibility'],
   ['Vendor\u00a0Name', 'INV\u202f123', 'vendor name', 'inv 123', 'NBSP and narrow NBSP'],
 ];
 for (const [v1, n1, v2, n2, label] of same) {
@@ -30,6 +32,7 @@ const different = [
   ['Acme', 'INV-001', 'Acme', 'INV-002', 'different invoice numbers'],
   ['Acme', 'INV-001', 'Beta', 'INV-001', 'same invoice number at different vendors'],
   ['Acme 1', 'INV-001', 'Acme 2', 'INV-001', 'meaningful digits in vendor names'],
+  ['Acme', 'No. 42', 'Acme', '42', 'meaningful invoice prefix must not be discarded'],
 ];
 for (const [v1, n1, v2, n2, label] of different) {
   assert.notStrictEqual(key(v1, n1), key(v2, n2), label);
