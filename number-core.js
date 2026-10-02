@@ -5,8 +5,11 @@
     if(!s) return NaN;
     let negative=false;
     if(/^\(.*\)$/.test(s)){negative=true;s=s.slice(1,-1).trim();}
+    // Currency symbols and common surrounding labels are tolerated, but a value
+    // containing no digit must never collapse to zero (for example "not-a-number").
+    if(!/\d/.test(s)) return NaN;
     s=s.replace(/[\u00A0\u202F\s'’]/g,'').replace(/[^0-9,\.\-+]/g,'');
-    if(!s) return NaN;
+    if(!s||!/\d/.test(s)) return NaN;
     if(s.startsWith('-')){negative=!negative;s=s.slice(1);} else if(s.startsWith('+')) s=s.slice(1);
     s=s.replace(/[+-]/g,'');
     const comma=s.lastIndexOf(','), dot=s.lastIndexOf('.');
