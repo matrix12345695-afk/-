@@ -1,0 +1,8 @@
+(function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.InvoiceGuardDuplicateContext=api;})(typeof globalThis!=='undefined'?globalThis:this,function(){
+  function clean(value){return String(value??'').trim();}
+  function amount(value){const n=Number(value);return Number.isFinite(n)?n:0;}
+  function snapshot(row,source){return {row:row?._row??row?.row??null,vendor:clean(row?.vendor),invoice:clean(row?.invoice_number??row?.no),date:clean(row?.date),total:amount(row?.total),currency:clean(row?.currency).toUpperCase(),source};}
+  function previousSnapshot(entry){if(!entry)return null;return {row:null,vendor:clean(entry.vendor),invoice:clean(entry.no??entry.invoice),date:clean(entry.date),total:amount(entry.total),currency:clean(entry.currency).toUpperCase(),source:'previous-audit'};}
+  function build(rows,priorHistory,duplicateKey){const seen=new Map(),context=new Map();for(const row of rows||[]){const vendor=clean(row?.vendor),invoice=clean(row?.invoice_number);if(!vendor||!invoice)continue;const key=duplicateKey(vendor,invoice),current=snapshot(row,'current-file'),first=seen.get(key),previous=previousSnapshot(priorHistory?.[key]);if(first||previous){context.set(row._row,{kind:first?'same-file':'previous-audit',firstOccurrence:first||null,currentOccurrence:current,previousAudit:previous});if(first&&!context.has(first.row))context.set(first.row,{kind:'same-file',firstOccurrence:first,currentOccurrence:current,previousAudit:previous});}if(!first)seen.set(key,current);}return context;}
+  return {build,snapshot,previousSnapshot};
+});
