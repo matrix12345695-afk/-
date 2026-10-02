@@ -46,6 +46,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Added production audit regression coverage for missing required fields and invoice-date validation
 - [x] Added multilingual findings/approval export regression coverage
 - [x] Added dependency-free `npm test` / `npm run smoke` runner and GitHub Actions regression workflow
+- [x] Formalized severity semantics: High = stop payment, Medium = accountant review; missing/unsupported currency is payment-blocking
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
@@ -72,7 +73,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Add a repeatable repository test command/CI-safe smoke runner
 
 ### Phase 3 — Audit quality (NOW)
-- [ ] Review severity policy so high-risk means payment-blocking and medium means review
+- [x] Review severity policy so high-risk means payment-blocking and medium means review
 - [ ] Add duplicate context: first occurrence/current occurrence and previous-audit context
 - [ ] Improve suspicious currency checks and currency normalization
 - [ ] Improve date sanity checks without locale ambiguity
