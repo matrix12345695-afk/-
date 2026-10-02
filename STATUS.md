@@ -39,6 +39,8 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Integrated hardened CSV core into the live upload/audit path while preserving existing mapping/audit/export flow
 - [x] Localized hardened-parser safety errors in EN/RU/UZ/ES/DE/FR/PT
 - [x] Localized CSV mapping display, canonical accounting field labels and unknown-column mapping options in EN/RU/UZ/ES/DE/FR/PT
+- [x] Hardened international accounting-number parser supports decimal comma/dot, thousands separators, NBSP/narrow spaces, apostrophes, currency symbols and accounting negatives
+- [x] Added focused accounting-number regression coverage for international formats and invalid values
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
@@ -51,7 +53,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Preserve escaped quotes and embedded delimiters/newlines inside quoted cells in hardened core
 - [x] Detect malformed/unclosed quoted records in hardened core
 - [x] Detect row-width mismatches in hardened core instead of silently shifting columns
-- [ ] Re-check number parsing for decimal comma/thousands separators
+- [x] Re-check number parsing for decimal comma/thousands separators
 - [x] Localize parser error presentation once live integration is complete
 
 ### Phase 2 — Regression safety
