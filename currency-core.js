@@ -8,10 +8,10 @@
   });
 
   const ALIASES = Object.freeze({
-    US_DOLLAR:'USD',USDOLLAR:'USD',DOLLAR:'USD',
+    USDOLLAR:'USD',DOLLAR:'USD',
     EURO:'EUR',EUROS:'EUR',
     POUND:'GBP',POUNDS:'GBP',STERLING:'GBP',
-    SUM:'UZS,SOM',SOM:'UZS',UZSOM:'UZS',
+    SUM:null,SOM:null,UZSOM:'UZS',
     TENGE:'KZT',
     DIRHAM:'AED',DIRHAMS:'AED'
   });
@@ -23,13 +23,8 @@
     if(SYMBOLS[raw])return SYMBOLS[raw];
     if(SYMBOLS[compact])return SYMBOLS[compact];
     const token=raw.toUpperCase().replace(/[.\s_-]+/g,'');
+    if(Object.prototype.hasOwnProperty.call(ALIASES,token))return ALIASES[token]||'';
     if(/^[A-Z]{3}$/.test(token))return token;
-    const alias=ALIASES[token];
-    if(alias){
-      // Ambiguous plain "sum/som" must not silently become a payment currency.
-      if(alias.includes(','))return '';
-      return alias;
-    }
     return '';
   }
 
