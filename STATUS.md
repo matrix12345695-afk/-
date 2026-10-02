@@ -43,11 +43,14 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Added focused accounting-number regression coverage for international formats and invalid values
 - [x] Added production-path duplicate normalization/cross-upload regression coverage
 - [x] Added production audit regression coverage for arithmetic tolerance, tax thresholds/negative tax, currency allow-list and localized accounting numbers
+- [x] Added production audit regression coverage for missing required fields and invoice-date validation
+- [x] Added multilingual findings/approval export regression coverage
+- [x] Added dependency-free `npm test` / `npm run smoke` runner and GitHub Actions regression workflow
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
 
-### Phase 1 — Input reliability (NOW)
+### Phase 1 — Input reliability
 - [x] Integrate hardened csv-core.js into the live upload/audit path without regressing mapping or exports
 - [x] Implement state-machine CSV core supporting multiline quoted cells
 - [x] Strip UTF-8 BOM safely in hardened core
@@ -64,11 +67,11 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Add arithmetic tolerance fixtures
 - [x] Add tax threshold/negative tax fixtures
 - [x] Add currency allow-list fixtures
-- [ ] Add missing-field and date fixtures
-- [ ] Add export regression checks
-- [ ] Add a repeatable repository test command/CI-safe smoke runner
+- [x] Add missing-field and date fixtures
+- [x] Add export regression checks
+- [x] Add a repeatable repository test command/CI-safe smoke runner
 
-### Phase 3 — Audit quality
+### Phase 3 — Audit quality (NOW)
 - [ ] Review severity policy so high-risk means payment-blocking and medium means review
 - [ ] Add duplicate context: first occurrence/current occurrence and previous-audit context
 - [ ] Improve suspicious currency checks and currency normalization
