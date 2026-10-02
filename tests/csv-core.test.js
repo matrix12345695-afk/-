@@ -34,6 +34,10 @@ test("rejects unclosed quotes",()=>{
   assert.throws(()=>parse('a,b\n1,"broken'),err=>err.code==="UNCLOSED_QUOTE");
 });
 
+test("rejects unclosed quotes in semicolon CSV",()=>{
+  assert.throws(()=>parse('a;b\n1;"broken'),err=>err.code==="UNCLOSED_QUOTE");
+});
+
 test("rejects row width mismatch instead of shifting columns",()=>{
   assert.throws(()=>parse("a,b,c\n1,2\n3,4,5"),err=>err.code==="ROW_WIDTH_MISMATCH"&&err.line===2);
 });
