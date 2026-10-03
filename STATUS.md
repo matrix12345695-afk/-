@@ -52,6 +52,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Wired deterministic duplicate evidence into live audit finding objects for downstream rendering/export
 - [x] Surface duplicate evidence in visible findings and existing exports with localized EN/RU/UZ/ES/DE/FR/PT labels
 - [x] Hardened currency normalization: reject arbitrary three-letter tokens/test code, preserve ambiguous bare sum/som for review, and normalize explicit Uzbek/Russian/common currency forms
+- [x] Added locale-safe invoice-date core and wired it into the live browser audit: strict ISO, impossible-date rejection, one-day processing grace, and review instead of guessing for ambiguous numeric dates
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
@@ -81,7 +82,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Review severity policy so high-risk means payment-blocking and medium means review
 - [x] Add duplicate context: first occurrence/current occurrence and previous-audit context, visible in findings and existing exports
 - [x] Improve suspicious currency checks and currency normalization
-- [ ] Improve date sanity checks without locale ambiguity
+- [x] Improve date sanity checks without locale ambiguity
 - [ ] Add configurable required-field policy
 - [ ] Make every finding explain why it matters and what the accountant should verify
 
