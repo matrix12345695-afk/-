@@ -6,7 +6,30 @@ const script = source.match(/<script>([\s\S]*?)<\/script>/)?.[1];
 if (!script) throw new Error('privacy.html inline localization script not found');
 
 const locales = ['en', 'ru', 'uz', 'es', 'de', 'fr', 'pt'];
+const requiredKeys = ['title', 'current', 'p1', 'p2', 'p3', 'boundaries', 'p4', 'p5', 'back'];
 const failures = [];
+
+// Source coverage: every privacy/security string must exist explicitly in every
+// locale. This prevents a future English fallback from silently creating a
+// mixed-language trust page.
+for (const locale of locales) {
+  const marker = `${locale}:{`;
+  const start = script.indexOf(marker);
+  if (start < 0) { failures.push(`${locale}: source dictionary missing`); continue; }
+  const bodyStart = start + marker.length;
+  const nextLocaleStarts = locales
+    .map(next => script.indexOf(`\n${next}:{`, bodyStart))
+    .filter(index => index >= 0);
+  const copyEnd = script.indexOf('}}\nconst saved=', bodyStart);
+  const end = Math.min(...nextLocaleStarts, copyEnd >= 0 ? copyEnd : script.length);
+  const body = script.slice(bodyStart, end);
+  const explicitKeys = new Set([...body.matchAll(/(?:^|,)\s*([A-Za-z][A-Za-z0-9]*)\s*:/g)].map(match => match[1]));
+  for (const key of requiredKeys) {
+    if (!explicitKeys.has(key)) failures.push(`${locale}: privacy key ${key} is not explicitly localized`);
+  }
+}
+
+// Runtime coverage: exercise the actual privacy page renderer for every locale.
 for (const locale of locales) {
   const elements = new Map([['back', { textContent: '' }], ['content', { innerHTML: '' }]]);
   const document = {
@@ -37,4 +60,4 @@ if (failures.length) {
   console.error(`Privacy localization smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
-console.log(`Privacy localization smoke passed: ${locales.length} locales.`);
+console.log(`Privacy localization smoke passed: ${locales.length} locales × ${requiredKeys.length} explicit trust/privacy strings.`);
