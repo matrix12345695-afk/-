@@ -5,9 +5,9 @@ const vm = require('vm');
 function cell(text, className = '') {
   return { textContent: text, className };
 }
-function row(values, high = false) {
-  const cells = values.map((v, i) => cell(v, i === 3 && high ? 'sev-high' : ''));
-  return { cells, querySelector: sel => sel === '.sev-high' && high ? {} : null };
+function row(values, severity = '') {
+  const cells = values.map((v, i) => cell(v, i === 3 && severity ? `sev-${severity}` : ''));
+  return { cells, querySelector: sel => cells.some(c => c.className === sel.slice(1)) ? {} : null };
 }
 function runScript(file, { lang = 'en', rows = [], count = '2', issues = '1', risk = 'USD 100' } = {}) {
   let handler;
@@ -70,17 +70,30 @@ for (const [lang, header] of Object.entries(findingHeaders)) {
 const summary = runScript('summary-i18n.js', {
   lang: 'ru', count: '3', issues: '2', risk: 'USD 125.50',
   rows: [
-    row(['2', 'INV-1', 'ACME', 'Высокий', 'Ошибка суммы', 'USD 100'], true),
-    row(['3', 'INV-2', 'Beta', 'Средний', 'Проверить дату', 'USD 25.50'], false)
+    row(['2', 'INV-1', 'ACME', 'Высокий', 'Ошибка суммы', 'USD 100'], 'high'),
+    row(['3', 'INV-2', 'Beta', 'Средний', 'Проверить дату', 'USD 25.50'], 'medium')
   ]
 });
-assert.strictEqual(summary.download, 'invoiceguard-audit-summary-ru.txt');
+assert.strictEqual(summary.download, 'invoiceguard-payment-review-ru.txt');
 assert.strictEqual(summary.blob.type, 'text/plain;charset=utf-8');
-assert.ok(summary.text.startsWith('\uFEFFСВОДКА АУДИТА INVOICEGUARD\n'));
+assert.ok(summary.text.startsWith('\uFEFFINVOICEGUARD — ПРОВЕРКА ПЕРЕД ОПЛАТОЙ\n'));
+assert.ok(summary.text.includes('Решение по оплате: ОСТАНОВИТЬ ОПЛАТУ'));
 assert.ok(summary.text.includes('Проверено счетов: 3'));
 assert.ok(summary.text.includes('Замечания: 2'));
-assert.ok(summary.text.includes('Счета, требующие внимания: 1'));
+assert.ok(summary.text.includes('Счета, требующие внимания: 2'));
 assert.ok(summary.text.includes('Строка 2 | ACME | INV-1 | Ошибка суммы | USD 100'));
-assert.ok(!summary.text.includes('INV-2 | Проверить дату'), 'medium findings must not enter high-severity section');
+assert.ok(summary.text.includes('ЗАМЕЧАНИЯ ДЛЯ ПРОВЕРКИ'));
+assert.ok(summary.text.includes('Строка 3 | Beta | INV-2 | Проверить дату | USD 25.50'));
+
+const reviewOnly = runScript('summary-i18n.js', {
+  lang: 'en', count: '1', issues: '1', risk: '0',
+  rows: [row(['2', 'INV-9', 'Beta', 'Medium', 'Verify date', 'USD 25'], 'medium')]
+});
+assert.ok(reviewOnly.text.includes('Payment decision: REVIEW BEFORE PAYMENT'));
+
+const clean = runScript('summary-i18n.js', { lang: 'en', count: '4', issues: '0', risk: '0', rows: [] });
+assert.ok(clean.text.includes('Payment decision: READY FOR APPROVAL'));
+assert.ok(clean.text.includes('No payment-blocking findings.'));
+assert.ok(clean.text.includes('No review findings.'));
 
 console.log('export regression tests passed');
