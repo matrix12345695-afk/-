@@ -28,6 +28,7 @@ const moduleChecks = [
   ['print-report.js', /const labels=\{([\s\S]*?)\n  \};/],
   ['document-i18n.js', /const copy=\{([\s\S]*?)\n\};/],
   ['mapping-i18n.js', /const copy=\{([\s\S]*?)\n  \};/],
+  ['localization-edge-live.js', /const unknownCurrency=\{([\s\S]*?)\n  \};/],
 ];
 for (const [name, pattern] of moduleChecks) {
   const source = read(name);
