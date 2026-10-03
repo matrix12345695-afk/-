@@ -54,6 +54,8 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Hardened currency normalization: reject arbitrary three-letter tokens/test code, preserve ambiguous bare sum/som for review, and normalize explicit Uzbek/Russian/common currency forms
 - [x] Added locale-safe invoice-date core and wired it into the live browser audit: strict ISO, impossible-date rejection, one-day processing grace, and review instead of guessing for ambiguous numeric dates
 - [x] Added configurable required-field policy for invoice number, vendor, date and currency with local persistence and localized EN/RU/UZ/ES/DE/FR/PT controls
+- [x] Findings explain why each exception matters and what the accountant should verify before payment in EN/RU/UZ/ES/DE/FR/PT
+- [x] Approval summary upgraded to a concise pre-payment review with HOLD/REVIEW/READY decision, recommended action, payment-blocking findings and review findings
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
@@ -79,16 +81,16 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Add export regression checks
 - [x] Add a repeatable repository test command/CI-safe smoke runner
 
-### Phase 3 — Audit quality (NOW)
+### Phase 3 — Audit quality
 - [x] Review severity policy so high-risk means payment-blocking and medium means review
 - [x] Add duplicate context: first occurrence/current occurrence and previous-audit context, visible in findings and existing exports
 - [x] Improve suspicious currency checks and currency normalization
 - [x] Improve date sanity checks without locale ambiguity
 - [x] Add configurable required-field policy
-- [ ] Make every finding explain why it matters and what the accountant should verify
+- [x] Make every finding explain why it matters and what the accountant should verify
 
-### Phase 4 — Accountant-ready output
-- [ ] Improve approval summary into a concise payment-review artifact
+### Phase 4 — Accountant-ready output (NOW)
+- [x] Improve approval summary into a concise payment-review artifact
 - [ ] Include audit settings/tolerances and source filename in evidence exports
 - [ ] Add deterministic audit timestamp/session identifier
 - [ ] Improve clean CSV export formatting and multilingual spreadsheet compatibility
