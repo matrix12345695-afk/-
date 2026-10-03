@@ -59,6 +59,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Evidence exports include source filename and active audit settings/tolerances
 - [x] Audit sessions carry deterministic timestamp and audit/session identifier into review evidence
 - [x] Clean CSV export is Excel-friendly with UTF-8 BOM, CRLF, stable machine-readable headers and spreadsheet-formula injection protection
+- [x] Printable accountant report view with print-only audit evidence layout, repeated table headers and page-break-safe finding rows
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
@@ -92,14 +93,14 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Add configurable required-field policy
 - [x] Make every finding explain why it matters and what the accountant should verify
 
-### Phase 4 — Accountant-ready output (NOW)
+### Phase 4 — Accountant-ready output
 - [x] Improve approval summary into a concise payment-review artifact
 - [x] Include audit settings/tolerances and source filename in evidence exports
 - [x] Add deterministic audit timestamp/session identifier
 - [x] Improve clean CSV export formatting and multilingual spreadsheet compatibility
-- [ ] Add printable report view before considering PDF generation
+- [x] Add printable report view before considering PDF generation
 
-### Phase 5 — Complete localization
+### Phase 5 — Complete localization (NOW)
 - [ ] Audit every remaining visible/generated string for mixed-language edge cases
 - [x] Localize mapping UI labels/options and parser error messages
 - [ ] Localize export headers where appropriate while keeping machine-readable clean CSV stable
