@@ -30,6 +30,8 @@ const moduleChecks = [
   ['mapping-i18n.js', /const copy=\{([\s\S]*?)\n  \};/],
   ['localization-edge-live.js', /const unknownCurrency=\{([\s\S]*?)\n  \};/],
   ['required-fields-live.js', /const copy=\{([\s\S]*?)\n  \};/],
+  ['summary-i18n.js', /const copy=\{([\s\S]*?)\n\};/],
+  ['finding-guidance-live.js', /const generic=\{([\s\S]*?)\};const base=/],
 ];
 for (const [name, pattern] of moduleChecks) {
   const source = read(name);
@@ -62,8 +64,29 @@ if (!requiredMatch) {
   }
 }
 
+// Approval summary is a customer-facing artifact. Require every locale to carry the
+// same complete key set so a future added decision/export label cannot leak English.
+const summarySource = read('summary-i18n.js');
+const summaryMatch = summarySource.match(/const copy=(\{[\s\S]*?\n\});/);
+if (!summaryMatch) {
+  failures.push('summary-i18n.js: localization dictionary could not be evaluated');
+} else {
+  const summaryContext = {};
+  vm.createContext(summaryContext);
+  vm.runInContext(`globalThis.__copy=${summaryMatch[1]};`, summaryContext);
+  const summaryCopy = summaryContext.__copy;
+  const summaryKeys = Object.keys(summaryCopy?.en || {});
+  for (const locale of locales) {
+    const dict = summaryCopy?.[locale];
+    if (!dict) { failures.push(`summary-i18n.js: ${locale} dictionary missing`); continue; }
+    for (const key of summaryKeys) {
+      if (typeof dict[key] !== 'string' || !dict[key].trim()) failures.push(`summary-i18n.js: ${locale} missing ${key}`);
+    }
+  }
+}
+
 if (failures.length) {
   console.error(`Generated localization smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
-console.log(`Generated localization smoke passed: audit/status copy and helper UI cover ${locales.length} locales.`);
+console.log(`Generated localization smoke passed: audit/status, approval/export and helper UI cover ${locales.length} locales.`);
