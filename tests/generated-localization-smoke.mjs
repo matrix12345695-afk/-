@@ -5,6 +5,12 @@ const locales = ['en', 'ru', 'uz', 'es', 'de', 'fr', 'pt'];
 const failures = [];
 const read = (name) => fs.readFileSync(new URL(`../${name}`, import.meta.url), 'utf8');
 const placeholders = value => [...String(value).matchAll(/\{([A-Za-z][A-Za-z0-9_]*)\}/g)].map(m => m[1]).sort().join(',');
+const guardLocaleSet = (name, copy) => {
+  const actual = Object.keys(copy || {}).sort();
+  const expected = [...locales].sort();
+  for (const locale of expected) if (!actual.includes(locale)) failures.push(`${name}: supported locale ${locale} missing`);
+  for (const locale of actual) if (!expected.includes(locale)) failures.push(`${name}: unsupported locale ${locale}`);
+};
 
 // app.js owns generated audit/status/finding copy that is not represented by data-i18n.
 // Execute only the dictionary declaration so this test stays independent of the DOM.
@@ -15,6 +21,7 @@ const appContext = {};
 vm.createContext(appContext);
 vm.runInContext(`${app.slice(0, dynamicEnd + 1)};globalThis.__dynamic=dynamic;`, appContext);
 const dynamic = appContext.__dynamic;
+guardLocaleSet('app.js', dynamic);
 const dynamicKeys = Object.keys(dynamic.en || {});
 for (const locale of locales) {
   const dict = dynamic[locale];
@@ -60,6 +67,7 @@ if (!requiredMatch) {
   vm.createContext(requiredContext);
   vm.runInContext(`globalThis.__copy=${requiredMatch[1]};`, requiredContext);
   const requiredCopy = requiredContext.__copy;
+  guardLocaleSet('required-fields-live.js', requiredCopy);
   const requiredKeys = Object.keys(requiredCopy?.en || {});
   for (const locale of locales) {
     const dict = requiredCopy?.[locale];
@@ -85,6 +93,7 @@ if (!detailedGuidanceMatch) {
   vm.createContext(detailedContext);
   vm.runInContext(`globalThis.__copy=${detailedGuidanceMatch[1]};`, detailedContext);
   const detailedCopy = detailedContext.__copy;
+  guardLocaleSet('finding-guidance.js', detailedCopy);
   const detailedKeys = Object.keys(detailedCopy?.en || {});
   for (const locale of locales) {
     const dict = detailedCopy?.[locale];
@@ -110,12 +119,10 @@ if (!guidanceMatch) {
   vm.createContext(guidanceContext);
   vm.runInContext(`globalThis.__copy=${guidanceMatch[1]};`, guidanceContext);
   const guidanceCopy = guidanceContext.__copy;
+  guardLocaleSet('finding-guidance-live.js', guidanceCopy);
   for (const locale of locales) {
     if (typeof guidanceCopy?.[locale] !== 'string' || !guidanceCopy[locale].trim()) failures.push(`finding-guidance-live.js: ${locale} guidance missing`);
     if (placeholders(guidanceCopy?.[locale]) !== placeholders(guidanceCopy?.en)) failures.push(`finding-guidance-live.js: ${locale} guidance placeholder mismatch`);
-  }
-  for (const locale of Object.keys(guidanceCopy || {})) {
-    if (!locales.includes(locale)) failures.push(`finding-guidance-live.js: unsupported locale ${locale}`);
   }
 }
 
@@ -130,6 +137,7 @@ if (!summaryMatch) {
   vm.createContext(summaryContext);
   vm.runInContext(`globalThis.__copy=${summaryMatch[1]};`, summaryContext);
   const summaryCopy = summaryContext.__copy;
+  guardLocaleSet('summary-i18n.js', summaryCopy);
   const summaryKeys = Object.keys(summaryCopy?.en || {});
   for (const locale of locales) {
     const dict = summaryCopy?.[locale];
@@ -148,4 +156,4 @@ if (failures.length) {
   console.error(`Generated localization smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
-console.log(`Generated localization smoke passed: audit/status, approval/export, detailed finding guidance and helper UI cover ${locales.length} locales with key/placeholder parity.`);
+console.log(`Generated localization smoke passed: audit/status, approval/export, detailed finding guidance and helper UI cover exactly ${locales.length} supported locales with key/placeholder parity.`);
