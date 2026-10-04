@@ -60,12 +60,16 @@ if (!requiredMatch) {
   vm.createContext(requiredContext);
   vm.runInContext(`globalThis.__copy=${requiredMatch[1]};`, requiredContext);
   const requiredCopy = requiredContext.__copy;
-  const requiredKeys = ['title', 'invoice_number', 'vendor', 'date', 'currency'];
+  const requiredKeys = Object.keys(requiredCopy?.en || {});
   for (const locale of locales) {
     const dict = requiredCopy?.[locale];
     if (!dict) { failures.push(`required-fields-live.js: ${locale} dictionary missing`); continue; }
     for (const key of requiredKeys) {
       if (typeof dict[key] !== 'string' || !dict[key].trim()) failures.push(`required-fields-live.js: ${locale} missing ${key}`);
+      if (placeholders(dict[key]) !== placeholders(requiredCopy.en[key])) failures.push(`required-fields-live.js: ${locale}.${key} placeholder mismatch`);
+    }
+    for (const key of Object.keys(dict)) {
+      if (!requiredKeys.includes(key)) failures.push(`required-fields-live.js: ${locale} has orphan key ${key}`);
     }
   }
 }
