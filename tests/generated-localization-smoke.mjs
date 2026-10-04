@@ -77,7 +77,7 @@ if (!requiredMatch) {
 // Detailed per-rule guidance is the accountant's action copy. It lives separately from the
 // live generic fallback, so require every rule present in English to exist in every locale.
 const detailedGuidanceSource = read('finding-guidance.js');
-const detailedGuidanceMatch = detailedGuidanceSource.match(/const G=(\{[\s\S]*?\});\s*function/);
+const detailedGuidanceMatch = detailedGuidanceSource.match(/const G=(\{[\s\S]*?\})\s*;\s*function/);
 if (!detailedGuidanceMatch) {
   failures.push('finding-guidance.js: detailed guidance dictionary could not be evaluated');
 } else {
