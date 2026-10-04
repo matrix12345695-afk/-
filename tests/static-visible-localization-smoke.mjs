@@ -16,6 +16,8 @@ for (const match of textNodes) {
   const text = rawText.replace(/\s+/g, ' ').trim();
   if (!text) continue;
   if (neutralText.has(text)) continue;
+  // Numeric counters/amount placeholders are language-neutral and are replaced by runtime data.
+  if (/^[+-]?(?:\d+(?:[.,]\d+)?|[.,]\d+)$/.test(text)) continue;
   if (/data-i18n(?:-aria)?=/.test(attrs)) continue;
   if (runtimeLocalizedAttrs.some((marker) => attrs.includes(marker))) continue;
   // Document title is localized by document-i18n.js and has dedicated parity coverage.
