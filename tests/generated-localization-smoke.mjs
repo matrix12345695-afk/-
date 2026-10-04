@@ -29,6 +29,7 @@ const moduleChecks = [
   ['document-i18n.js', /const copy=\{([\s\S]*?)\n\};/],
   ['mapping-i18n.js', /const copy=\{([\s\S]*?)\n  \};/],
   ['localization-edge-live.js', /const unknownCurrency=\{([\s\S]*?)\n  \};/],
+  ['required-fields-live.js', /const copy=\{([\s\S]*?)\n  \};/],
 ];
 for (const [name, pattern] of moduleChecks) {
   const source = read(name);
@@ -37,6 +38,27 @@ for (const [name, pattern] of moduleChecks) {
   for (const locale of locales) {
     const localePattern = new RegExp(`(?:^|[,\\n]\\s*)${locale}\\s*:`);
     if (!localePattern.test(body)) failures.push(`${name}: ${locale} generated copy missing`);
+  }
+}
+
+// Required-field controls are visible accountant workflow copy but are localized by
+// required-fields-live.js rather than data-i18n. Guard every label, not just locale presence.
+const requiredSource = read('required-fields-live.js');
+const requiredMatch = requiredSource.match(/const copy=(\{[\s\S]*?\n  \});/);
+if (!requiredMatch) {
+  failures.push('required-fields-live.js: localization dictionary could not be evaluated');
+} else {
+  const requiredContext = {};
+  vm.createContext(requiredContext);
+  vm.runInContext(`globalThis.__copy=${requiredMatch[1]};`, requiredContext);
+  const requiredCopy = requiredContext.__copy;
+  const requiredKeys = ['title', 'invoice_number', 'vendor', 'date', 'currency'];
+  for (const locale of locales) {
+    const dict = requiredCopy?.[locale];
+    if (!dict) { failures.push(`required-fields-live.js: ${locale} dictionary missing`); continue; }
+    for (const key of requiredKeys) {
+      if (typeof dict[key] !== 'string' || !dict[key].trim()) failures.push(`required-fields-live.js: ${locale} missing ${key}`);
+    }
   }
 }
 
