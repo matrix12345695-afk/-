@@ -74,6 +74,31 @@ if (!requiredMatch) {
   }
 }
 
+// Detailed per-rule guidance is the accountant's action copy. It lives separately from the
+// live generic fallback, so require every rule present in English to exist in every locale.
+const detailedGuidanceSource = read('finding-guidance.js');
+const detailedGuidanceMatch = detailedGuidanceSource.match(/const G=(\{[\s\S]*?\});\s*function/);
+if (!detailedGuidanceMatch) {
+  failures.push('finding-guidance.js: detailed guidance dictionary could not be evaluated');
+} else {
+  const detailedContext = {};
+  vm.createContext(detailedContext);
+  vm.runInContext(`globalThis.__copy=${detailedGuidanceMatch[1]};`, detailedContext);
+  const detailedCopy = detailedContext.__copy;
+  const detailedKeys = Object.keys(detailedCopy?.en || {});
+  for (const locale of locales) {
+    const dict = detailedCopy?.[locale];
+    if (!dict) { failures.push(`finding-guidance.js: ${locale} dictionary missing`); continue; }
+    for (const key of detailedKeys) {
+      if (typeof dict[key] !== 'string' || !dict[key].trim()) failures.push(`finding-guidance.js: ${locale} missing ${key}`);
+      if (placeholders(dict[key]) !== placeholders(detailedCopy.en[key])) failures.push(`finding-guidance.js: ${locale}.${key} placeholder mismatch`);
+    }
+    for (const key of Object.keys(dict)) {
+      if (!detailedKeys.includes(key)) failures.push(`finding-guidance.js: ${locale} has orphan key ${key}`);
+    }
+  }
+}
+
 // Finding guidance is appended after rendering and can otherwise silently fall back to English.
 // Evaluate the whole dictionary so every supported locale must have non-empty, placeholder-safe copy.
 const guidanceSource = read('finding-guidance-live.js');
@@ -123,4 +148,4 @@ if (failures.length) {
   console.error(`Generated localization smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
-console.log(`Generated localization smoke passed: audit/status, approval/export, finding guidance and helper UI cover ${locales.length} locales with key/placeholder parity.`);
+console.log(`Generated localization smoke passed: audit/status, approval/export, detailed finding guidance and helper UI cover ${locales.length} locales with key/placeholder parity.`);
