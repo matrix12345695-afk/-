@@ -74,6 +74,26 @@ if (!requiredMatch) {
   }
 }
 
+// Finding guidance is appended after rendering and can otherwise silently fall back to English.
+// Evaluate the whole dictionary so every supported locale must have non-empty, placeholder-safe copy.
+const guidanceSource = read('finding-guidance-live.js');
+const guidanceMatch = guidanceSource.match(/const generic=(\{[\s\S]*?\});const base=/);
+if (!guidanceMatch) {
+  failures.push('finding-guidance-live.js: guidance dictionary could not be evaluated');
+} else {
+  const guidanceContext = {};
+  vm.createContext(guidanceContext);
+  vm.runInContext(`globalThis.__copy=${guidanceMatch[1]};`, guidanceContext);
+  const guidanceCopy = guidanceContext.__copy;
+  for (const locale of locales) {
+    if (typeof guidanceCopy?.[locale] !== 'string' || !guidanceCopy[locale].trim()) failures.push(`finding-guidance-live.js: ${locale} guidance missing`);
+    if (placeholders(guidanceCopy?.[locale]) !== placeholders(guidanceCopy?.en)) failures.push(`finding-guidance-live.js: ${locale} guidance placeholder mismatch`);
+  }
+  for (const locale of Object.keys(guidanceCopy || {})) {
+    if (!locales.includes(locale)) failures.push(`finding-guidance-live.js: unsupported locale ${locale}`);
+  }
+}
+
 // Approval summary is a customer-facing artifact. Require every locale to carry the
 // same complete key set so a future added decision/export label cannot leak English.
 const summarySource = read('summary-i18n.js');
@@ -103,4 +123,4 @@ if (failures.length) {
   console.error(`Generated localization smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
-console.log(`Generated localization smoke passed: audit/status, approval/export and helper UI cover ${locales.length} locales with key/placeholder parity.`);
+console.log(`Generated localization smoke passed: audit/status, approval/export, finding guidance and helper UI cover ${locales.length} locales with key/placeholder parity.`);
