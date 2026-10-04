@@ -3,8 +3,8 @@ import vm from 'node:vm';
 
 const source = fs.readFileSync(new URL('../privacy.html', import.meta.url), 'utf8');
 const locales = ['en', 'ru', 'uz', 'es', 'de', 'fr', 'pt'];
-const requiredKeys = ['title', 'current', 'p1', 'p2', 'p3', 'boundaries', 'p4', 'p5', 'back'];
 const failures = [];
+const placeholders = (value) => [...String(value).matchAll(/\{([A-Za-z][A-Za-z0-9_]*)\}/g)].map((m) => m[1]).sort().join(',');
 
 const script = source.match(/<script>([\s\S]*?)<\/script>/)?.[1];
 if (!script) throw new Error('privacy.html inline localization script not found');
@@ -15,15 +15,26 @@ const context = {};
 vm.createContext(context);
 vm.runInContext(`${script.slice(0, dictionaryEnd)};globalThis.__copy=copy;`, context, { filename: 'privacy.html' });
 const copy = context.__copy;
+const requiredKeys = Object.keys(copy?.en || {}).sort();
+if (!requiredKeys.length) failures.push('English privacy baseline dictionary missing or empty');
 
+// Treat English as the schema for this standalone customer-facing page. Exact key parity
+// prevents a newly-added privacy/trust sentence from silently remaining English in one locale.
 for (const locale of locales) {
   const dict = copy?.[locale];
   if (!dict) { failures.push(`${locale}: privacy dictionary missing`); continue; }
+  const keys = Object.keys(dict).sort();
+  if (keys.join('|') !== requiredKeys.join('|')) failures.push(`${locale}: privacy key set differs from English`);
   for (const key of requiredKeys) {
     if (typeof dict[key] !== 'string' || !dict[key].trim()) failures.push(`${locale}: privacy key ${key} missing or blank`);
+    if (placeholders(dict[key]) !== placeholders(copy.en[key])) failures.push(`${locale}: privacy key ${key} placeholder mismatch`);
   }
 }
+for (const locale of Object.keys(copy || {})) {
+  if (!locales.includes(locale)) failures.push(`privacy.html: unsupported locale ${locale}`);
+}
 
+// Exercise the actual standalone-page render for every locale, not only dictionary shape.
 for (const locale of locales) {
   const elements = { back: { textContent: '' }, content: { innerHTML: '' } };
   const renderContext = {
@@ -36,7 +47,7 @@ for (const locale of locales) {
   if (renderContext.document.documentElement.lang !== locale) failures.push(`${locale}: document lang not applied`);
   if (renderContext.document.title !== `InvoiceGuard — ${expected.title}`) failures.push(`${locale}: localized document title not rendered`);
   if (elements.back.textContent !== expected.back) failures.push(`${locale}: localized back link not rendered`);
-  for (const key of ['title', 'current', 'p1', 'p2', 'p3', 'boundaries', 'p4', 'p5']) {
+  for (const key of requiredKeys.filter((key) => key !== 'back')) {
     if (!elements.content.innerHTML.includes(expected[key])) failures.push(`${locale}: rendered privacy content missing ${key}`);
   }
 }
@@ -45,4 +56,4 @@ if (failures.length) {
   console.error(`Privacy localization smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
-console.log(`Privacy localization smoke passed: ${locales.length} locales × ${requiredKeys.length} strings plus rendered page state.`);
+console.log(`Privacy localization smoke passed: ${locales.length} locales × ${requiredKeys.length} strings with exact key/placeholder parity plus rendered page state.`);
