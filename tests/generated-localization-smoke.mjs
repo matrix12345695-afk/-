@@ -4,6 +4,7 @@ import vm from 'node:vm';
 const locales = ['en', 'ru', 'uz', 'es', 'de', 'fr', 'pt'];
 const failures = [];
 const read = (name) => fs.readFileSync(new URL(`../${name}`, import.meta.url), 'utf8');
+const placeholders = value => [...String(value).matchAll(/\{([A-Za-z][A-Za-z0-9_]*)\}/g)].map(m => m[1]).sort().join(',');
 
 // app.js owns generated audit/status/finding copy that is not represented by data-i18n.
 // Execute only the dictionary declaration so this test stays independent of the DOM.
@@ -18,8 +19,13 @@ const dynamicKeys = Object.keys(dynamic.en || {});
 for (const locale of locales) {
   const dict = dynamic[locale];
   if (!dict) { failures.push(`app.js: ${locale} dictionary missing`); continue; }
+  const localeKeys = Object.keys(dict);
   for (const key of dynamicKeys) {
     if (typeof dict[key] !== 'string' || !dict[key].trim()) failures.push(`app.js: ${locale} missing generated key ${key}`);
+    if (placeholders(dict[key]) !== placeholders(dynamic.en[key])) failures.push(`app.js: ${locale}.${key} placeholder mismatch (${placeholders(dict[key]) || 'none'} vs ${placeholders(dynamic.en[key]) || 'none'})`);
+  }
+  for (const key of localeKeys) {
+    if (!dynamicKeys.includes(key)) failures.push(`app.js: ${locale} has orphan generated key ${key}`);
   }
 }
 
@@ -81,6 +87,10 @@ if (!summaryMatch) {
     if (!dict) { failures.push(`summary-i18n.js: ${locale} dictionary missing`); continue; }
     for (const key of summaryKeys) {
       if (typeof dict[key] !== 'string' || !dict[key].trim()) failures.push(`summary-i18n.js: ${locale} missing ${key}`);
+      if (placeholders(dict[key]) !== placeholders(summaryCopy.en[key])) failures.push(`summary-i18n.js: ${locale}.${key} placeholder mismatch`);
+    }
+    for (const key of Object.keys(dict)) {
+      if (!summaryKeys.includes(key)) failures.push(`summary-i18n.js: ${locale} has orphan key ${key}`);
     }
   }
 }
@@ -89,4 +99,4 @@ if (failures.length) {
   console.error(`Generated localization smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
-console.log(`Generated localization smoke passed: audit/status, approval/export and helper UI cover ${locales.length} locales.`);
+console.log(`Generated localization smoke passed: audit/status, approval/export and helper UI cover ${locales.length} locales with key/placeholder parity.`);
