@@ -8,8 +8,13 @@ const failures = [];
 // This catches new visible English copy before it can quietly bypass the i18n dictionaries.
 const neutralText = new Set(['InvoiceGuard', 'EN', 'RU', 'UZ', 'ES', 'DE', 'FR', 'PT']);
 const runtimeLocalizedAttrs = ['data-required-label=', 'id="requiredFieldsTitle"'];
-const withoutScripts = html.replace(/<script\b[\s\S]*?<\/script>/gi, '');
-const textNodes = [...withoutScripts.matchAll(/<([a-z][\w-]*)([^>]*)>([^<>]+)<\/\1>/gi)];
+// Script/style/noscript contents are implementation/fallback code, not rendered customer copy.
+// Strip them before auditing literal visible text so CSS declarations cannot become false positives.
+const visibleMarkup = html
+  .replace(/<script\b[\s\S]*?<\/script>/gi, '')
+  .replace(/<style\b[\s\S]*?<\/style>/gi, '')
+  .replace(/<noscript\b[\s\S]*?<\/noscript>/gi, '');
+const textNodes = [...visibleMarkup.matchAll(/<([a-z][\w-]*)([^>]*)>([^<>]+)<\/\1>/gi)];
 
 for (const match of textNodes) {
   const [, tag, attrs, rawText] = match;
