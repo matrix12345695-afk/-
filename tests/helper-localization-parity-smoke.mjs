@@ -36,6 +36,7 @@ function checkNested(name, copy) {
     for (const key of baseline) {
       if (typeof dict[key] !== 'string' || !dict[key].trim()) failures.push(`${name}: ${locale}.${key} is empty or missing`);
       if (placeholders(dict[key]) !== placeholders(copy.en[key])) failures.push(`${name}: ${locale}.${key} placeholder mismatch`);
+      if (locale !== 'en' && dict[key] === copy.en[key]) failures.push(`${name}: ${locale}.${key} silently reuses English copy`);
     }
   }
   for (const locale of Object.keys(copy)) {
@@ -51,6 +52,7 @@ function checkScalar(name, copy) {
   for (const locale of locales) {
     if (typeof copy[locale] !== 'string' || !copy[locale].trim()) failures.push(`${name}: ${locale} string missing`);
     if (placeholders(copy[locale]) !== placeholders(copy.en)) failures.push(`${name}: ${locale} placeholder mismatch`);
+    if (locale !== 'en' && copy[locale] === copy.en) failures.push(`${name}: ${locale} silently reuses English copy`);
   }
   for (const locale of Object.keys(copy)) {
     if (!locales.includes(locale)) failures.push(`${name}: unsupported locale ${locale}`);
@@ -58,7 +60,8 @@ function checkScalar(name, copy) {
 }
 
 // These helper modules render customer-visible copy outside the main data-i18n surface.
-// Validate complete locale/key parity so future additions cannot silently fall back to English.
+// Validate complete locale/key parity and explicit translations so future additions cannot
+// pass CI by copying English into every locale or silently retaining an English fallback.
 checkNested(
   'document-i18n.js',
   evaluateObject('document-i18n.js', /const copy=(\{[\s\S]*?\n\});/, 'document metadata'),
@@ -81,4 +84,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`Helper localization parity smoke passed: document metadata, mapping UI, print action and risk summary cover ${locales.length} locales without key/placeholder drift.`);
+console.log(`Helper localization parity smoke passed: document metadata, mapping UI, print action and risk summary cover ${locales.length} locales without key/placeholder drift or English-copy fallback.`);
