@@ -71,10 +71,14 @@ checkScalar(
   'print-report.js',
   evaluateObject('print-report.js', /const labels=(\{[\s\S]*?\n  \});/, 'print action'),
 );
+checkScalar(
+  'localization-edge-live.js',
+  evaluateObject('localization-edge-live.js', /const unknownCurrency=(\{[\s\S]*?\n  \});/, 'risk-summary unknown-currency label'),
+);
 
 if (failures.length) {
   console.error(`Helper localization parity smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
 
-console.log(`Helper localization parity smoke passed: document metadata, mapping UI and print action cover ${locales.length} locales without key/placeholder drift.`);
+console.log(`Helper localization parity smoke passed: document metadata, mapping UI, print action and risk summary cover ${locales.length} locales without key/placeholder drift.`);
