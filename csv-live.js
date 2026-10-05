@@ -22,6 +22,7 @@
   };
   const language=()=>window.invoiceGuardI18n?.lang||"en";
   const label=key=>(fieldLabels[language()]||fieldLabels.en)[key]||String(key).replaceAll("_"," ");
+  const auditError=()=>window.invoiceGuardAuditState?.set?.("error");
 
   function errorText(err){
     const code=err&&err.code||"GENERIC";
@@ -34,8 +35,8 @@
   window.parseCSV=function(text){
     let parsed;
     try{parsed=window.InvoiceGuardCSV.parse(text);}
-    catch(err){alert(errorText(err));return[];}
-    if(parsed.header.length<1||parsed.rows.length<1)return[];
+    catch(err){auditError();alert(errorText(err));return[];}
+    if(parsed.header.length<1||parsed.rows.length<1){auditError();return[];}
     const raw=parsed.header;
     const h=raw.map(canonical);
     $("mapping").textContent=raw.map((x,i)=>x+" → "+label(h[i])).join(" · ");
