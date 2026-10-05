@@ -1,0 +1,14 @@
+(()=>{
+  const extra={
+    en:{gettingStarted:'Start in three steps',stepChoose:'Choose your invoice CSV export.',stepReview:'Review payment-blocking and accountant-review findings.',stepExport:'Export the audit summary before approving payment.',sampleHint:'No file handy? Run the sample audit to see the full workflow with safe demo data.'},
+    ru:{gettingStarted:'Начните с трёх шагов',stepChoose:'Выберите CSV-выгрузку счетов.',stepReview:'Проверьте блокирующие оплату замечания и пункты для проверки бухгалтером.',stepExport:'Экспортируйте сводку аудита перед согласованием оплаты.',sampleHint:'Нет файла под рукой? Запустите демо-аудит, чтобы увидеть весь процесс на безопасных тестовых данных.'},
+    uz:{gettingStarted:'Uch qadamda boshlang',stepChoose:'Hisob-fakturalar CSV eksportini tanlang.',stepReview:"To‘lovni to‘xtatuvchi va buxgalter ko‘rib chiqishi kerak bo‘lgan topilmalarni tekshiring.",stepExport:"To‘lovni tasdiqlashdan oldin audit xulosasini eksport qiling.",sampleHint:"Fayl yo‘qmi? Xavfsiz demo ma’lumotlarda to‘liq jarayonni ko‘rish uchun namunaviy auditni ishga tushiring."},
+    es:{gettingStarted:'Empieza en tres pasos',stepChoose:'Elige tu exportación CSV de facturas.',stepReview:'Revisa los hallazgos que bloquean el pago y los que requieren revisión contable.',stepExport:'Exporta el resumen de auditoría antes de aprobar el pago.',sampleHint:'¿No tienes un archivo a mano? Ejecuta la auditoría de ejemplo para ver el flujo completo con datos de demostración seguros.'},
+    de:{gettingStarted:'In drei Schritten starten',stepChoose:'Wähle deinen CSV-Rechnungsexport aus.',stepReview:'Prüfe zahlungsblockierende Befunde und Punkte für die Buchhaltungsprüfung.',stepExport:'Exportiere die Prüfzusammenfassung, bevor du die Zahlung freigibst.',sampleHint:'Keine Datei zur Hand? Starte die Beispielprüfung, um den vollständigen Ablauf mit sicheren Demodaten zu sehen.'},
+    fr:{gettingStarted:'Commencez en trois étapes',stepChoose:'Choisissez votre export CSV de factures.',stepReview:'Examinez les anomalies bloquant le paiement et celles nécessitant une vérification comptable.',stepExport:'Exportez le résumé d’audit avant d’approuver le paiement.',sampleHint:'Pas de fichier sous la main ? Lancez l’audit exemple pour voir le parcours complet avec des données de démonstration sûres.'},
+    pt:{gettingStarted:'Comece em três etapas',stepChoose:'Escolha sua exportação CSV de faturas.',stepReview:'Revise os achados que bloqueiam o pagamento e os que exigem análise contábil.',stepExport:'Exporte o resumo da auditoria antes de aprovar o pagamento.',sampleHint:'Sem um arquivo em mãos? Execute a auditoria de exemplo para ver o fluxo completo com dados de demonstração seguros.'}
+  };
+  const i18n=window.invoiceGuardI18n;
+  if(!i18n||!i18n.dict)return;
+  Object.entries(extra).forEach(([lang,strings])=>Object.assign(i18n.dict[lang],strings));
+})();
