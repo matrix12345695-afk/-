@@ -6,7 +6,7 @@ const failures = [];
 // Every literal text node in the shipped page must either be wired to localization,
 // be runtime-localized by the required-field helper, or be language-neutral brand/UI copy.
 // This catches new visible English copy before it can quietly bypass the i18n dictionaries.
-const neutralText = new Set(['InvoiceGuard', 'EN', 'RU', 'UZ', 'ES', 'DE', 'FR', 'PT']);
+const neutralText = new Set(['InvoiceGuard', 'EN', 'RU', 'UZ', 'ES', 'DE', 'FR', 'PT', '☾']);
 const runtimeLocalizedAttrs = ['data-required-label=', 'id="requiredFieldsTitle"'];
 // Script/style/noscript contents are implementation/fallback code, not rendered customer copy.
 // Strip them before auditing literal visible text so CSS declarations cannot become false positives.
