@@ -6,7 +6,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 ## Floot / Paddle reconciliation
 - [x] Public Floot InvoiceGuard project located and reconciled as a separate hosted prototype surface; GitHub `main` remains the source of truth for product/audit logic.
 - [x] Paddle sandbox client-side token is configured in Floot without exposing it in source.
-- [x] InvoiceGuard Pro sandbox price `pri_01m43v8rae0ka8xh1p8y43g01c` opens Paddle Checkout successfully from the Floot preview.
+- [x] InvoiceGuard Pro sandbox price opens Paddle Checkout successfully from the Floot preview.
 - [x] Paddle checkout action localized for EN/RU/UZ/ES/DE/FR/PT in the Floot prototype.
 - [x] Sandbox checkout success URL now returns to a verified `/welcome` route in Floot.
 - [ ] Do not treat the Floot checkout prototype as production entitlement/provisioning. Server-side webhook verification and account entitlement require a Paddle webhook secret and a deliberate account/access model.
@@ -16,112 +16,42 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] ProfitKit preserved on branch archive/profitkit
 - [x] InvoiceGuard positioning and landing page
 - [x] Browser-local CSV invoice upload
-- [x] CSV parser with quoted field support
-- [x] Automatic mapping for common invoice column names
-- [x] Duplicate invoice-number detection per vendor
-- [x] Duplicate matching hardened for case, whitespace, punctuation and Unicode formatting differences in vendor/invoice identifiers
-- [x] Cross-upload duplicate detection using browser-local history
-- [x] Local history clear control
-- [x] Missing invoice/vendor/date/currency checks
-- [x] Invalid and unexpectedly future invoice-date checks
-- [x] Invalid/non-positive total detection
-- [x] Subtotal + tax vs total arithmetic check
-- [x] Findings table with severity
-- [x] At-risk value summary
-- [x] Downloadable findings CSV with invoice date and duplicate context
-- [x] Built-in sample audit using human-friendly headers
-- [x] Responsive UI foundation
-- [x] Normalized accountant-friendly invoice CSV export
-- [x] Seven-language selector and persistent localization foundation (EN/RU/UZ/ES/DE/FR/PT)
-- [x] Complete static UI dictionaries for EN/RU/UZ/ES/DE/FR/PT with no English fallback required for the current data-i18n surface
-- [x] Dynamic audit findings, severities, validation alerts and local status messages localized in EN/RU/UZ/ES/DE/FR/PT
-- [x] Findings CSV exports use the active language for severities, finding descriptions and human-facing headers
-- [x] Findings CSV localization has regression coverage for all seven languages, UTF-8 BOM and the live download click path
-- [x] Switching language refreshes already-rendered dynamic findings and at-risk values immediately
-- [x] Audit summary export labels, headings, dates and high-severity findings localized in EN/RU/UZ/ES/DE/FR/PT
-- [x] Audit summary text export includes UTF-8 BOM for reliable multilingual opening in desktop tools
-- [x] Explicit mapping UI for unknown columns
-- [x] Configurable audit rules and tolerances
+- [x] Hardened CSV parsing, international accounting numbers, duplicate normalization/cross-upload history, arithmetic/tax/currency/date/missing-field rules with regression coverage
+- [x] Accountant-friendly findings, severity semantics, duplicate evidence, clean CSV/findings exports and pre-payment approval summary
+- [x] Seven-language EN/RU/UZ/ES/DE/FR/PT localization across static UI, dynamic findings, generated copy and exports with automated parity checks
+- [x] First-run onboarding and sample-data path with responsive Light/Dark styling
+- [x] Accessible empty/loading/error/success audit workflow state; controlled malformed and empty CSV failures leave loading and enter localized error state
+- [x] Light/Dark theme foundation with persistent preference and regression coverage
+- [x] Dependency-free npm test/smoke runner and GitHub Actions regression workflow
 - [x] Privacy/security documentation
-- [x] Audit summary export for approval/review
-- [x] Added isolated hardened CSV core with BOM stripping, comma/semicolon/tab detection, multiline quoted fields, escaped quotes and strict malformed-row errors
-- [x] Added focused CSV core regression fixtures for BOM, delimiter detection, multiline fields, escaped quotes, unclosed quotes and row-width mismatch
-- [x] Integrated hardened CSV core into the live upload/audit path while preserving existing mapping/audit/export flow
-- [x] Localized hardened-parser safety errors in EN/RU/UZ/ES/DE/FR/PT
-- [x] Localized CSV mapping display, canonical accounting field labels and unknown-column mapping options in EN/RU/UZ/ES/DE/FR/PT
-- [x] Hardened international accounting-number parser supports decimal comma/dot, thousands separators, NBSP/narrow spaces, apostrophes, currency symbols and accounting negatives
-- [x] Accounting-number parser rejects non-numeric labels instead of collapsing them to zero
-- [x] Added focused accounting-number regression coverage for international formats and invalid values
-- [x] Added production-path duplicate normalization/cross-upload regression coverage
-- [x] Added production audit regression coverage for arithmetic tolerance, tax thresholds/negative tax, currency allow-list and localized accounting numbers
-- [x] Added production audit regression coverage for missing required fields and invoice-date validation
-- [x] Added multilingual findings/approval export regression coverage
-- [x] Added dependency-free `npm test` / `npm run smoke` runner and GitHub Actions regression workflow
-- [x] Formalized severity semantics: High = stop payment, Medium = accountant review; missing/unsupported currency is payment-blocking
-- [x] Added deterministic duplicate-evidence context core + regression coverage for same-file first/current occurrence and previous-audit evidence
-- [x] Wired deterministic duplicate evidence into live audit finding objects for downstream rendering/export
-- [x] Surface duplicate evidence in visible findings and existing exports with localized EN/RU/UZ/ES/DE/FR/PT labels
-- [x] Hardened currency normalization: reject arbitrary three-letter tokens/test code, preserve ambiguous bare sum/som for review, and normalize explicit Uzbek/Russian/common currency forms
-- [x] Added locale-safe invoice-date core and wired it into the live browser audit: strict ISO, impossible-date rejection, one-day processing grace, and review instead of guessing for ambiguous numeric dates
-- [x] Added configurable required-field policy for invoice number, vendor, date and currency with local persistence and localized EN/RU/UZ/ES/DE/FR/PT controls
-- [x] Required-field controls have exact seven-locale/key-parity regression coverage with non-empty translations and no silent English fallback
-- [x] Findings explain why each exception matters and what the accountant should verify before payment in EN/RU/UZ/ES/DE/FR/PT
-- [x] Approval summary upgraded to a concise pre-payment review with HOLD/REVIEW/READY decision, recommended action, payment-blocking findings and review findings
-- [x] Evidence exports include source filename and active audit settings/tolerances
-- [x] Audit sessions carry deterministic timestamp and audit/session identifier into review evidence
-- [x] Clean CSV export is Excel-friendly with UTF-8 BOM, CRLF, stable machine-readable headers and spreadsheet-formula injection protection
-- [x] Printable accountant report view with print-only audit evidence layout, repeated table headers and page-break-safe finding rows
-- [x] Automated localization surface audit covers primary UI, generated/status copy, helper modules, exports, required-field controls and the standalone privacy page across EN/RU/UZ/ES/DE/FR/PT
-- [x] Localized first-run onboarding explains the three-step audit path and sample-data fallback in EN/RU/UZ/ES/DE/FR/PT, with responsive Light/Dark styling
 
 ## Roadmap to sellable MVP
 Work strictly top to bottom unless a blocking regression requires an earlier fix.
 
 ### Phase 1 — Input reliability
-- [x] Integrate hardened csv-core.js into the live upload/audit path without regressing mapping or exports
-- [x] Implement state-machine CSV core supporting multiline quoted cells
-- [x] Strip UTF-8 BOM safely in hardened core
-- [x] Auto-detect comma, semicolon and tab delimiters in hardened core
-- [x] Preserve escaped quotes and embedded delimiters/newlines inside quoted cells in hardened core
-- [x] Detect malformed/unclosed quoted records in hardened core
-- [x] Detect row-width mismatches in hardened core instead of silently shifting columns
-- [x] Re-check number parsing for decimal comma/thousands separators
-- [x] Localize parser error presentation once live integration is complete
+- [x] Hardened live CSV core: BOM, delimiter detection, multiline quotes, escaped quotes, malformed rows and width mismatch
+- [x] International number parsing and localized parser errors
 
 ### Phase 2 — Regression safety
-- [x] Add focused fixtures/tests for CSV parser edge cases
-- [x] Add duplicate normalization fixtures: case, punctuation, whitespace, Unicode and cross-upload history
-- [x] Add arithmetic tolerance fixtures
-- [x] Add tax threshold/negative tax fixtures
-- [x] Add currency allow-list fixtures
-- [x] Add missing-field and date fixtures
-- [x] Add export regression checks
-- [x] Add a repeatable repository test command/CI-safe smoke runner
+- [x] CSV, duplicate, arithmetic, tax, currency, missing-field/date and export fixtures
+- [x] Repeatable repository test command and CI-safe smoke runner
 
 ### Phase 3 — Audit quality
-- [x] Review severity policy so high-risk means payment-blocking and medium means review
-- [x] Add duplicate context: first occurrence/current occurrence and previous-audit context, visible in findings and existing exports
-- [x] Improve suspicious currency checks and currency normalization
-- [x] Improve date sanity checks without locale ambiguity
-- [x] Add configurable required-field policy
-- [x] Make every finding explain why it matters and what the accountant should verify
+- [x] Payment-blocking/review severity policy
+- [x] Duplicate evidence and previous-audit context
+- [x] Currency/date sanity and configurable required-field policy
+- [x] Accountant guidance for why findings matter and what to verify
 
 ### Phase 4 — Accountant-ready output
-- [x] Improve approval summary into a concise payment-review artifact
-- [x] Include audit settings/tolerances and source filename in evidence exports
-- [x] Add deterministic audit timestamp/session identifier
-- [x] Improve clean CSV export formatting and multilingual spreadsheet compatibility
-- [x] Add printable report view before considering PDF generation
+- [x] Concise approval summary, evidence settings/source/session, clean multilingual CSV and printable report
 
 ### Phase 5 — Complete localization (NOW)
-- [x] Audit every remaining visible/generated string for mixed-language edge cases
-- [x] Localize mapping UI labels/options and parser error messages
-- [x] Localize human-facing findings export headers while keeping machine-readable clean CSV stable
+- [x] Automated audit of visible/generated/exported strings and helper modules across EN/RU/UZ/ES/DE/FR/PT
 - [ ] Verify EN/RU/UZ/ES/DE/FR/PT manually across empty, demo, error and results states
 
 ### Phase 6 — Product polish
 - [x] Polish first-run onboarding and sample-data path
-- [ ] Add clear empty/loading/error/success states
+- [x] Add clear empty/loading/error/success states, including controlled CSV failure transitions
 - [ ] Finish mobile/table overflow behavior
 - [ ] Accessibility pass: labels, keyboard flow, focus states, contrast and status announcements
 - [ ] FAQ/trust/privacy/conversion copy pass to Spreadsheet Doctor quality
