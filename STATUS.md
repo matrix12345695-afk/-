@@ -56,7 +56,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Finish mobile/table overflow behavior
 - [ ] Accessibility pass: labels, keyboard flow, focus states, contrast and status announcements. Semantic relationships/status announcements and OS high-contrast/forced-colors support now have regression coverage; manual keyboard/contrast verification remains.
 - [ ] FAQ/trust/privacy/conversion copy pass to Spreadsheet Doctor quality. Added responsive Light/Dark trust and FAQ surface with EN/RU/UZ/ES/DE/FR/PT copy covering local processing, human payment control, supported files and local duplicate history; broader conversion-copy review remains.
-- [ ] Remove any placeholder or premature Pro/payment wording that reduces trust
+- [x] Remove placeholder/premature MVP wording from the primary audit surface; the localized badge now emphasizes private browser processing instead of product-development status, with a seven-language regression guard.
 
 ### Phase 7 — Commercial validation readiness
 - [ ] Add privacy-safe usage analytics only after choosing a provider/config that needs no exposed secret
