@@ -24,6 +24,17 @@ for (const locale of ['en', 'ru', 'uz', 'es', 'de', 'fr', 'pt']) {
   assert.match(theme, new RegExp(`${locale}\\s*:`), `missing theme label for ${locale}`);
 }
 
+// Core audit controls must expose useful relationships and status updates to assistive tech.
+assert.match(html, /id="file"[^>]*aria-describedby="auditBody"[^>]*aria-controls="results"/);
+assert.match(html, /id="demo"[^>]*type="button"[^>]*aria-controls="results"/);
+assert.match(html, /id="historyStatus"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"/);
+assert.match(html, /id="ruleStatus"[^>]*role="status"[^>]*aria-live="polite"[^>]*aria-atomic="true"/);
+assert.match(html, /class="table-wrap"[^>]*tabindex="0"[^>]*role="region"[^>]*aria-labelledby="findingsTitle"/);
+assert.equal((html.match(/<th scope="col"/g) || []).length, 6, 'all findings headers must identify column scope');
+for (const id of ['clearHistory', 'applyRules', 'applyMapping', 'downloadSummary', 'downloadClean', 'download']) {
+  assert.match(html, new RegExp(`id="${id}"[^>]*type="button"`), `${id} must not implicitly submit a form`);
+}
+
 // Both modes must cover core audit surfaces and keyboard focus, including mobile behavior.
 for (const selector of ['body', '.audit', '.card', 'table', '.drop', '.rules', '.mapping-panel', '.stats div', '.secondary', '.linkbtn', '.cta']) {
   assert.ok(css.includes(`html[data-theme=dark] ${selector}`), `dark theme missing ${selector}`);
