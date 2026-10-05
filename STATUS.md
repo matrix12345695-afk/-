@@ -54,7 +54,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Polish first-run onboarding and sample-data path
 - [x] Add clear empty/loading/error/success states, including controlled CSV failure transitions
 - [x] Finish mobile/table overflow behavior
-- [ ] Accessibility pass: labels, keyboard flow, focus states, contrast and status announcements
+- [ ] Accessibility pass: labels, keyboard flow, focus states, contrast and status announcements. Semantic relationships/status announcements and OS high-contrast/forced-colors support now have regression coverage; manual keyboard/contrast verification remains.
 - [ ] FAQ/trust/privacy/conversion copy pass to Spreadsheet Doctor quality
 - [ ] Remove any placeholder or premature Pro/payment wording that reduces trust
 
