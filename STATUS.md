@@ -22,6 +22,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] First-run onboarding and sample-data path with responsive Light/Dark styling
 - [x] Accessible empty/loading/error/success audit workflow state; controlled malformed and empty CSV failures leave loading and enter localized error state
 - [x] Light/Dark theme foundation with persistent preference and regression coverage
+- [x] Mobile audit layout keeps findings horizontally scrollable, stacks dense controls and preserves touch targets with regression coverage
 - [x] Dependency-free npm test/smoke runner and GitHub Actions regression workflow
 - [x] Privacy/security documentation
 
@@ -52,7 +53,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 ### Phase 6 — Product polish
 - [x] Polish first-run onboarding and sample-data path
 - [x] Add clear empty/loading/error/success states, including controlled CSV failure transitions
-- [ ] Finish mobile/table overflow behavior
+- [x] Finish mobile/table overflow behavior
 - [ ] Accessibility pass: labels, keyboard flow, focus states, contrast and status announcements
 - [ ] FAQ/trust/privacy/conversion copy pass to Spreadsheet Doctor quality
 - [ ] Remove any placeholder or premature Pro/payment wording that reduces trust
