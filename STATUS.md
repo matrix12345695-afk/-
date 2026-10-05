@@ -3,6 +3,15 @@
 ## Product
 InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookkeeping teams. It focuses on catching costly mistakes before money leaves the account, rather than competing as a generic OCR product.
 
+## Floot / Paddle reconciliation
+- [x] Public Floot InvoiceGuard project located and reconciled as a separate hosted prototype surface; GitHub `main` remains the source of truth for product/audit logic.
+- [x] Paddle sandbox client-side token is configured in Floot without exposing it in source.
+- [x] InvoiceGuard Pro sandbox price `pri_01m43v8rae0ka8xh1p8y43g01c` opens Paddle Checkout successfully from the Floot preview.
+- [x] Paddle checkout action localized for EN/RU/UZ/ES/DE/FR/PT in the Floot prototype.
+- [x] Sandbox checkout success URL now returns to a verified `/welcome` route in Floot.
+- [ ] Do not treat the Floot checkout prototype as production entitlement/provisioning. Server-side webhook verification and account entitlement require a Paddle webhook secret and a deliberate account/access model.
+- [ ] Do not activate live payments until owner-only Paddle verification/KYC/domain approval is complete.
+
 ## Done
 - [x] ProfitKit preserved on branch archive/profitkit
 - [x] InvoiceGuard positioning and landing page
