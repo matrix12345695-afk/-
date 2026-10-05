@@ -3,6 +3,7 @@ import vm from 'node:vm';
 
 const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const source = fs.readFileSync(new URL('../i18n.js', import.meta.url), 'utf8');
+const onboardingSource = fs.readFileSync(new URL('../onboarding-i18n.js', import.meta.url), 'utf8');
 const keys = [...html.matchAll(/data-i18n(?:-aria)?="([^"]+)"/g)].map(m => m[1]);
 const uniqueKeys = [...new Set(keys)];
 const listeners = {};
@@ -23,6 +24,7 @@ const context = {
 };
 vm.createContext(context);
 vm.runInContext(source, context, { filename: 'i18n.js' });
+vm.runInContext(onboardingSource, context, { filename: 'onboarding-i18n.js' });
 const api = context.window.invoiceGuardI18n;
 if (!api?.dict) throw new Error('invoiceGuardI18n dictionary was not initialized');
 const locales = ['en', 'ru', 'uz', 'es', 'de', 'fr', 'pt'];
@@ -30,8 +32,6 @@ const failures = [];
 const baselineKeys = Object.keys(api.dict.en).sort();
 const placeholders = value => [...String(value).matchAll(/\{([A-Za-z][A-Za-z0-9_]*)\}/g)].map(m => m[1]).sort().join(',');
 
-// Runtime coverage catches missing/blank values used by the visible DOM and also
-// requires every primary dictionary to expose the same complete contract as EN.
 for (const locale of locales) {
   const dict = api.dict[locale];
   if (!dict) { failures.push(`${locale}: dictionary missing`); continue; }
@@ -50,9 +50,12 @@ for (const locale of Object.keys(api.dict)) {
   if (!locales.includes(locale)) failures.push(`unsupported locale in primary dictionary: ${locale}`);
 }
 
-// Non-English dictionaries spread `en` for defensive compatibility. Require every
-// EN key to be explicitly overridden so fallback cannot create mixed UI when a key
-// becomes visible later. This protects future copy, not only today's HTML surface.
+// Base dictionaries deliberately spread EN for defensive compatibility, but every
+// base key must still be explicitly translated in each locale.
+const baseKeys = (() => {
+  const fresh = { window: {}, document: fakeDocument, navigator: { language: 'en' }, localStorage: context.localStorage, CustomEvent: context.CustomEvent };
+  vm.createContext(fresh); vm.runInContext(source, fresh); return Object.keys(fresh.window.invoiceGuardI18n.dict.en);
+})();
 for (const locale of locales.slice(1)) {
   const marker = `const ${locale}={...en,`;
   const start = source.indexOf(marker);
@@ -61,8 +64,19 @@ for (const locale of locales.slice(1)) {
   const end = source.indexOf('};', bodyStart);
   const body = source.slice(bodyStart, end);
   const explicitKeys = new Set([...body.matchAll(/(?:^|,)\s*([A-Za-z][A-Za-z0-9]*)\s*:/g)].map(m => m[1]));
-  for (const key of baselineKeys) {
-    if (!explicitKeys.has(key)) failures.push(`${locale}: ${key} would fall back to English`);
+  for (const key of baseKeys) if (!explicitKeys.has(key)) failures.push(`${locale}: ${key} would fall back to English`);
+}
+
+// Modular onboarding copy must also provide every key for every supported locale.
+const onboardingKeys = ['gettingStarted','stepChoose','stepReview','stepExport','sampleHint'];
+for (const locale of locales) {
+  const marker = `${locale}:{`;
+  const start = onboardingSource.indexOf(marker);
+  if (start < 0) { failures.push(`${locale}: onboarding dictionary missing`); continue; }
+  const end = onboardingSource.indexOf('}', start + marker.length);
+  const body = onboardingSource.slice(start + marker.length, end);
+  for (const key of onboardingKeys) {
+    if (!new RegExp(`(?:^|,)\\s*${key}\\s*:`).test(body)) failures.push(`${locale}: onboarding ${key} missing`);
   }
 }
 
@@ -70,4 +84,4 @@ if (failures.length) {
   console.error(`Localization smoke failed (${failures.length}):\n${failures.join('\n')}`);
   process.exit(1);
 }
-console.log(`Localization smoke passed: ${locales.length} locales × ${baselineKeys.length} primary keys (${uniqueKeys.length} currently visible); no English fallback or placeholder drift.`);
+console.log(`Localization smoke passed: ${locales.length} locales × ${baselineKeys.length} runtime keys (${uniqueKeys.length} currently visible); no English fallback or placeholder drift.`);
