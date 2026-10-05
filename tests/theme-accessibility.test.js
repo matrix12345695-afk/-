@@ -43,4 +43,10 @@ assert.match(css, /:focus-visible/);
 assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /color-scheme/);
 
+// Respect OS/browser contrast modes instead of relying on product colors alone.
+assert.match(css, /@media\(prefers-contrast:more\)/);
+assert.match(css, /@media\(forced-colors:active\)/);
+assert.match(css, /forced-color-adjust:auto/);
+assert.match(css, /outline:3px solid Highlight/);
+
 console.log('theme/accessibility regression checks passed');
