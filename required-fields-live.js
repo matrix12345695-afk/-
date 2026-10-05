@@ -9,6 +9,22 @@
     fr:{title:'Champs obligatoires',invoice_number:'Numéro de facture',vendor:'Fournisseur',date:'Date de facture',currency:'Devise'},
     pt:{title:'Campos obrigatórios',invoice_number:'Número da fatura',vendor:'Fornecedor',date:'Data da fatura',currency:'Moeda'}
   };
+  // Required-field controls participate in the same data-i18n contract as the rest
+  // of the page. Extend the already-created dictionaries before DOMContentLoaded,
+  // so the primary localization pass can translate these controls with no fallback.
+  const dict=window.invoiceGuardI18n?.dict;
+  if(dict){
+    Object.entries(copy).forEach(([lang,d])=>{
+      if(!dict[lang])return;
+      Object.assign(dict[lang],{
+        requiredFields:d.title,
+        requiredInvoiceNumber:d.invoice_number,
+        requiredVendor:d.vendor,
+        requiredDate:d.date,
+        requiredCurrency:d.currency
+      });
+    });
+  }
   const readSaved=()=>{try{return JSON.parse(localStorage.getItem('invoiceguard_rules')||'{}').requiredFields}catch{return undefined}};
   const selected=()=>core.SUPPORTED.filter(f=>document.querySelector(`[data-required-field="${f}"]`)?.checked);
   function sync(){
