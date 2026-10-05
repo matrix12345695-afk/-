@@ -8,26 +8,8 @@ const copy={
  fr:{title:'InvoiceGuard — Détectez les erreurs de facture avant paiement',description:'InvoiceGuard vérifie les exports de factures avant paiement pour détecter les doublons, champs manquants et totaux suspects.'},
  pt:{title:'InvoiceGuard — Encontre erros em faturas antes de pagar',description:'O InvoiceGuard verifica exportações de faturas antes do pagamento para detectar duplicatas, campos ausentes e totais suspeitos.'}
 };
-function apply(){
- const lang=window.invoiceGuardI18n?.lang||document.documentElement.lang||'en';
- const t=copy[lang]||copy.en;
- document.title=t.title;
- const meta=document.querySelector('meta[name="description"]');
- if(meta)meta.setAttribute('content',t.description);
-}
-function addTrustSurface(){
- if(document.getElementById('trustFaq'))return;
- const footer=document.querySelector('footer');
- if(!footer)return;
- const section=document.createElement('section');
- section.id='trustFaq'; section.className='wrap trust-faq'; section.setAttribute('aria-labelledby','trustFaqTitle');
- section.innerHTML=`<h2 id="trustFaqTitle" data-i18n="trustTitle"></h2><div class="trust-grid"><article><h3 data-i18n="trustLocalTitle"></h3><p data-i18n="trustLocalBody"></p></article><article><h3 data-i18n="trustDecisionTitle"></h3><p data-i18n="trustDecisionBody"></p></article></div><h2 data-i18n="faqTitle"></h2><div class="faq-list"><details><summary data-i18n="faqFileQ"></summary><p data-i18n="faqFileA"></p></details><details><summary data-i18n="faqStoreQ"></summary><p data-i18n="faqStoreA"></p></details><details><summary data-i18n="faqPayQ"></summary><p data-i18n="faqPayA"></p></details></div>`;
- footer.before(section);
- document.dispatchEvent(new CustomEvent('invoiceguard:language',{detail:{lang:window.invoiceGuardI18n?.lang||'en'}}));
-}
-function loadTrust(){
- const s=document.createElement('script'); s.src='trust-i18n.js'; s.onload=addTrustSurface; document.head.appendChild(s);
-}
-document.addEventListener('invoiceguard:language',apply);
-document.addEventListener('DOMContentLoaded',()=>{apply();loadTrust()});
+function apply(){const lang=window.invoiceGuardI18n?.lang||document.documentElement.lang||'en';const t=copy[lang]||copy.en;document.title=t.title;const meta=document.querySelector('meta[name="description"]');if(meta)meta.setAttribute('content',t.description)}
+function addTrustSurface(){if(document.getElementById('trustFaq'))return;const footer=document.querySelector('footer');if(!footer)return;const section=document.createElement('section');section.id='trustFaq';section.className='wrap trust-faq';section.setAttribute('aria-labelledby','trustFaqTitle');section.innerHTML=`<h2 id="trustFaqTitle" data-i18n="trustTitle"></h2><div class="trust-grid"><article><h3 data-i18n="trustLocalTitle"></h3><p data-i18n="trustLocalBody"></p></article><article><h3 data-i18n="trustDecisionTitle"></h3><p data-i18n="trustDecisionBody"></p></article></div><h2 data-i18n="faqTitle"></h2><div class="faq-list"><details><summary data-i18n="faqFileQ"></summary><p data-i18n="faqFileA"></p></details><details><summary data-i18n="faqStoreQ"></summary><p data-i18n="faqStoreA"></p></details><details><summary data-i18n="faqPayQ"></summary><p data-i18n="faqPayA"></p></details></div>`;footer.before(section);document.dispatchEvent(new CustomEvent('invoiceguard:language',{detail:{lang:window.invoiceGuardI18n?.lang||'en'}}))}
+function loadTrust(){const css=document.createElement('link');css.rel='stylesheet';css.href='trust.css';document.head.appendChild(css);const s=document.createElement('script');s.src='trust-i18n.js';s.onload=addTrustSurface;document.head.appendChild(s)}
+document.addEventListener('invoiceguard:language',apply);document.addEventListener('DOMContentLoaded',()=>{apply();loadTrust()});
 })();
