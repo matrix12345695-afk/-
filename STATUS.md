@@ -55,7 +55,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [x] Add clear empty/loading/error/success states, including controlled CSV failure transitions
 - [x] Finish mobile/table overflow behavior
 - [ ] Accessibility pass: labels, keyboard flow, focus states, contrast and status announcements. Semantic relationships/status announcements and OS high-contrast/forced-colors support now have regression coverage; manual keyboard/contrast verification remains.
-- [ ] FAQ/trust/privacy/conversion copy pass to Spreadsheet Doctor quality
+- [ ] FAQ/trust/privacy/conversion copy pass to Spreadsheet Doctor quality. Added responsive Light/Dark trust and FAQ surface with EN/RU/UZ/ES/DE/FR/PT copy covering local processing, human payment control, supported files and local duplicate history; broader conversion-copy review remains.
 - [ ] Remove any placeholder or premature Pro/payment wording that reduces trust
 
 ### Phase 7 — Commercial validation readiness
