@@ -15,6 +15,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Privacy-safe Pro demand feedback added in EN/RU/UZ/ES/DE/FR/PT: one-click yes/maybe/not-yet responses emit only answer category and UI language through memory-only analytics; no invoice or contact data is collected. Floot typecheck passed and the public build was republished.
 - [x] Floot now has a persistent Light/Dark/System theme control localized for EN/RU/UZ/ES/DE/FR/PT, an accounting-focused dark palette, and theme-safe upload surfaces. Floot typecheck and theme tests pass; public build verified published at `https://invoiceguard.floot.app`.
 - [x] Public Floot project metadata now carries concise SMB pre-payment audit positioning for link/share/host surfaces; republish started after metadata update and public status remained verified.
+- [x] Hosted audit-core drift is explicitly documented in `FLOOT_RECONCILIATION.md`; the Floot prototype must not be represented as equivalent to hardened GitHub `main` until its deployed audit path is reconciled and retested.
 - [ ] Do not treat the Floot checkout prototype as production entitlement/provisioning. Server-side webhook verification and account entitlement require a Paddle webhook secret and a deliberate account/access model.
 - [ ] Do not activate live payments until owner-only Paddle verification/KYC/domain approval is complete.
 
@@ -77,7 +78,15 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 - [ ] Verify sample and representative real-world CSV exports
 - [ ] Deploy public MVP when hosting tools permit
 - [ ] Verify the deployed build, not just the source repository
-- [ ] Freeze a release checklist and known limitations in STATUS.md
+- [x] Freeze a release checklist and known limitations in STATUS.md. `RELEASE_CHECKLIST.md` is the release gate; current hosted limitation is that Floot remains a prototype with a smaller audit core than GitHub `main`.
+
+## Frozen known limitations before sellable release
+- The public Floot surface is **not yet audit-rule equivalent** to hardened GitHub `main`; it currently has a smaller in-page parser/auditor. Treat it as a hosted prototype until reconciliation and deployed regression verification are complete.
+- CSV is the supported invoice input for the MVP. PDF/image ingestion is intentionally deferred until after validation.
+- Cross-upload history is browser-local in the hardened GitHub build; there is no team/backend account history yet.
+- The $29/month Pro price and Pro feature set are hypotheses pending customer validation.
+- Paddle is sandbox-only. There is no production entitlement/account provisioning, and live activation remains owner-only.
+- Manual seven-language, keyboard/contrast, supported-browser/screen-size and representative real-world CSV verification are still release gates even where automated regressions exist.
 
 ### Later, only after MVP validation
 - [ ] PDF/image invoice ingestion
