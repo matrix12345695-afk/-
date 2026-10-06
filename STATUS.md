@@ -11,6 +11,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Sandbox checkout success URL now returns to a verified `/welcome` route in Floot.
 - [x] Floot built-in analytics configured in privacy-conscious `memory` mode: session identity stays in memory only and is not persisted to device storage. Public Floot build republished after this change.
 - [x] Floot activation instrumentation records `audit_completed` and `audit_results_exported` with aggregate counts, audit source and language only; invoice/vendor/file contents are not included. Typecheck passed and the public Floot build was republished after instrumentation.
+- [x] Floot findings CSV export now localizes generated column headers, severity and finding text for EN/RU/UZ/ES/DE/FR/PT instead of leaking English into non-English exports; Floot typecheck passed and the public build was republished.
 - [ ] Do not treat the Floot checkout prototype as production entitlement/provisioning. Server-side webhook verification and account entitlement require a Paddle webhook secret and a deliberate account/access model.
 - [ ] Do not activate live payments until owner-only Paddle verification/KYC/domain approval is complete.
 
