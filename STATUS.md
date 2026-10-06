@@ -13,7 +13,8 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Floot activation instrumentation records `audit_completed` and `audit_results_exported` with aggregate counts, audit source and language only; invoice/vendor/file contents are not included. Typecheck passed and the public Floot build was republished after instrumentation.
 - [x] Floot findings CSV export now localizes generated column headers, severity and finding text for EN/RU/UZ/ES/DE/FR/PT instead of leaking English into non-English exports; Floot typecheck passed and the public build was republished.
 - [x] Privacy-safe Pro demand feedback added in EN/RU/UZ/ES/DE/FR/PT: one-click yes/maybe/not-yet responses emit only answer category and UI language through memory-only analytics; no invoice or contact data is collected. Floot typecheck passed and the public build was republished.
-- [x] Floot now has a persistent Light/Dark/System theme control localized for EN/RU/UZ/ES/DE/FR/PT, an accounting-focused dark palette, and theme-safe upload surfaces. Floot typecheck and theme tests pass; public republish started after this change.
+- [x] Floot now has a persistent Light/Dark/System theme control localized for EN/RU/UZ/ES/DE/FR/PT, an accounting-focused dark palette, and theme-safe upload surfaces. Floot typecheck and theme tests pass; public build verified published at `https://invoiceguard.floot.app`.
+- [x] Public Floot project metadata now carries concise SMB pre-payment audit positioning for link/share/host surfaces; republish started after metadata update and public status remained verified.
 - [ ] Do not treat the Floot checkout prototype as production entitlement/provisioning. Server-side webhook verification and account entitlement require a Paddle webhook secret and a deliberate account/access model.
 - [ ] Do not activate live payments until owner-only Paddle verification/KYC/domain approval is complete.
 
