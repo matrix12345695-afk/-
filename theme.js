@@ -21,6 +21,7 @@
     if(persist){try{localStorage.setItem(KEY,pref)}catch{}}
     const button=document.getElementById('themeToggle');
     if(button){
+      button.removeAttribute('aria-pressed');
       button.dataset.preference=pref;
       button.textContent=pref==='system'?'◐':resolved==='dark'?'☀':'☾';
       const lang=(document.documentElement.lang||'en').slice(0,2);
