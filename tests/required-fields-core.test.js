@@ -1,21 +1,53 @@
-const assert=require('assert');
-const policy=require('../required-fields-core.js');
+const assert = require('node:assert/strict');
+const {
+  SUPPORTED,
+  DEFAULTS,
+  MISSING_KEYS,
+  normalizeRequiredFields,
+  isRequired,
+  filterMissingFindings,
+} = require('../required-fields-core.js');
 
-assert.deepStrictEqual(policy.normalizeRequiredFields(),policy.DEFAULTS);
-assert.deepStrictEqual(policy.normalizeRequiredFields(['vendor','vendor','date','bogus']),['vendor','date']);
-assert.strictEqual(policy.isRequired('currency',['currency']),true);
-assert.strictEqual(policy.isRequired('currency',['vendor']),false);
+assert.deepEqual(SUPPORTED, ['invoice_number', 'vendor', 'date', 'currency']);
+assert.deepEqual(DEFAULTS, SUPPORTED);
+assert.deepEqual(normalizeRequiredFields(undefined), DEFAULTS);
+assert.deepEqual(normalizeRequiredFields(null), DEFAULTS);
+assert.deepEqual(normalizeRequiredFields('vendor'), DEFAULTS);
+assert.deepEqual(normalizeRequiredFields([]), []);
+assert.deepEqual(
+  normalizeRequiredFields(['vendor', 'vendor', 'currency', 'unsupported', null]),
+  ['vendor', 'currency'],
+  'policy should deduplicate supported fields and ignore unknown values',
+);
 
-const findings=[
-  {msgKey:'missingNo'}, {msgKey:'missingVendor'}, {msgKey:'missingDate'},
-  {msgKey:'missingCurrency'}, {msgKey:'invalidTotal'}, {msgKey:'duplicate'}
+assert.equal(isRequired('vendor', ['vendor']), true);
+assert.equal(isRequired('date', ['vendor']), false);
+assert.equal(isRequired('currency', undefined), true, 'default policy requires every supported field');
+
+const findings = [
+  { msgKey: MISSING_KEYS.invoice_number, row: 2 },
+  { msgKey: MISSING_KEYS.vendor, row: 2 },
+  { msgKey: MISSING_KEYS.date, row: 2 },
+  { msgKey: MISSING_KEYS.currency, row: 2 },
+  { msgKey: 'badArithmetic', row: 2 },
+  { msgKey: 'duplicate', row: 3 },
 ];
-assert.deepStrictEqual(
-  policy.filterMissingFindings(findings,['invoice_number','vendor']).map(x=>x.msgKey),
-  ['missingNo','missingVendor','invalidTotal','duplicate']
+
+assert.deepEqual(
+  filterMissingFindings(findings, ['vendor', 'currency']).map((f) => f.msgKey),
+  [MISSING_KEYS.vendor, MISSING_KEYS.currency, 'badArithmetic', 'duplicate'],
+  'optional missing-field findings should be removed without touching unrelated audit findings',
 );
-assert.deepStrictEqual(
-  policy.filterMissingFindings(findings,[]).map(x=>x.msgKey),
-  ['invalidTotal','duplicate']
+assert.deepEqual(
+  filterMissingFindings(findings, []).map((f) => f.msgKey),
+  ['badArithmetic', 'duplicate'],
+  'an explicitly empty policy should suppress all missing-field findings only',
 );
-console.log('required-fields-core tests passed');
+assert.deepEqual(
+  filterMissingFindings(findings, undefined).map((f) => f.msgKey),
+  findings.map((f) => f.msgKey),
+  'missing configuration should preserve the safe all-required default',
+);
+assert.deepEqual(filterMissingFindings(undefined, ['vendor']), []);
+
+console.log('required-fields-core regression tests passed');
