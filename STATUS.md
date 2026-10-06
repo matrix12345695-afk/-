@@ -10,6 +10,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Paddle checkout action localized for EN/RU/UZ/ES/DE/FR/PT in the Floot prototype.
 - [x] Sandbox checkout success URL now returns to a verified `/welcome` route in Floot.
 - [x] Floot built-in analytics configured in privacy-conscious `memory` mode: session identity stays in memory only and is not persisted to device storage. Public Floot build republished after this change.
+- [x] Floot activation instrumentation records `audit_completed` and `audit_results_exported` with aggregate counts, audit source and language only; invoice/vendor/file contents are not included. Typecheck passed and the public Floot build was republished after instrumentation.
 - [ ] Do not treat the Floot checkout prototype as production entitlement/provisioning. Server-side webhook verification and account entitlement require a Paddle webhook secret and a deliberate account/access model.
 - [ ] Do not activate live payments until owner-only Paddle verification/KYC/domain approval is complete.
 
@@ -61,7 +62,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 
 ### Phase 7 — Commercial validation readiness
 - [x] Add privacy-safe usage analytics without exposed secrets: Floot built-in analytics uses memory-only session identity, avoiding persistent analytics storage on the visitor device.
-- [ ] Define measurable activation event: successful audit with results viewed/exported
+- [x] Define measurable activation event: `audit_completed` measures a successful non-empty audit and `audit_results_exported` measures the stronger results-export activation; payloads contain only aggregate counts, source (`sample`/`upload`) and UI language.
 - [ ] Add feedback/willingness-to-pay capture without activating payments
 - [ ] Validate pricing and Pro feature demand with users
 - [ ] Keep target Pro hypothesis ($29/month) provisional until validation
