@@ -7,7 +7,7 @@ GitHub `main` remains the source of truth for InvoiceGuard product and audit log
 ## Verified hosted state
 
 - Public URL: https://invoiceguard.floot.app
-- Floot publish status: published and public.
+- Floot publish status: published and public at the latest successful hosted verification.
 - Built-in analytics mode: `memory`.
 - Floot TypeScript typecheck: clean at the latest verified product checkpoint.
 - Floot test suite: `helpers/themeMode.spec.tsx` passes.
@@ -18,17 +18,23 @@ GitHub `main` remains the source of truth for InvoiceGuard product and audit log
 
 ## Source-of-truth release state
 
-GitHub commit `fd79f3fc8e999ba855fae9863463f9e11c65d68b` is the last fully verified source-of-truth state before the current reconciliation notes; GitHub Actions `InvoiceGuard regression` run #163 completed successfully for that exact commit.
+GitHub commit `7eb267798cf389d90ec9db505e2ec7c0b8b86204` is the current fully verified source-of-truth state. GitHub Actions `InvoiceGuard regression` run #166 completed successfully for that exact commit on 2026-10-06. This includes strengthened regression coverage for configurable required fields, including safe defaults, empty policies, unsupported-field rejection, deduplication, and protection against accidentally filtering arithmetic/duplicate findings.
 
 ## Audit-core drift found during reconciliation
 
-The Floot parser/auditor now covers several important behaviors from hardened GitHub `main`, including multiline/international CSV parsing and normalized browser-local cross-upload duplicate history, but the hosted auditor still does **not** mirror the full source-of-truth behavior. Remaining drift includes configurable required fields and the full date/currency/rule evidence model.
+The Floot parser/auditor now covers several important behaviors from hardened GitHub `main`, including multiline/international CSV parsing and normalized browser-local cross-upload duplicate history, but the hosted auditor still does **not** mirror the full source-of-truth behavior. Remaining verified drift includes configurable required fields and the full date/currency/rule evidence model.
+
+A partial configurable-required-field implementation was started in Floot after the last published checkpoint, but it must **not** be counted as reconciled or released until the controls are wired, type/tests pass, a checkpoint is created, the app is republished, and the deployed artifact is verified.
 
 Therefore:
 
 - do not advertise the Floot prototype as audit-rule equivalent to GitHub `main`;
 - keep GitHub `main` authoritative for audit semantics while closing hosted drift in safe, testable increments;
 - before calling the hosted build the sellable MVP, reconcile the remaining audit behavior and rerun representative CSV + seven-language + mobile/theme verification against the deployed artifact.
+
+## Current provider constraint
+
+A fresh Floot reconciliation attempt on 2026-10-06 was refused by the provider because the account had exhausted its daily build-action allowance. Floot reported a reset at `2026-10-06T22:00:00Z`. Until a fresh post-reset tool call succeeds, no additional hosted code change, test result, checkpoint, or publication should be claimed.
 
 ## Intentional payment boundary
 
