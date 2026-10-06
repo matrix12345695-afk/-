@@ -9,19 +9,20 @@ const css = fs.readFileSync(path.join(root, 'styles.css'), 'utf8');
 
 // The theme bootstrap must run before the stylesheet to avoid a light-theme flash.
 assert.ok(html.indexOf('<script src="theme.js"></script>') < html.indexOf('<link rel="stylesheet" href="styles.css">'));
-assert.match(html, /id="themeToggle"[^>]*aria-label="[^"]+"[^>]*aria-pressed="false"/);
+assert.match(html, /id="themeToggle"[^>]*aria-label="[^"]+"/);
 
-// Preference must be local-only, persistent, and fall back to the OS preference.
+// Preference must be local-only, persistent, support System/Light/Dark, and resolve System from the OS.
 assert.match(theme, /invoiceguard_theme/);
 assert.match(theme, /localStorage\.getItem\(KEY\)/);
-assert.match(theme, /localStorage\.setItem\(KEY,theme\)/);
+assert.match(theme, /localStorage\.setItem\(KEY,pref\)/);
+assert.match(theme, /\['system','light','dark'\]/);
 assert.match(theme, /prefers-color-scheme:\s*dark/);
 assert.match(theme, /addEventListener\('change'/);
-assert.match(theme, /aria-pressed/);
+assert.match(theme, /button\.removeAttribute\('aria-pressed'\)/);
 
 // Accessibility label coverage must match every supported product locale.
 for (const locale of ['en', 'ru', 'uz', 'es', 'de', 'fr', 'pt']) {
-  assert.match(theme, new RegExp(`${locale}\\s*:`), `missing theme label for ${locale}`);
+  assert.match(theme, new RegExp(`${locale}\\s*:\\{system:`), `missing three-state theme label for ${locale}`);
 }
 
 // Core audit controls must expose useful relationships and status updates to assistive tech.
