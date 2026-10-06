@@ -12,6 +12,7 @@ InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookke
 - [x] Floot built-in analytics configured in privacy-conscious `memory` mode: session identity stays in memory only and is not persisted to device storage. Public Floot build republished after this change.
 - [x] Floot activation instrumentation records `audit_completed` and `audit_results_exported` with aggregate counts, audit source and language only; invoice/vendor/file contents are not included. Typecheck passed and the public Floot build was republished after instrumentation.
 - [x] Floot findings CSV export now localizes generated column headers, severity and finding text for EN/RU/UZ/ES/DE/FR/PT instead of leaking English into non-English exports; Floot typecheck passed and the public build was republished.
+- [x] Privacy-safe Pro demand feedback added in EN/RU/UZ/ES/DE/FR/PT: one-click yes/maybe/not-yet responses emit only answer category and UI language through memory-only analytics; no invoice or contact data is collected. Floot typecheck passed and the public build was republished.
 - [ ] Do not treat the Floot checkout prototype as production entitlement/provisioning. Server-side webhook verification and account entitlement require a Paddle webhook secret and a deliberate account/access model.
 - [ ] Do not activate live payments until owner-only Paddle verification/KYC/domain approval is complete.
 
@@ -64,7 +65,7 @@ Work strictly top to bottom unless a blocking regression requires an earlier fix
 ### Phase 7 — Commercial validation readiness
 - [x] Add privacy-safe usage analytics without exposed secrets: Floot built-in analytics uses memory-only session identity, avoiding persistent analytics storage on the visitor device.
 - [x] Define measurable activation event: `audit_completed` measures a successful non-empty audit and `audit_results_exported` measures the stronger results-export activation; payloads contain only aggregate counts, source (`sample`/`upload`) and UI language.
-- [ ] Add feedback/willingness-to-pay capture without activating payments
+- [x] Add feedback/willingness-to-pay capture without activating payments: localized one-click Pro demand feedback records only answer category and UI language via memory-only analytics.
 - [ ] Validate pricing and Pro feature demand with users
 - [ ] Keep target Pro hypothesis ($29/month) provisional until validation
 
