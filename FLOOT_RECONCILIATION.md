@@ -13,15 +13,16 @@ GitHub `main` remains the source of truth for InvoiceGuard product and audit log
 - Floot test suite: `helpers/themeMode.spec.tsx` passes.
 - Hook regressions explicitly run: `helpers/useMediaQuery.spec.tsx` and `helpers/useDebounce.spec.tsx` both pass.
 - Project design guidance matches the implemented Light/Dark/System theme instead of the stale `Light-only` instruction.
-- Hosted CSV parsing was hardened on 2026-10-06 to strip UTF-8 BOM, detect comma/semicolon/tab delimiters, preserve quoted multiline fields and escaped quotes, and parse common international accounting-number formats. Floot typecheck was clean and the public build was republished after this change.
+- Hosted CSV parsing was hardened on 2026-10-06 to strip UTF-8 BOM, detect comma/semicolon/tab delimiters, preserve quoted multiline fields and escaped quotes, and parse common international accounting-number formats.
+- Hosted duplicate checking was hardened on 2026-10-06 to normalize vendor/invoice identifiers and compare uploads against browser-local prior-audit history. Only normalized duplicate keys are persisted locally, capped at 5,000 keys; demo/sample rows are not written to history. The previous-audit finding is localized for EN/RU/UZ/ES/DE/FR/PT. Floot typecheck was clean after this change and a production republish was started.
 
 ## Source-of-truth release state
 
-GitHub commit `fd79f3fc8e999ba855fae9863463f9e11c65d68b` is the last fully verified source-of-truth state before this reconciliation note; GitHub Actions `InvoiceGuard regression` run #163 completed successfully for that exact commit.
+GitHub commit `fd79f3fc8e999ba855fae9863463f9e11c65d68b` is the last fully verified source-of-truth state before the current reconciliation notes; GitHub Actions `InvoiceGuard regression` run #163 completed successfully for that exact commit.
 
 ## Audit-core drift found during reconciliation
 
-The Floot parser now covers several important CSV-input behaviors from hardened GitHub `main`, but the hosted auditor still does **not** mirror the full source-of-truth behavior. Remaining drift includes normalized/cross-upload duplicate history, configurable required fields, and the full date/currency/rule evidence model.
+The Floot parser/auditor now covers several important behaviors from hardened GitHub `main`, including multiline/international CSV parsing and normalized browser-local cross-upload duplicate history, but the hosted auditor still does **not** mirror the full source-of-truth behavior. Remaining drift includes configurable required fields and the full date/currency/rule evidence model.
 
 Therefore:
 
