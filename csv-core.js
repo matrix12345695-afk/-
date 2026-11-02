@@ -13,34 +13,98 @@
   function parseRecords(text,delimiter){
     text=stripBom(text);
     const rows=[];
-    let row=[],field="",quoted=false,fieldQuoted=false,line=1,rowStart=1;
+    let row=[],field="",quoted=false,fieldQuoted=false,afterQuote=false,line=1,rowStart=1;
+
+    function fail(code,message){
+      const err=new Error(message);
+      err.code=code;
+      err.line=line;
+      throw err;
+    }
+
     for(let i=0;i<text.length;i++){
       const c=text[i];
+
       if(quoted){
         if(c==='"'){
           if(text[i+1]==='"'){field+='"';i++;}
-          else quoted=false;
+          else{quoted=false;afterQuote=true;}
         }else{
-          if(c==='\n')line++;
-          field+=c;
+          if(c==='\r'){
+            if(text[i+1]==='\n'){field+='\r\n';i++;}
+            else field+='\r';
+            line++;
+          }else if(c==='\n'){
+            field+='\n';
+            line++;
+          }else field+=c;
         }
         continue;
       }
-      if(c==='"'&&field.length===0){quoted=true;fieldQuoted=true;continue;}
-      if(c===delimiter){row.push(fieldQuoted?field:field.trim());field="";fieldQuoted=false;continue;}
+
+      if(afterQuote){
+        if(c===delimiter){
+          row.push(field);
+          field="";
+          fieldQuoted=false;
+          afterQuote=false;
+          continue;
+        }
+        if(c==='\r'||c==='\n'){
+          row.push(field);
+          if(row.some(v=>v!==""))rows.push({cells:row,line:rowStart});
+          row=[];
+          field="";
+          fieldQuoted=false;
+          afterQuote=false;
+          if(c==='\r'&&text[i+1]==='\n')i++;
+          line++;
+          rowStart=line;
+          continue;
+        }
+        if(c===' '||c==='\t')continue;
+        fail("UNEXPECTED_CHAR_AFTER_QUOTE","Unexpected character after a closing quote near line "+line);
+      }
+
+      if(c==='"'){
+        if(field.trim()===""){
+          field="";
+          quoted=true;
+          fieldQuoted=true;
+          continue;
+        }
+        fail("UNEXPECTED_QUOTE","Unexpected quote inside an unquoted field near line "+line);
+      }
+
+      if(c===delimiter){
+        row.push(fieldQuoted?field:field.trim());
+        field="";
+        fieldQuoted=false;
+        continue;
+      }
+
       if(c==='\r'||c==='\n'){
         row.push(fieldQuoted?field:field.trim());
         if(row.some(v=>v!==""))rows.push({cells:row,line:rowStart});
-        row=[];field="";fieldQuoted=false;
+        row=[];
+        field="";
+        fieldQuoted=false;
         if(c==='\r'&&text[i+1]==='\n')i++;
-        line++;rowStart=line;continue;
+        line++;
+        rowStart=line;
+        continue;
       }
+
       field+=c;
     }
+
     if(quoted){
       const err=new Error("Unclosed quoted field starting near line "+rowStart);
-      err.code="UNCLOSED_QUOTE";err.line=rowStart;throw err;
+      err.code="UNCLOSED_QUOTE";
+      err.line=rowStart;
+      throw err;
     }
+
     row.push(fieldQuoted?field:field.trim());
     if(row.some(v=>v!==""))rows.push({cells:row,line:rowStart});
     return rows;
