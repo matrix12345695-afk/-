@@ -8,6 +8,7 @@ Use this checklist before calling a build sellable, published, or ready for owne
 - [ ] GitHub Actions regression workflow is green for the exact release commit.
 - [ ] No secrets, merchant credentials, invoice contents, vendor names, invoice numbers, or filenames are added to analytics payloads.
 - [x] `tests/accessibility-contract.test.js` covers accessible names, labelled inputs, polite/atomic status regions, findings-table semantics and seven-language theme labels (automated source contract only; manual checks below remain open).
+- [x] The same automated contract guards visible focus rings for all focusable controls (including plain links), dark-theme focus contrast, high-contrast preferences and Windows forced-colors system Highlight; manual keyboard/OS acceptance remains open.
 
 ## Seven-language UI gate
 Check EN, RU, UZ, ES, DE, FR and PT independently.
