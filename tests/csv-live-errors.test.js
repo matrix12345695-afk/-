@@ -14,8 +14,8 @@ const languages={
   pt:["Há uma aspa dentro","Há texto inesperado"]
 };
 const malformed=[
-  'a,b\\n1,broken"quote',
-  'a,b\\n1,"Acme"x'
+  'a,b\n1,broken"quote',
+  'a,b\n1,"Acme"x'
 ];
 
 for(const [lang,expected] of Object.entries(languages)){
@@ -34,7 +34,7 @@ for(const [lang,expected] of Object.entries(languages)){
       showUnknown(){}
     };
     vm.runInNewContext(source,context);
-    assert.deepEqual(window.parseCSV(malformed[i]),[]);
+    assert.equal(window.parseCSV(malformed[i]).length,0);
     assert.equal(state,"error",lang+" must move the audit state to error");
     assert.ok(message.includes("2"),lang+" must include the physical CSV line");
     assert.ok(message.includes(expected[i]),lang+" must show a localized quote error");
