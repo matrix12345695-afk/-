@@ -1,3 +1,17 @@
+### C651 | 2026-11-03 02:01 Asia/Tashkent
+- [x] Restored C650 and checked current GitHub main, open PR state, connected Floot publish snapshots, Shopify product/digital-delivery metadata and Paddle seller-support mail.
+- [x] InvoiceGuard accessibility regression strengthened: tests/accessibility-contract.test.js now calculates WCAG relative luminance/contrast from the actual CSS palette and requires a 3:1 focus-indicator contrast against five real surfaces: light page **6.90:1**, light card **7.37:1**, dark page **11.81:1**, dark card **10.14:1**, dark audit **11.16:1**. It also asserts the shared 3px focus ring.
+- [x] Updated RELEASE_CHECKLIST.md to identify this as a targeted source-level contrast regression, not a complete WCAG claim.
+- [x] [PR #7](https://github.com/matrix12345695-afk/-/pull/7) merged to main at 16b0612576ee33a7b8186d33faf99df616b73c33.
+- [x] Exact PR Actions [41524797724](https://github.com/matrix12345695-afk/-/actions/runs/41524797724) SUCCESS: **28/28 test files PASS**; inspected job steps/logs and confirmed the new measured-contrast contract executed. Test and checklist blobs were read back from main.
+- [ ] A separate post-merge main Actions run was not returned by the PR-only workflow lookup. Manual keyboard-only, screen-reader, real Windows forced-colors and cross-browser acceptance remain open.
+- [x] Paddle seller-support inbox rechecked: latest direct reply remains **2026-10-22**. Sherwin says the submitted Shopify domain ukuxbp-k1.myshopify.com was declined and explicitly asks the owner to re-upload https://leadforge-ai.floot.app. No newer direct response was found. Re-submission is owner-controlled; not performed.
+- [x] Read-only Floot status confirms InvoiceGuard https://invoiceguard.floot.app (published 2026-10-06), Spreadsheet Doctor https://spreadsheet-doctor.floot.app (published 2026-09-28), and QualiSift AI https://leadforge-ai.floot.app (published 2026-10-05) remain public on the free plan, without custom domains. All three older releases have no recorded source digest/file count, so source parity remains unproven.
+- [x] Shopify readback confirms QualiSift AI remains ACTIVE at USD 39 one-time with QualiSift-AI-v1.2.zip (4,243 bytes), no product media, last updated 2026-10-07. ZIP/source parity and buyer download verification remain open.
+- [ ] Floot source/file actions are temporarily blocked by the fresh 100-actions/day limit response; reset is **2026-11-03 03:00 Asia/Tashkent**. Read-only publish-status polling still works. No publish or project mutation attempted.
+- [ ] Commercial acceptance remains **0/7 sale-ready**. No live payments, KYC, banking, secrets, customer data, paid upgrades, domain changes, database migrations or public deployment were performed.
+- **Next:** after the 03:00 Floot reset, inspect InvoiceGuard's current project tree/source and run targeted typecheck/tests before any publish; then compare hosted CSV upload/audit/export behavior with GitHub main. Continue Spreadsheet Doctor production XLSX acceptance after InvoiceGuard. Keep Paddle domain re-submission owner-controlled.
+
 ## C650 global keyboard focus and forced-colors contract — 2026-11-03
 - [x] Added a shared focus-visible ring for all focusable controls, including the plain Privacy link and future controls without product-specific classes.
 - [x] Added a dark-theme focus ring color and Windows forced-colors OS Highlight ring; existing high-contrast severity underlines/system-color borders remain.
