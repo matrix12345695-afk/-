@@ -63,4 +63,40 @@ assert.ok(styles.includes("CanvasText"), "forced-colors mode must use system col
 assert.ok(styles.includes("@media(forced-colors:active){:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{outline:3px solid Highlight;outline-offset:3px}}"), "forced-colors focus ring must use the system Highlight color");
 assert.doesNotMatch(styles, /outline\s*:\s*(?:none|0)\s*;/i, "do not globally remove keyboard focus outlines");
 
-console.log("InvoiceGuard accessible names, live regions, tables, seven-language labels, focus rings and high-contrast contracts pass.");
+
+function relativeLuminance(hex) {
+  const match = /^#?([0-9a-f]{6})$/i.exec(hex);
+  assert.ok(match, "expected a six-digit CSS hex color: " + hex);
+  const channels = [0, 2, 4].map((offset) => parseInt(match[1].slice(offset, offset + 2), 16) / 255);
+  const linear = channels.map((value) =>
+    value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+  );
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+}
+
+function contrastRatio(foreground, background) {
+  const values = [relativeLuminance(foreground), relativeLuminance(background)].sort((a, b) => b - a);
+  return (values[0] + 0.05) / (values[1] + 0.05);
+}
+
+assert.ok(styles.includes("body{margin:0;font-family:Inter,system-ui,sans-serif;color:#17201b;background:#f6f8f5}"), "light page background used by the focus contrast check must match the stylesheet");
+assert.ok(styles.includes(".card{background:white;"), "light card surface used by the focus contrast check must match the stylesheet");
+assert.ok(styles.includes("html[data-theme=dark] body{color:#e7eee9;background:#101713}"), "dark page background used by the focus contrast check must match the stylesheet");
+assert.ok(styles.includes("html[data-theme=dark] .card,html[data-theme=dark] table,html[data-theme=dark] .theme-toggle{background:#1b2620;"), "dark card surface used by the focus contrast check must match the stylesheet");
+assert.ok(styles.includes("html[data-theme=dark] .audit{background:#151d18}"), "dark audit surface used by the focus contrast check must match the stylesheet");
+
+const focusContrastCases = [
+  ["light page", "#315f43", "#f6f8f5"],
+  ["light card", "#315f43", "#ffffff"],
+  ["dark page", "#b8d8c1", "#101713"],
+  ["dark card", "#b8d8c1", "#1b2620"],
+  ["dark audit", "#b8d8c1", "#151d18"],
+];
+for (const [surface, foreground, background] of focusContrastCases) {
+  const ratio = contrastRatio(foreground, background);
+  assert.ok(ratio >= 3, "focus indicator must reach at least 3:1 against " + surface + " (got " + ratio.toFixed(2) + ":1)");
+}
+assert.match(styles, /:where\(a,button,input,select,textarea,summary,\[tabindex\]\):focus-visible\{outline:3px solid/);
+assert.match(styles, /html\[data-theme=dark\] :where\(a,button,input,select,textarea,summary,\[tabindex\]\):focus-visible\{outline-color:#b8d8c1\}/);
+
+console.log("InvoiceGuard accessible names, live regions, tables, seven-language labels, focus rings and high-contrast and measured focus-contrast contracts pass.");
