@@ -25,6 +25,7 @@ Check EN, RU, UZ, ES, DE, FR and PT independently.
 - [ ] Cross-upload duplicate history works and can be cleared locally.
 - [ ] Arithmetic tolerance, tax-rate, currency, date and required-field rules produce expected severity and evidence.
 - [ ] Representative clean invoices produce no false payment-blocking finding.
+- [x] Malformed quote placement and non-whitespace after a closing quote are rejected with localized errors before audit execution.
 - [ ] Representative problematic invoices produce actionable accountant guidance.
 
 ## Browser and responsive gate
