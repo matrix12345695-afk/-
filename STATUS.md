@@ -1,3 +1,10 @@
+## C648 accessibility contract regression — 2026-11-02
+- [x] Added `tests/accessibility-contract.test.js` in [PR #5](https://github.com/matrix12345695-afk/-/pull/5), merged to `main` at `79dfa84089cd41162832bc60654eb1f8816bb477`.
+- [x] Exact final PR-head Actions [41497925871](https://github.com/matrix12345695-afk/-/actions/runs/41497925871) passed on `6aa20d38aa41d8674e4838bc3b390fc7940ac6c1`: **28/28 test files PASS**. The new dependency-free test guards accessible names for primary buttons, wrapping labels for inputs, polite/atomic status regions, findings-table region/header semantics, localized mapping controls, and seven-language theme/language accessible-name behavior.
+- [x] Added the automated source-contract gate to `RELEASE_CHECKLIST.md`; both files were read back from `main`.
+- [ ] This does not close manual keyboard, screen-reader, high-contrast/forced-colors, browser, responsive or real-file QA. It is not a WCAG conformance claim. Hosted Floot parity, buyer entitlement and commercial release remain unverified.
+- [ ] No separate post-merge `main` workflow run was returned by the PR-run lookup; only the exact tested PR head is claimed green.
+
 ## C645 post-merge verification — 2026-11-02
 - [x] Independent post-merge main regression Actions [41451719467](https://github.com/matrix12345695-afk/-/actions/runs/41451719467) passed on merge commit 6202f2884377be830b98e7d45488e844e1782364.
 - [x] Latest main regression Actions [41452122920](https://github.com/matrix12345695-afk/-/actions/runs/41452122920) passed on main 98b4108d908f6ac550b2f7ee0c033100893f8311; the test job and regression step succeeded. The follow-up status-documentation commit also passed Actions [41479168418](https://github.com/matrix12345695-afk/-/actions/runs/41479168418).
