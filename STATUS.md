@@ -1,3 +1,11 @@
+### C652 hosted InvoiceGuard CSV hardening — 2026-11-03 03:02 Asia/Tashkent
+- [x] Floot hosted project readback: added a dedicated strict CSV parser helper and 10 regression cases; page now rejects malformed quote placement, inconsistent row widths, unsupported file extensions and files above 10 MB, with localized EN/RU/UZ/ES/DE/FR/PT errors.
+- [x] Floot typecheck clean; **31/31 spec files passed** across explicit batches.
+- [x] Created restore checkpoint `1ab7c858-26b6-4d42-9acb-762121356ac6`.
+- [ ] No Floot browser tab was open, so desktop/mobile screenshot and live upload/export smoke remain blocked. No publish was performed; production still points to the 2026-10-06 release with no source digest/file count.
+- [ ] GitHub main and the hosted auth/Paddle prototype are separate source surfaces; source parity is not established. Paddle latest direct reply remains 2026-10-22 and domain re-submission remains owner-controlled.
+- **Next:** preview browser smoke and source-parity decision before publish; then Spreadsheet Doctor production XLSX acceptance.
+
 ### C651 | 2026-11-03 02:01 Asia/Tashkent
 - [x] Restored C650 and checked current GitHub main, open PR state, connected Floot publish snapshots, Shopify product/digital-delivery metadata and Paddle seller-support mail.
 - [x] InvoiceGuard accessibility regression strengthened: tests/accessibility-contract.test.js now calculates WCAG relative luminance/contrast from the actual CSS palette and requires a 3:1 focus-indicator contrast against five real surfaces: light page **6.90:1**, light card **7.37:1**, dark page **11.81:1**, dark card **10.14:1**, dark audit **11.16:1**. It also asserts the shared 3px focus ring.
