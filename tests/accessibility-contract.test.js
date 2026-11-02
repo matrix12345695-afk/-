@@ -33,7 +33,7 @@ for (const input of html.matchAll(/<input\b[^>]*>/g)) {
 }
 assert.match(html, /<select id="language"[^>]*aria-label="Language"[^>]*data-i18n-aria="languageLabel"/);
 assert.match(html, /<button id="themeToggle"[^>]*aria-label="Switch color theme"/);
-assert.match(mapping, /fields\\.innerHTML=unknown\\.map\\(x=>'<label>'\\+esc\\(x\\.name\\)+'<select data-col=\"/);
+assert.ok(mapping.includes("fields.innerHTML=unknown.map(x=>'<label>'+esc(x.name)+'<select data-col=\""), "generated mapping selects must be wrapped in a label");
 
 const statusRegions = [...html.matchAll(/<[^>]*\brole="status"[^>]*>/g)].map((match) => match[0]);
 assert.ok(statusRegions.length >= 4, "audit, mapping, history and rules feedback should expose status regions");
