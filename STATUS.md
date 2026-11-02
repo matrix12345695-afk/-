@@ -1,5 +1,13 @@
 # InvoiceGuard status
 
+## C645 verification — 2026-11-02
+- [x] PR #4 merged to main at 6202f2884377be830b98e7d45488e844e1782364.
+- [x] Exact-head Node 22 regression Actions 41451589826 passed; 27/27 test files PASS, including strict malformed-quote parser cases and localized EN/RU/UZ/ES/DE/FR/PT error-state tests.
+- [x] Read back csv-core.js, csv-live.js, tests/csv-core.test.js and tests/csv-live-errors.test.js from main.
+- [x] Parser rejects quotes inside unquoted values and non-whitespace text after a closing quote; it preserves physical line accounting through LF/CRLF/CR multiline values and accepts harmless surrounding whitespace.
+- [ ] Exact-head CI is verified; independent post-merge main CI, Floot publish, hosted browser acceptance, buyer entitlement and commercial release are not claimed.
+
+
 ## C643 verification — 2026-11-02
 - [x] [PR #2](https://github.com/matrix12345695-afk/-/pull/2) merged to `main` at `2287941e6630b1d1c61d5d2b7d5971747d7ca48a`.
 - [x] Exact-head Node 22 regression [Actions 41433732453](https://github.com/matrix12345695-afk/-/actions/runs/41433732453) passed; **26/26 test files PASS**, including the new storage-denied locale/status VM test.
