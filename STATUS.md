@@ -1,3 +1,12 @@
+## C650 global keyboard focus and forced-colors contract — 2026-11-03
+- [x] Added a shared focus-visible ring for all focusable controls, including the plain Privacy link and future controls without product-specific classes.
+- [x] Added a dark-theme focus ring color and Windows forced-colors OS Highlight ring; existing high-contrast severity underlines/system-color borders remain.
+- [x] Extended tests/accessibility-contract.test.js and RELEASE_CHECKLIST.md with source-contract coverage.
+- [x] [PR #6](https://github.com/matrix12345695-afk/-/pull/6) squash-merged to main at e759095abd2395866a48f453d4685289d498b976.
+- [x] Exact PR-head Actions [41515735235](https://github.com/matrix12345695-afk/-/actions/runs/41515735235) and independent post-merge main Actions [41515876279](https://github.com/matrix12345695-afk/-/actions/runs/41515876279) both SUCCESS: **28/28 test files PASS**; logs inspected.
+- [ ] Manual keyboard-only, screen-reader, Windows forced-colors and cross-browser acceptance remain open. This is not a WCAG conformance claim.
+- [ ] No Floot publish, hosted source parity, real buyer entitlement or commercial release is claimed.
+
 ## C648 accessibility contract regression — 2026-11-02
 - [x] Added `tests/accessibility-contract.test.js` in [PR #5](https://github.com/matrix12345695-afk/-/pull/5), merged to `main` at `79dfa84089cd41162832bc60654eb1f8816bb477`.
 - [x] Exact final PR-head Actions [41497925871](https://github.com/matrix12345695-afk/-/actions/runs/41497925871) passed on `6aa20d38aa41d8674e4838bc3b390fc7940ac6c1`: **28/28 test files PASS**. The new dependency-free test guards accessible names for primary buttons, wrapping labels for inputs, polite/atomic status regions, findings-table region/header semantics, localized mapping controls, and seven-language theme/language accessible-name behavior.
