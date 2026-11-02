@@ -10,7 +10,16 @@ pt:{empty:"Pronto para auditar um CSV de faturas",emptyBody:"Escolha um CSV ou e
 };
 const box=document.getElementById('auditState'),title=document.getElementById('auditStateTitle'),body=document.getElementById('auditStateBody');
 if(!box||!title||!body)return;
-const lang=()=>window.invoiceGuardI18n?.lang||localStorage.getItem('invoiceguard_lang')||'en';
+const lang=()=>{
+  const active=window.invoiceGuardI18n?.lang;
+  if(copy[active])return active;
+  try{
+    const stored=localStorage.getItem('invoiceguard_lang');
+    if(copy[stored])return stored;
+  }catch{}
+  const documentLang=document.documentElement?.lang;
+  return copy[documentLang]?documentLang:'en';
+};
 let state='empty';
 function paint(next=state){state=next;const c=copy[lang()]||copy.en;box.dataset.state=state;box.setAttribute('aria-busy',state==='loading'?'true':'false');title.textContent=c[state]||c.empty;body.textContent=c[state+'Body']||'';}
 paint();
