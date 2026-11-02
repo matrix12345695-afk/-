@@ -44,20 +44,20 @@ test("rejects row width mismatch instead of shifting columns",()=>{
 
 
 test("rejects a quote inside an unquoted field",()=>{
-  assert.throws(()=>parse('a,b\\n1,broken"quote'),err=>err.code==="UNEXPECTED_QUOTE"&&err.line===2);
+  assert.throws(()=>parse('a,b\n1,broken"quote'),err=>err.code==="UNEXPECTED_QUOTE"&&err.line===2);
 });
 
 test("rejects non-whitespace text after a closing quote",()=>{
-  assert.throws(()=>parse('a,b\\n1,"Acme"x'),err=>err.code==="UNEXPECTED_CHAR_AFTER_QUOTE"&&err.line===2);
+  assert.throws(()=>parse('a,b\n1,"Acme"x'),err=>err.code==="UNEXPECTED_CHAR_AFTER_QUOTE"&&err.line===2);
 });
 
 test("allows harmless whitespace around a quoted field",()=>{
-  const out=parse('a,b\\n1,  "Acme, Ltd"  ');
+  const out=parse('a,b\n1,  "Acme, Ltd"  ');
   assert.equal(out.rows[0].cells[1],"Acme, Ltd");
 });
 
 test("reports the physical line of a malformed quote after a multiline record",()=>{
-  assert.throws(()=>parse('a,b\\n1,"first\\nsecond"\\n2,broken"quote'),err=>err.code==="UNEXPECTED_QUOTE"&&err.line===4);
+  assert.throws(()=>parse('a,b\n1,"first\nsecond"\n2,broken"quote'),err=>err.code==="UNEXPECTED_QUOTE"&&err.line===4);
 });
 
 console.log("CSV core regression tests passed.");
