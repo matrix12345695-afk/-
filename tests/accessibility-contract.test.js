@@ -56,11 +56,11 @@ for (const locale of ["en", "ru", "uz", "es", "de", "fr", "pt"]) {
   assert.ok(theme.includes(locale + ":{system:"), "theme control needs a localized accessible label for " + locale);
 }
 
-assert.match(styles, /:where\\(a,button,input,select,textarea,summary,\\[tabindex\\]\\):focus-visible\\{outline:3px solid #315f43;outline-offset:3px\\}/, "all focusable controls, including plain links, need a visible default-theme ring");
-assert.match(styles, /html\\[data-theme=dark\\] :where\\(a,button,input,select,textarea,summary,\\[tabindex\\]\\):focus-visible\\{outline-color:#b8d8c1\\}/, "focus ring must remain visible in dark theme");
-assert.match(styles, /@media\\(prefers-contrast:more\\)/, "high-contrast preference must retain stronger control boundaries");
-assert.match(styles, /@media\\(forced-colors:active\\)[\\s\\S]*?CanvasText/, "forced-colors mode must use system colors for controls");
-assert.match(styles, /@media\\(forced-colors:active\\)\\{:where\\(a,button,input,select,textarea,summary,\\[tabindex\\]\\):focus-visible\\{outline:3px solid Highlight;outline-offset:3px\\}\\}/, "forced-colors focus ring must use the system Highlight color");
-assert.doesNotMatch(styles, /outline\\s*:\\s*(?:none|0)\\s*;/i, "do not globally remove keyboard focus outlines");
+assert.ok(styles.includes(":where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{outline:3px solid #315f43;outline-offset:3px}"), "all focusable controls, including plain links, need a visible default-theme ring");
+assert.ok(styles.includes("html[data-theme=dark] :where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{outline-color:#b8d8c1}"), "focus ring must remain visible in dark theme");
+assert.ok(styles.includes("@media(prefers-contrast:more)"), "high-contrast preference must retain stronger control boundaries");
+assert.ok(styles.includes("CanvasText"), "forced-colors mode must use system colors for controls");
+assert.ok(styles.includes("@media(forced-colors:active){:where(a,button,input,select,textarea,summary,[tabindex]):focus-visible{outline:3px solid Highlight;outline-offset:3px}}"), "forced-colors focus ring must use the system Highlight color");
+assert.doesNotMatch(styles, /outline\s*:\s*(?:none|0)\s*;/i, "do not globally remove keyboard focus outlines");
 
 console.log("InvoiceGuard accessible names, live regions, tables, seven-language labels, focus rings and high-contrast contracts pass.");
