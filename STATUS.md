@@ -1,5 +1,12 @@
 # InvoiceGuard status
 
+## C643 verification — 2026-11-02
+- [x] [PR #2](https://github.com/matrix12345695-afk/-/pull/2) merged to `main` at `2287941e6630b1d1c61d5d2b7d5971747d7ca48a`.
+- [x] Exact-head Node 22 regression [Actions 41433732453](https://github.com/matrix12345695-afk/-/actions/runs/41433732453) passed; **26/26 test files PASS**, including the new storage-denied locale/status VM test.
+- [x] Independent post-merge main [Actions 41434016961](https://github.com/matrix12345695-afk/-/actions/runs/41434016961) passed on the exact merge commit; **26/26 test files PASS**. Source and test were read back from main.
+- [x] Fixed the status module's closing-brace syntax defect and made language resolution safe when browser localStorage is denied; active app locale is preserved, with document-language/English fallback.
+- [ ] This is source/CI verification only. No Floot publish, hosted browser acceptance, live payment, buyer entitlement, or commercial release is claimed.
+
 ## Product
 InvoiceGuard is a pre-payment invoice audit tool for small businesses and bookkeeping teams. It focuses on catching costly mistakes before money leaves the account, rather than competing as a generic OCR product.
 
