@@ -1,3 +1,13 @@
+### C653 hosted CSV amount hardening — 2026-11-03 03:57 Asia/Tashkent
+- [x] Fixed financial CSV coercion in the hosted Floot InvoiceGuard parser: arbitrary letters and malformed separators can no longer be stripped into a different numeric value.
+- [x] Currency symbols are allowed only at amount boundaries; malformed non-empty subtotal/tax/total cells now produce localized `INVALID_NUMBER` and stop the audit.
+- [x] Added regression coverage for currency symbols, comma/dot decimal conventions, alphabetic contamination and malformed grouping.
+- [x] Floot typecheck clean; targeted parser suite 1/1 PASS; full hosted suite 31/31 spec files PASS (20 + 11 batches, including both hook specs).
+- [x] Floot restore checkpoint: `d11beca5-4015-4aa1-8488-39b16723dde8`.
+- [ ] Browser screenshot, file upload/export smoke and production source parity remain unverified because no Floot editor/preview window is open. Production was not published; live URL remains on the 2026-10-06 release.
+- [ ] Paddle seller-support still requires owner re-submission of `https://leadforge-ai.floot.app`; latest direct reply remains 2026-10-22.
+- **Next:** browser smoke after preview tab is opened; then source-parity review before any publish.
+
 ### C652 hosted InvoiceGuard CSV hardening — 2026-11-03 03:02 Asia/Tashkent
 - [x] Floot hosted project readback: added a dedicated strict CSV parser helper and 10 regression cases; page now rejects malformed quote placement, inconsistent row widths, unsupported file extensions and files above 10 MB, with localized EN/RU/UZ/ES/DE/FR/PT errors.
 - [x] Floot typecheck clean; **31/31 spec files passed** across explicit batches.
