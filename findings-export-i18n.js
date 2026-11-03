@@ -20,7 +20,7 @@ function downloadFindings(event){
  const lang=activeLang(),head=headers[lang]||headers.en;
  const rows=[...document.querySelectorAll("#findings tr")].map(tr=>[...tr.cells].map(td=>td.textContent.trim())).filter(r=>r.length>=6);
  const body=rows.map(r=>[r[0],r[1],r[2],r[3],r[4],...splitTotal(r[5])]);
- const csv=[head,...body].map(row=>row.map(quote).join(",")).join("\n");
+ const csv=[head,...body].map(row=>row.map(quote).join(",")).join("\r\n")+"\r\n";
  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="invoiceguard-findings-"+lang+".csv";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0);
 }

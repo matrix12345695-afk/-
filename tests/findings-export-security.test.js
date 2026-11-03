@@ -63,6 +63,8 @@ const result = exportCsv([
 assert.equal(result.type, "text/csv;charset=utf-8");
 assert.equal(result.downloadName, "invoiceguard-findings-en.csv");
 assert.ok(result.csv.startsWith("\uFEFF"));
+assert.ok(result.csv.endsWith("\r\n"), "findings CSV must end with CRLF");
+assert.ok(!/(^|[^\r])\n/.test(result.csv), "findings CSV must not contain bare LF line endings");
 assert.match(result.csv, /"'=2\+2"/, "formula-like invoice values must be neutralized");
 assert.match(result.csv, /"'@SUM\(1,1\)"/, "formula-like vendor values must be neutralized");
 assert.match(result.csv, /"'\+HYPERLINK\(""x""\)"/, "formula-like finding text must be neutralized and CSV-quoted");
