@@ -59,6 +59,15 @@ Check EN, RU, UZ, ES, DE, FR and PT independently.
 - [ ] Privacy/security page matches actual product behavior.
 
 ## Hosted-build gate
+
+### C671 public preview evidence and blockers — 2026-11-03
+- [x] Synthetic public upload → audit → findings table works on `https://invoiceguard.floot.app`: 3 invoices reviewed, 2 duplicate findings displayed.
+- [x] Browser privacy check passed: synthetic invoice marker did not appear in a request URL or POST body; Do Not Track was enabled.
+- [ ] Hosted EN and RU findings CSVs still export raw formula-like vendor text (`=HYPERLINK(...)`). This contradicts the GitHub `main` sanitizer and blocks release. Evidence: [public browser run 41683698225](https://github.com/matrix12345695-afk/-/actions/runs/41683698225).
+- [ ] Hosted CSV lacks a UTF-8 BOM and uses LF instead of CRLF; both locales use the same filename. RU headers themselves are localized.
+- [ ] Hosted preview currently has no clean-invoice CSV or summary export.
+- [ ] Reconcile the Floot project with GitHub `main` after the action-cap reset; rerun this exact public test before any publish.
+
 - [ ] Reconcile hosted Floot behavior against GitHub `main`; record intentional prototype-only differences in `STATUS.md`.
 - [ ] Publish only through an available authorized hosting path.
 - [ ] Open the public URL after publication and verify the deployed build, not merely source or preview state.
