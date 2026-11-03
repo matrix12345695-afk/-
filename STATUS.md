@@ -1,3 +1,12 @@
+### C658 InvoiceGuard accounting-number integrity — 2026-11-03
+- [x] Found a financial-integrity defect in the previous converter: arbitrary characters and misplaced signs were stripped before parsing, allowing malformed source text to become a different amount.
+- [x] Replaced permissive cleanup with fail-closed syntax validation. One currency symbol is accepted only at the start/end; supported decimal/grouping formats, spaces/apostrophes, accounting parentheses and a leading sign remain supported.
+- [x] Embedded alphabetic text, multiple/misplaced currency symbols, malformed signs, repeated separators and invalid grouping now return `NaN` and stop the audit from silently changing the amount.
+- [x] Expanded `tests/number-core.test.js` to 39 cases. [PR #9](https://github.com/matrix12345695-afk/-/pull/9) merged to `main` at `6eebd386202480be903792e2d0dd91bab39b069a`.
+- [x] Exact PR Actions [41575925060](https://github.com/matrix12345695-afk/-/actions/runs/41575925060) passed **28/28 test files**; logs confirm `number-core: 39 regression cases passed`.
+- [ ] Separate post-merge main CI, hosted Floot parity, public browser acceptance and commercial release remain open.
+- **Next:** reconcile the hosted InvoiceGuard parser with this source after the Floot quota reset; do not publish until upload/audit/export evidence passes.
+
 ### C654 InvoiceGuard duplicate-header safety — 2026-11-03 05:02 Asia/Tashkent
 - [x] Found and fixed a data-integrity defect: multiple CSV headers resolving to the same canonical invoice field (e.g. `total` and `amount_due`, or a custom mapping to an existing field) previously allowed later columns to overwrite earlier values.
 - [x] `csv-live.js` now rejects duplicate canonical mappings before audit, marks the audit state as error, and shows localized `DUPLICATE_HEADER` copy in EN/RU/UZ/ES/DE/FR/PT.
