@@ -1,3 +1,16 @@
+### C671 public Floot preview browser acceptance — 2026-11-03 22:24 Asia/Tashkent
+- [x] Added a test-only Chromium acceptance path in [PR #16](https://github.com/matrix12345695-afk/-/pull/16). It uploads a synthetic three-invoice CSV containing a formula-like vendor value, verifies duplicate findings, downloads EN/RU findings CSVs, and checks that the synthetic marker is absent from request URLs and POST bodies.
+- [x] The live preview at `https://invoiceguard.floot.app` accepted the synthetic CSV, reviewed 3 invoices and displayed 2 duplicate findings. The browser privacy check passed: no synthetic invoice marker was sent to the server, with Do Not Track enabled.
+- [ ] Hosted Floot findings CSV is not in parity with GitHub `main`: the raw `=HYPERLINK(...)` vendor value remains executable in both EN and RU exports. Exact public browser run [41683698225](https://github.com/matrix12345695-afk/-/actions/runs/41683698225) reports `findingsFormulaSafe=false` and `russianFormulaSafe=false`.
+- [ ] Hosted findings CSV has no UTF-8 BOM and uses LF rather than CRLF. Russian headers are localized, but both language exports use the same `invoiceguard-findings.csv` filename.
+- [ ] The public preview exposes findings CSV only; clean-invoice CSV and summary exports are absent. Its published Floot release still has no source digest/file count, so exact source parity is unproven.
+- [x] The existing GitHub unit/regression suite passed in run [41683698225](https://github.com/matrix12345695-afk/-/actions/runs/41683698225); the separate public-preview acceptance job failed on the hosted formula-injection finding. [PR #16](https://github.com/matrix12345695-afk/-/pull/16) remains open and intentionally unmerged.
+- [ ] No Floot edit or publish was attempted because the daily file/build action cap remains until **2026-11-04 03:00 Asia/Tashkent**. No checkout, payment mode, merchant or customer-data action was taken.
+
+**Next:** after the Floot action cap resets, compare the hosted InvoiceGuard project with GitHub `main`, apply the shared formula-cell sanitizer to the hosted findings export, add Excel-compatible BOM/CRLF, restore clean and summary exports, then rerun the public browser gate. Do not publish until the hosted gate is green.
+
+---
+
 ### C668 findings CSV formula-injection hardening — 2026-11-03 19:02 Asia/Tashkent
 - [x] Source review found that `findings-export-i18n.js` quoted user-derived cells but did not neutralize spreadsheet formula prefixes in invoice, vendor, finding or amount values.
 - [x] Reused `InvoiceGuardCleanExport.safeCell` for every findings CSV cell; export now fails closed if the shared sanitizer is unavailable.
