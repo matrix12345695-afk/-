@@ -166,7 +166,7 @@ try {
   if (!summaryExport?.bom) failures.push("Payment review summary is missing its UTF-8 BOM");
   if (!summaryExport?.titlePresent || !summaryExport?.reviewedCountPresent) failures.push("Payment review summary content is incomplete");
   if (!summaryExport?.containsPrivateMarker) failures.push("Payment review summary is missing the reviewed local sample evidence");
-  if (!/payment-review-en\\.txt$/i.test(summaryExport?.filename || "")) failures.push("Payment review summary filename is not localized");
+  if (!/payment-review-ru\.txt$/i.test(summaryExport?.filename || "")) failures.push("Payment review summary filename is not localized");
   if (downloadNames.length !== 4) failures.push(`Expected exactly four downloads, received ${downloadNames.length}`);
   if (leakedRequests.length) failures.push("Synthetic invoice content appeared in a request URL or POST body");
 
