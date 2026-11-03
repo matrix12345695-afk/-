@@ -3,6 +3,7 @@
 Use this checklist before calling a build sellable, published, or ready for owner handoff. GitHub `main` remains the source of truth. Never substitute `archive/profitkit` for InvoiceGuard.
 
 ## Automated gate
+- [x] Clean CSV export neutralizes arithmetic/formula-like negative expressions (for example `-1+CMD()`) while preserving valid localized negative amounts; regression coverage includes leading whitespace, Unicode whitespace and tabs.
 - [ ] `npm test` passes on the exact release commit.
 - [ ] `npm run smoke` passes on the exact release commit.
 - [ ] GitHub Actions regression workflow is green for the exact release commit.

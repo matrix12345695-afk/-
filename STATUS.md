@@ -1,3 +1,10 @@
+### C667 CSV formula-injection hardening — 2026-11-03 17:58 Asia/Tashkent
+- [x] Source review found that the clean invoice CSV export treated any value beginning with a minus sign followed by a digit as a safe negative amount; arithmetic payloads such as `-1+CMD()` could therefore pass through unescaped.
+- [x] Hardened `clean-export.js`: the existing strict accounting-number parser now distinguishes valid negative monetary literals from non-numeric negative expressions. Formula-like expressions are prefixed with an apostrophe; valid Western/European grouped negative amounts remain unchanged. Leading whitespace, Unicode whitespace, tabs and BOM-aware formula prefixes are covered.
+- [x] Merged [PR #13](https://github.com/matrix12345695-afk/-/pull/13) at `f0f0e7489e09c88970cd61a0f1290b63cee16e07`.
+- [x] Exact PR Actions [41641047743](https://github.com/matrix12345695-afk/-/actions/runs/41641047743) and post-merge main Actions [41641114224](https://github.com/matrix12345695-afk/-/actions/runs/41641114224) both passed; inspected logs confirm **29/29 regression files**.
+- [ ] This is source/CI security evidence only. Hosted Floot source parity and real public upload → audit → clean/findings export browser acceptance remain open; no hosted build or deployment changed.
+
 ### C666 InvoiceGuard parser-error UX regression — 2026-11-03 16:58 Asia/Tashkent
 - [x] Source review found that `csv-live.js` showed a specific localized parser alert and set the accessible error state, after which `app.js` also showed a redundant generic “no rows” alert.
 - [x] Merged [PR #11](https://github.com/matrix12345695-afk/-/pull/11) at `3ff8c258`, then refined the guard in [PR #12](https://github.com/matrix12345695-afk/-/pull/12) at `22b75b0aa016d62fee1de9e507f172c5a6157950`. A dedicated per-load flag is reset before each parse and set only when a specific localized parser/duplicate-header alert is shown; empty/header-only input retains generic no-rows guidance.
