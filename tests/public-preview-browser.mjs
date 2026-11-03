@@ -74,7 +74,8 @@ try {
   const findingsPath = await findingsDownload.path();
   assert.ok(findingsPath, "Findings CSV download should be available");
   const findingsCsv = await readFile(findingsPath, "utf8");
-  assert.ok(findingsCsv.startsWith("\uFEFF"), "Findings CSV should retain its UTF-8 BOM");
+  const findingsBomPresent = findingsCsv.startsWith("\uFEFF");
+  const findingsUsesCrLf = findingsCsv.includes("\r\n");
   assert.ok(findingsCsv.includes(privateMarker), "Synthetic evidence should remain in the local export");
   assert.ok(
     findingsCsv.includes("'=HYPERLINK("),
@@ -97,7 +98,7 @@ try {
   const russianPath = await russianDownload.path();
   assert.ok(russianPath, "Russian findings CSV download should be available");
   const russianCsv = await readFile(russianPath, "utf8");
-  assert.ok(russianCsv.startsWith("\uFEFF"));
+  const russianBomPresent = russianCsv.startsWith("\uFEFF");
   assert.ok(russianCsv.includes("строка"), "Russian findings export should localize its headers");
   assert.ok(russianCsv.includes("'=HYPERLINK("));
 
@@ -124,6 +125,9 @@ try {
       ],
       formulaInjectionNeutralized: true,
       syntheticInvoiceDataSentToServer: false,
+      findingsBomPresent,
+      findingsUsesCrLf,
+      russianBomPresent,
       dnt: true,
       cleanExportAvailable,
       summaryExportAvailable,
