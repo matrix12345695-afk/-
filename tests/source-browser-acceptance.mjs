@@ -58,7 +58,7 @@ try {
     buffer: Buffer.from(csv, "utf8"),
   });
 
-  const findingsButton = page.getByRole("button", { name: /Export findings CSV/i });
+  const findingsButton = page.locator("#download");
   await findingsButton.waitFor({ state: "visible", timeout: 30_000 });
   const table = page.locator("table").first();
   await table.waitFor({ state: "visible", timeout: 15_000 });
@@ -139,8 +139,8 @@ try {
     summaryExport = {
       filename: summaryDownload.suggestedFilename(),
       bom: summaryText.startsWith("\uFEFF"),
-      titlePresent: summaryText.includes("INVOICEGUARD PAYMENT REVIEW"),
-      reviewedCountPresent: summaryText.includes("Invoices reviewed: 3"),
+      titlePresent: summaryText.includes("INVOICEGUARD — ПРОВЕРКА ПЕРЕД ОПЛАТОЙ"),
+      reviewedCountPresent: summaryText.includes("Проверено счетов: 3"),
       containsPrivateMarker: summaryText.includes(privateMarker),
     };
   }
