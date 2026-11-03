@@ -1,3 +1,11 @@
+### C668 findings CSV formula-injection hardening — 2026-11-03 19:02 Asia/Tashkent
+- [x] Source review found that `findings-export-i18n.js` quoted user-derived cells but did not neutralize spreadsheet formula prefixes in invoice, vendor, finding or amount values.
+- [x] Reused `InvoiceGuardCleanExport.safeCell` for every findings CSV cell; export now fails closed if the shared sanitizer is unavailable.
+- [x] Added `tests/findings-export-security.test.js` for `=`, `@`, `+`, negative arithmetic payloads, valid negative amounts and missing-helper behavior. Updated both existing export VM harnesses to load the shared sanitizer in the same order as production.
+- [x] Merged [PR #15](https://github.com/matrix12345695-afk/-/pull/15) at `6d97127a7fd6786c338df4d4275c168c440bf126`.
+- [x] Exact PR-head Actions [41650773468](https://github.com/matrix12345695-afk/-/actions/runs/41650773468) and post-merge main Actions [41650914250](https://github.com/matrix12345695-afk/-/actions/runs/41650914250) both passed; inspected logs confirm **30/30 regression files**, including the new findings-export security test.
+- [ ] This is GitHub source/CI evidence only. Hosted Floot parity and real public upload → audit → clean/findings export browser acceptance remain open; no hosted build or deployment changed.
+
 ### C667 CSV formula-injection hardening — 2026-11-03 17:58 Asia/Tashkent
 - [x] Source review found that the clean invoice CSV export treated any value beginning with a minus sign followed by a digit as a safe negative amount; arithmetic payloads such as `-1+CMD()` could therefore pass through unescaped.
 - [x] Hardened `clean-export.js`: the existing strict accounting-number parser now distinguishes valid negative monetary literals from non-numeric negative expressions. Formula-like expressions are prefixed with an apostrophe; valid Western/European grouped negative amounts remain unchanged. Leading whitespace, Unicode whitespace, tabs and BOM-aware formula prefixes are covered.
