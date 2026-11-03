@@ -92,7 +92,9 @@ try {
   assert.ok(russianPath, "Russian findings CSV download should be available");
   const russianCsv = await readFile(russianPath, "utf8");
   const russianBomPresent = russianCsv.startsWith("\uFEFF");
-  const russianHeaderLocalized = russianCsv.includes("строка");
+  const russianHeaderSnippet = russianCsv.split(/\r?\n/, 1)[0] ?? "";
+  const russianHeaderLocalized = russianCsv.toLocaleLowerCase("ru-RU").includes("строка");
+  const russianFilenameLocalized = /-ru\.csv$/i.test(russianDownload.suggestedFilename());
   const russianFormulaSafe =
     russianCsv.includes("'=HYPERLINK(") && !russianCsv.includes('"=HYPERLINK(');
   const russianFormulaSnippet =
@@ -124,7 +126,9 @@ try {
       findingsFormulaSafe,
       findingsFormulaSnippet,
       russianBomPresent,
+      russianHeaderSnippet,
       russianHeaderLocalized,
+      russianFilenameLocalized,
       russianFormulaSafe,
       russianFormulaSnippet,
       syntheticInvoiceDataSentToServer: leakedRequests.length > 0,
