@@ -35,7 +35,7 @@
   window.parseCSV=function(text){
     let parsed;
     try{parsed=window.InvoiceGuardCSV.parse(text);}
-    catch(err){auditError();alert(errorText(err));return[];}
+    catch(err){window.invoiceGuardParserErrorShown=true;auditError();alert(errorText(err));return[];}
     if(parsed.header.length<1||parsed.rows.length<1){auditError();return[];}
     const raw=parsed.header;
     const h=raw.map(canonical);
@@ -46,6 +46,7 @@
         const err=new Error("Multiple CSV columns map to the same invoice field");
         err.code="DUPLICATE_HEADER";
         err.line=1;
+        window.invoiceGuardParserErrorShown=true;
         auditError();
         alert(errorText(err));
         return[];
