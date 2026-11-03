@@ -1,10 +1,10 @@
 ### C666 InvoiceGuard parser-error UX regression — 2026-11-03 16:58 Asia/Tashkent
-- [x] Source review found that `csv-live.js` already sets the accessible audit state to `error` and shows a specific localized parser message, but `app.js` then showed a second generic “no rows” alert for the same failed parse.
-- [x] Merged [PR #11](https://github.com/matrix12345695-afk/-/pull/11) to `main` at `3ff8c258a011552768171d3f77324079982d9f62`. The generic alert is now suppressed only when the parser has already set `#auditState[data-state="error"]`; empty/header-only input still receives generic guidance.
-- [x] Added `tests/parser-error-alert.test.js` to exercise the production `load()` function for both parser-error and empty-input paths.
-- [x] Exact-head Node 22 Actions [41632457708](https://github.com/matrix12345695-afk/-/actions/runs/41632457708) passed; log confirms **29/29 regression files**.
-- [x] Independent post-merge main Actions [41632570295](https://github.com/matrix12345695-afk/-/actions/runs/41632570295) passed on the merge commit; log confirms **29/29 regression files** and executes the new test.
-- [ ] Hosted Floot source parity, public upload/audit/export browser acceptance, buyer entitlement and commercial release remain separate open gates. This VM regression is not browser acceptance.
+- [x] Source review found that `csv-live.js` showed a specific localized parser alert and set the accessible error state, after which `app.js` also showed a redundant generic “no rows” alert.
+- [x] Merged [PR #11](https://github.com/matrix12345695-afk/-/pull/11) at `3ff8c258`, then refined the guard in [PR #12](https://github.com/matrix12345695-afk/-/pull/12) at `22b75b0aa016d62fee1de9e507f172c5a6157950`. A dedicated per-load flag is reset before each parse and set only when a specific localized parser/duplicate-header alert is shown; empty/header-only input retains generic no-rows guidance.
+- [x] `tests/parser-error-alert.test.js` covers specific parser errors, empty/header-only guidance and stale-flag reset. `tests/csv-live-errors.test.js` covers the flag across malformed quotes, duplicate headers and header-only input.
+- [x] Exact-head Node 22 Actions [41633777723](https://github.com/matrix12345695-afk/-/actions/runs/41633777723) passed; log confirms **29/29 regression files**.
+- [x] Independent post-merge main Actions [41633855288](https://github.com/matrix12345695-afk/-/actions/runs/41633855288) passed on the final merge commit; log confirms **29/29 regression files** and executes the new regressions.
+- [ ] Hosted Floot source parity, public upload/audit/export browser acceptance, buyer entitlement and commercial release remain separate open gates. These are source/VM tests, not browser acceptance.
 - **Next:** after the recorded Floot action-cap reset, compare the hosted parser with GitHub `main` and run synthetic CSV upload/audit/export acceptance before any publish.
 
 ### C661 post-merge CI verification — 2026-11-03 12:04 Asia/Tashkent
