@@ -15,6 +15,8 @@ const csv = [
 ].join("\r\n");
 
 const leakedRequests = [];
+const usesCrLfOnly = (value) =>
+  value.includes("\r\n") && !/(^|[^\r])\n/.test(value);
 const browser = await chromium.launch({ headless: true });
 
 try {
@@ -72,9 +74,10 @@ try {
   assert.ok(findingsPath, "Findings CSV download should be available");
   const findingsCsv = await readFile(findingsPath, "utf8");
   const findingsBomPresent = findingsCsv.startsWith("\uFEFF");
-  const findingsUsesCrLf = findingsCsv.includes("\r\n");
+  const findingsUsesCrLf = usesCrLfOnly(findingsCsv);
   const findingsFormulaSafe =
     findingsCsv.includes("'=HYPERLINK(") && !findingsCsv.includes('"=HYPERLINK(');
+  const findingsFilenameLocalized = /-en\.csv$/i.test(findingsDownload.suggestedFilename());
   const findingsFormulaSnippet =
     findingsCsv.match(/.{0,24}HYPERLINK.{0,90}/s)?.[0] ?? null;
   assert.ok(findingsCsv.includes(privateMarker), "Synthetic evidence should remain in the local export");
@@ -92,6 +95,7 @@ try {
   assert.ok(russianPath, "Russian findings CSV download should be available");
   const russianCsv = await readFile(russianPath, "utf8");
   const russianBomPresent = russianCsv.startsWith("\uFEFF");
+  const russianUsesCrLf = usesCrLfOnly(russianCsv);
   const russianHeaderSnippet = russianCsv.split(/\r?\n/, 1)[0] ?? "";
   const russianHeaderLocalized = russianCsv.toLocaleLowerCase("ru-RU").includes("строка");
   const russianFilenameLocalized = /-ru\.csv$/i.test(russianDownload.suggestedFilename());
@@ -107,8 +111,16 @@ try {
 
   const failures = [];
   if (!findingsFormulaSafe) failures.push("English findings CSV leaves formula-like vendor text executable");
+  if (!findingsBomPresent) failures.push("English findings CSV is missing the UTF-8 BOM");
+  if (!findingsUsesCrLf) failures.push("English findings CSV must use CRLF without bare LF line endings");
+  if (!findingsFilenameLocalized) failures.push("English findings CSV filename must end in -en.csv");
   if (!russianFormulaSafe) failures.push("Russian findings CSV leaves formula-like vendor text executable");
+  if (!russianBomPresent) failures.push("Russian findings CSV is missing the UTF-8 BOM");
+  if (!russianUsesCrLf) failures.push("Russian findings CSV must use CRLF without bare LF line endings");
   if (!russianHeaderLocalized) failures.push("Russian findings CSV headers are not localized");
+  if (!russianFilenameLocalized) failures.push("Russian findings CSV filename must end in -ru.csv");
+  if (!cleanExportAvailable) failures.push("Clean-invoice CSV export is not available");
+  if (!summaryExportAvailable) failures.push("Summary export is not available");
   if (leakedRequests.length) failures.push("Synthetic invoice content appeared in a request URL or POST body");
 
   console.log(
@@ -123,9 +135,11 @@ try {
       ],
       findingsBomPresent,
       findingsUsesCrLf,
+      findingsFilenameLocalized,
       findingsFormulaSafe,
       findingsFormulaSnippet,
       russianBomPresent,
+      russianUsesCrLf,
       russianHeaderSnippet,
       russianHeaderLocalized,
       russianFilenameLocalized,
