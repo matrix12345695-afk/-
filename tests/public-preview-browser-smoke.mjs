@@ -45,14 +45,54 @@ try {
   });
   assert.ok(response?.ok(), `InvoiceGuard public preview did not load: HTTP ${response?.status()}`);
   assert.match(await page.title(), /InvoiceGuard/i);
-  await page.locator("#file").waitFor({ state: "attached", timeout: 15_000 });
+  const initialSnapshot = {
+    title: await page.title(),
+    url: page.url(),
+    body: (await page.locator("body").innerText()).slice(0, 5_000),
+    inputs: await page.locator("input").evaluateAll((nodes) =>
+      nodes.map((node) => ({
+        type: node.type,
+        id: node.id,
+        name: node.name,
+        accept: node.accept,
+        ariaLabel: node.getAttribute("aria-label"),
+      })),
+    ),
+    buttons: await page.locator("button").evaluateAll((nodes) =>
+      nodes.map((node) => ({
+        id: node.id,
+        text: node.innerText,
+        ariaLabel: node.getAttribute("aria-label"),
+      })),
+    ),
+  };
+  console.log("PUBLIC_PREVIEW_INITIAL_SNAPSHOT", JSON.stringify(initialSnapshot));
+  const fileInput = page.locator('input[type="file"]').first();
+  assert.ok(
+    (await fileInput.count()) > 0,
+    `No file input found on public preview. Snapshot: ${JSON.stringify(initialSnapshot)}`,
+  );
 
-  await page.locator("#file").setInputFiles({
+  await fileInput.setInputFiles({
     name: "qualisift-c671-private-sample.csv",
     mimeType: "text/csv",
     buffer: Buffer.from(csv, "utf8"),
   });
 
+  await page.waitForTimeout(2_500);
+  const postUploadSnapshot = {
+    body: (await page.locator("body").innerText()).slice(0, 5_000),
+    tables: await page.locator("table").count(),
+    rows: await page.locator("tr").count(),
+    buttons: await page.locator("button").evaluateAll((nodes) =>
+      nodes.map((node) => ({
+        id: node.id,
+        text: node.innerText,
+        ariaLabel: node.getAttribute("aria-label"),
+      })),
+    ),
+  };
+  console.log("PUBLIC_PREVIEW_POST_UPLOAD_SNAPSHOT", JSON.stringify(postUploadSnapshot));
   await page.locator("#results").waitFor({ state: "visible", timeout: 30_000 });
   await page.waitForFunction(
     () => document.querySelectorAll("#findings tr").length > 0,
