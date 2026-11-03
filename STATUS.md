@@ -1,3 +1,11 @@
+### C666 InvoiceGuard parser-error UX regression — 2026-11-03
+- [x] Source review found that `csv-live.js` already sets the accessible audit state to `error` and shows a specific localized parser message, but `app.js` then showed a second generic “no rows” alert for the same failed parse.
+- [x] Candidate fix in `app.js`: suppress the generic alert only when the parser has already set `#auditState[data-state="error"]`; empty/header-only input still receives the generic guidance.
+- [x] Added `tests/parser-error-alert.test.js` to exercise the production `load()` function for both parser-error and empty-input paths.
+- [ ] Exact-head Node 22 GitHub Actions and post-merge main Actions pending.
+- [ ] Hosted Floot source parity, public upload/audit/export browser acceptance, buyer entitlement and commercial release remain separate open gates.
+- **Next:** require green exact-head and main CI; then resume hosted parser parity after the recorded Floot action-cap reset.
+
 ### C661 post-merge CI verification — 2026-11-03 12:04 Asia/Tashkent
 - [x] Confirmed the C658 amount-parser code commit `6eebd386` has successful main Actions [41576029492](https://github.com/matrix12345695-afk/-/actions/runs/41576029492).
 - [x] Confirmed the subsequent main status commit `f06cf7d` has successful Actions [41576141873](https://github.com/matrix12345695-afk/-/actions/runs/41576141873); inspected logs confirm **28/28 regression files PASS** and **39 numeric parser cases PASS**.
