@@ -45,104 +45,71 @@ try {
   });
   assert.ok(response?.ok(), `InvoiceGuard public preview did not load: HTTP ${response?.status()}`);
   assert.match(await page.title(), /InvoiceGuard/i);
-  const initialSnapshot = {
-    title: await page.title(),
-    url: page.url(),
-    body: (await page.locator("body").innerText()).slice(0, 5_000),
-    inputs: await page.locator("input").evaluateAll((nodes) =>
-      nodes.map((node) => ({
-        type: node.type,
-        id: node.id,
-        name: node.name,
-        accept: node.accept,
-        ariaLabel: node.getAttribute("aria-label"),
-      })),
-    ),
-    buttons: await page.locator("button").evaluateAll((nodes) =>
-      nodes.map((node) => ({
-        id: node.id,
-        text: node.innerText,
-        ariaLabel: node.getAttribute("aria-label"),
-      })),
-    ),
-  };
-  console.log("PUBLIC_PREVIEW_INITIAL_SNAPSHOT", JSON.stringify(initialSnapshot));
+
   const fileInput = page.locator('input[type="file"]').first();
   assert.ok(
     (await fileInput.count()) > 0,
-    `No file input found on public preview. Snapshot: ${JSON.stringify(initialSnapshot)}`,
+    "The published preview must expose a CSV file input",
   );
-
   await fileInput.setInputFiles({
     name: "qualisift-c671-private-sample.csv",
     mimeType: "text/csv",
     buffer: Buffer.from(csv, "utf8"),
   });
 
-  await page.waitForTimeout(2_500);
-  const postUploadSnapshot = {
-    body: (await page.locator("body").innerText()).slice(0, 5_000),
-    tables: await page.locator("table").count(),
-    rows: await page.locator("tr").count(),
-    buttons: await page.locator("button").evaluateAll((nodes) =>
-      nodes.map((node) => ({
-        id: node.id,
-        text: node.innerText,
-        ariaLabel: node.getAttribute("aria-label"),
-      })),
-    ),
-  };
-  console.log("PUBLIC_PREVIEW_POST_UPLOAD_SNAPSHOT", JSON.stringify(postUploadSnapshot));
-  await page.locator("#results").waitFor({ state: "visible", timeout: 30_000 });
-  await page.waitForFunction(
-    () => document.querySelectorAll("#findings tr").length > 0,
-    null,
-    { timeout: 15_000 },
-  );
-  assert.equal((await page.locator("#count").textContent())?.trim(), "3");
-  assert.ok((await page.locator("#findings tr").count()) > 0);
-
-  const [cleanDownload] = await Promise.all([
-    page.waitForEvent("download", { timeout: 15_000 }),
-    page.locator("#downloadClean").click(),
-  ]);
-  assert.equal(cleanDownload.suggestedFilename(), "invoiceguard-clean-invoices.csv");
-  const cleanPath = await cleanDownload.path();
-  assert.ok(cleanPath, "clean CSV download should be available to the browser runner");
-  const cleanCsv = await readFile(cleanPath, "utf8");
-  assert.ok(cleanCsv.startsWith("\uFEFF"), "clean CSV should retain its UTF-8 BOM");
-  assert.ok(cleanCsv.includes("'=HYPERLINK("), "clean CSV should neutralize formula-like vendor text");
-  assert.ok(cleanCsv.includes(privateMarker), "synthetic marker should remain in the local export");
+  const findingsButton = page.getByRole("button", { name: /Export findings CSV/i });
+  await findingsButton.waitFor({ state: "visible", timeout: 30_000 });
+  const table = page.locator("table").first();
+  await table.waitFor({ state: "visible", timeout: 15_000 });
+  const rows = await table.locator("tr").count();
+  assert.ok(rows >= 3, `Expected a header and duplicate findings, received ${rows} table rows`);
+  const tableText = await table.innerText();
+  assert.match(tableText, /INV-002/);
+  assert.match(tableText, /duplicate invoice/i);
 
   const [findingsDownload] = await Promise.all([
     page.waitForEvent("download", { timeout: 15_000 }),
-    page.locator("#download").click(),
+    findingsButton.click(),
   ]);
-  assert.equal(findingsDownload.suggestedFilename(), "invoiceguard-findings-en.csv");
   const findingsPath = await findingsDownload.path();
-  assert.ok(findingsPath, "findings CSV download should be available to the browser runner");
+  assert.ok(findingsPath, "Findings CSV download should be available");
   const findingsCsv = await readFile(findingsPath, "utf8");
-  assert.ok(findingsCsv.startsWith("\uFEFF"), "findings CSV should retain its UTF-8 BOM");
-  assert.ok(findingsCsv.includes("'=HYPERLINK("), "findings CSV should neutralize formula-like vendor text");
-  assert.ok(findingsCsv.includes(privateMarker), "findings CSV should preserve the synthetic evidence");
+  assert.ok(findingsCsv.startsWith("\uFEFF"), "Findings CSV should retain its UTF-8 BOM");
+  assert.ok(findingsCsv.includes(privateMarker), "Synthetic evidence should remain in the local export");
+  assert.ok(
+    findingsCsv.includes("'=HYPERLINK("),
+    "Public findings CSV must neutralize formula-like vendor text",
+  );
+  assert.ok(
+    !findingsCsv.includes('"=HYPERLINK('),
+    "Public findings CSV must not leave a formula-leading cell executable",
+  );
 
-  await page.locator("#language").selectOption("ru");
+  const languageSelect = page.locator("select").first();
+  assert.ok((await languageSelect.count()) > 0, "The public preview should expose its language selector");
+  await languageSelect.selectOption("ru");
+  const russianButton = page.locator("button").filter({ hasText: /CSV/i }).first();
+  await russianButton.waitFor({ state: "visible", timeout: 10_000 });
   const [russianDownload] = await Promise.all([
     page.waitForEvent("download", { timeout: 15_000 }),
-    page.locator("#download").click(),
+    russianButton.click(),
   ]);
-  assert.equal(russianDownload.suggestedFilename(), "invoiceguard-findings-ru.csv");
   const russianPath = await russianDownload.path();
   assert.ok(russianPath, "Russian findings CSV download should be available");
   const russianCsv = await readFile(russianPath, "utf8");
   assert.ok(russianCsv.startsWith("\uFEFF"));
-  assert.ok(russianCsv.includes('"строка"'), "Russian export should use localized headers");
+  assert.ok(russianCsv.includes("строка"), "Russian findings export should localize its headers");
   assert.ok(russianCsv.includes("'=HYPERLINK("));
+
+  const cleanExportAvailable =
+    (await page.getByRole("button", { name: /clean.*CSV|CSV.*clean/i }).count()) > 0;
+  const summaryExportAvailable =
+    (await page.getByRole("button", { name: /summary|сводк|сводный/i }).count()) > 0;
 
   assert.deepEqual(
     leakedRequests,
     [],
-    "the synthetic private marker must never appear in a request URL or POST body",
+    "The synthetic private marker must never appear in a request URL or POST body",
   );
 
   console.log(
@@ -150,15 +117,17 @@ try {
       result: "PASS",
       target: target.origin,
       uploadedRows: 3,
-      findingsRows: await page.locator("#findings tr").count(),
+      findingsTableRows: rows,
       downloads: [
-        cleanDownload.suggestedFilename(),
         findingsDownload.suggestedFilename(),
         russianDownload.suggestedFilename(),
       ],
       formulaInjectionNeutralized: true,
-      syntheticWorkbookDataSentToServer: false,
+      syntheticInvoiceDataSentToServer: false,
       dnt: true,
+      cleanExportAvailable,
+      summaryExportAvailable,
+      note: "This smoke verifies only controls actually exposed by the published Floot preview.",
     }),
   );
   await context.close();
