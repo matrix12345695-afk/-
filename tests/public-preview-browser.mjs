@@ -47,10 +47,7 @@ try {
   assert.match(await page.title(), /InvoiceGuard/i);
 
   const fileInput = page.locator('input[type="file"]').first();
-  assert.ok(
-    (await fileInput.count()) > 0,
-    "The published preview must expose a CSV file input",
-  );
+  assert.ok((await fileInput.count()) > 0, "The published preview must expose a CSV file input");
   await fileInput.setInputFiles({
     name: "qualisift-c671-private-sample.csv",
     mimeType: "text/csv",
@@ -76,15 +73,11 @@ try {
   const findingsCsv = await readFile(findingsPath, "utf8");
   const findingsBomPresent = findingsCsv.startsWith("\uFEFF");
   const findingsUsesCrLf = findingsCsv.includes("\r\n");
+  const findingsFormulaSafe =
+    findingsCsv.includes("'=HYPERLINK(") && !findingsCsv.includes('"=HYPERLINK(');
+  const findingsFormulaSnippet =
+    findingsCsv.match(/.{0,24}HYPERLINK.{0,90}/s)?.[0] ?? null;
   assert.ok(findingsCsv.includes(privateMarker), "Synthetic evidence should remain in the local export");
-  assert.ok(
-    findingsCsv.includes("'=HYPERLINK("),
-    "Public findings CSV must neutralize formula-like vendor text",
-  );
-  assert.ok(
-    !findingsCsv.includes('"=HYPERLINK('),
-    "Public findings CSV must not leave a formula-leading cell executable",
-  );
 
   const languageSelect = page.locator("select").first();
   assert.ok((await languageSelect.count()) > 0, "The public preview should expose its language selector");
@@ -99,23 +92,26 @@ try {
   assert.ok(russianPath, "Russian findings CSV download should be available");
   const russianCsv = await readFile(russianPath, "utf8");
   const russianBomPresent = russianCsv.startsWith("\uFEFF");
-  assert.ok(russianCsv.includes("строка"), "Russian findings export should localize its headers");
-  assert.ok(russianCsv.includes("'=HYPERLINK("));
+  const russianHeaderLocalized = russianCsv.includes("строка");
+  const russianFormulaSafe =
+    russianCsv.includes("'=HYPERLINK(") && !russianCsv.includes('"=HYPERLINK(');
+  const russianFormulaSnippet =
+    russianCsv.match(/.{0,24}HYPERLINK.{0,90}/s)?.[0] ?? null;
 
   const cleanExportAvailable =
     (await page.getByRole("button", { name: /clean.*CSV|CSV.*clean/i }).count()) > 0;
   const summaryExportAvailable =
     (await page.getByRole("button", { name: /summary|сводк|сводный/i }).count()) > 0;
 
-  assert.deepEqual(
-    leakedRequests,
-    [],
-    "The synthetic private marker must never appear in a request URL or POST body",
-  );
+  const failures = [];
+  if (!findingsFormulaSafe) failures.push("English findings CSV leaves formula-like vendor text executable");
+  if (!russianFormulaSafe) failures.push("Russian findings CSV leaves formula-like vendor text executable");
+  if (!russianHeaderLocalized) failures.push("Russian findings CSV headers are not localized");
+  if (leakedRequests.length) failures.push("Synthetic invoice content appeared in a request URL or POST body");
 
   console.log(
     JSON.stringify({
-      result: "PASS",
+      result: failures.length ? "FAIL" : "PASS",
       target: target.origin,
       uploadedRows: 3,
       findingsTableRows: rows,
@@ -123,17 +119,23 @@ try {
         findingsDownload.suggestedFilename(),
         russianDownload.suggestedFilename(),
       ],
-      formulaInjectionNeutralized: true,
-      syntheticInvoiceDataSentToServer: false,
       findingsBomPresent,
       findingsUsesCrLf,
+      findingsFormulaSafe,
+      findingsFormulaSnippet,
       russianBomPresent,
-      dnt: true,
+      russianHeaderLocalized,
+      russianFormulaSafe,
+      russianFormulaSnippet,
+      syntheticInvoiceDataSentToServer: leakedRequests.length > 0,
       cleanExportAvailable,
       summaryExportAvailable,
-      note: "This smoke verifies only controls actually exposed by the published Floot preview.",
+      dnt: true,
+      failures,
     }),
   );
+
+  assert.deepEqual(failures, [], failures.join("; "));
   await context.close();
 } finally {
   await browser.close();
