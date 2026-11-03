@@ -35,7 +35,10 @@ for(const [lang,headers] of Object.entries(expected)){
  assert(prevented&&stopped,lang+': export must own click event');
  const csv=context.lastBlob.parts.join('');
  assert(csv.startsWith('\uFEFF'),lang+': UTF-8 BOM missing');
- const headerLine=csv.slice(1).split('\n')[0];
+ assert(csv.includes('\r\n'),lang+': CRLF missing');
+ assert(!/(^|[^\r])\n/.test(csv),lang+': bare LF found');
+ assert(csv.endsWith('\r\n'),lang+': final CRLF missing');
+ const headerLine=csv.slice(1).split('\r\n')[0];
  assert.equal(headerLine,headers.map(h=>'"'+h+'"').join(','),lang+': localized header mismatch');
 }
 console.log('✓ findings export headers localized for EN/RU/UZ/ES/DE/FR/PT');

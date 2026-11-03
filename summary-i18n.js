@@ -10,7 +10,7 @@ pt:{title:"INVOICEGUARD — REVISÃO ANTES DO PAGAMENTO",generated:"Gerado",audi
 };
 const locale={en:"en-US",ru:"ru-RU",uz:"uz-UZ",es:"es-ES",de:"de-DE",fr:"fr-FR",pt:"pt-PT"};
 function activeLang(){return window.invoiceGuardI18n?.lang||document.getElementById("language")?.value||"en"}
-function downloadSummary(e){
+function downloadSummary(e){e?.preventDefault?.();e?.stopImmediatePropagation?.();
  e.preventDefault();e.stopImmediatePropagation();
  const l=activeLang(),t=copy[l]||copy.en,domRows=[...document.querySelectorAll("#findings tr")];
  const rows=domRows.map(tr=>({cells:[...tr.cells].map(td=>td.textContent.trim()),high:!!tr.querySelector(".sev-high"),medium:!!tr.querySelector(".sev-medium")})).filter(r=>r.cells.length>=6),highRows=rows.filter(r=>r.high),mediumRows=rows.filter(r=>r.medium);

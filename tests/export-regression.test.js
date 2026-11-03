@@ -63,10 +63,12 @@ for (const [lang, header] of Object.entries(findingHeaders)) {
   });
   assert.strictEqual(r.download, 'invoiceguard-findings-' + lang + '.csv');
   assert.strictEqual(r.blob.type, 'text/csv;charset=utf-8');
-  assert.ok(r.text.startsWith('\uFEFF' + header + '\n'), lang + ' findings header/BOM');
+  assert.ok(r.text.startsWith('\uFEFF' + header + '\r\n'), lang + ' findings header/BOM/CRLF');
+  assert.ok(!/(^|[^\r])\n/.test(r.text), lang + ' findings CSV must not contain bare LF');
+  assert.ok(r.text.endsWith('\r\n'), lang + ' findings CSV must end with CRLF');
   assert.ok(r.text.includes('"ACME, Inc."'));
   assert.ok(r.text.includes('"Quoted ""finding"""'));
-  assert.ok(r.text.endsWith('"1,234.50","USD"'), 'amount/currency should be split without corrupting grouping');
+  assert.ok(r.text.endsWith('"1,234.50","USD"\r\n'), 'amount/currency should be split without corrupting grouping and retain CRLF');
 }
 
 const summary = runScript('summary-i18n.js', {
