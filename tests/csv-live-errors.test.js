@@ -65,7 +65,7 @@ for(const [lang,expected] of Object.entries(duplicateHeaderMessages)){
     showUnknown(){}
   };
   vm.runInNewContext(source,context);
-  const result=window.parseCSV("invoice_number,vendor,total,amount_due\\nINV-1,Acme,100,100");
+  const result=window.parseCSV("invoice_number,vendor,total,amount_due\nINV-1,Acme,100,100");
   assert.equal(result.length,0,lang+" must reject duplicate canonical field mappings");
   assert.equal(state,"error",lang+" must set the audit state to error");
   assert.ok(message.includes(expected),lang+" must show a localized duplicate-header error");
