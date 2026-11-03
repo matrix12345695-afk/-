@@ -41,6 +41,9 @@
     function validGroupedInteger(part){
       if(!part)return true;
       if(badGroupingEdges.test(part)||repeatedGrouping.test(part))return false;
+      // Mixed grouping glyphs can turn malformed financial text into a plausible but wrong amount.
+      const separators=part.match(/[,.'’\t \u00A0\u202F]/gu)||[];
+      if(new Set(separators).size>1)return false;
       const groups=part.split(grouping);
       if(groups.some(group=>!/^[0-9]+$/.test(group)))return false;
       if(groups.length===1)return true;
