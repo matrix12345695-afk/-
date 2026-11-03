@@ -28,14 +28,14 @@ for(const [lang,headers] of Object.entries(expected)){
   setTimeout(fn){fn()}
  };
  vm.runInNewContext(source,context);
- assert.equal(typeof handler,'function',\`\${lang}: download handler missing\`);
+ assert.equal(typeof handler,'function',lang+': download handler missing');
  let prevented=false,stopped=false;
  context.Blob=class{constructor(parts){this.parts=parts;context.lastBlob=this}};
  handler({preventDefault(){prevented=true},stopImmediatePropagation(){stopped=true}});
- assert(prevented&&stopped,\`\${lang}: export must own click event\`);
+ assert(prevented&&stopped,lang+': export must own click event');
  const csv=context.lastBlob.parts.join('');
- assert(csv.startsWith('\\uFEFF'),\`\${lang}: UTF-8 BOM missing\`);
- const headerLine=csv.slice(1).split('\\n')[0];
- assert.equal(headerLine,headers.map(h=>'"'+h+'"').join(','),\`\${lang}: localized header mismatch\`);
+ assert(csv.startsWith('\uFEFF'),lang+': UTF-8 BOM missing');
+ const headerLine=csv.slice(1).split('\n')[0];
+ assert.equal(headerLine,headers.map(h=>'"'+h+'"').join(','),lang+': localized header mismatch');
 }
 console.log('✓ findings export headers localized for EN/RU/UZ/ES/DE/FR/PT');
