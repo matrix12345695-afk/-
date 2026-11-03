@@ -12,7 +12,7 @@
       s=s.slice(1,-1).trim();
     }
 
-    const sign=/^([+-])\\s*/.exec(s);
+    const sign=/^([+-])\s*/.exec(s);
     if(sign){
       if(parenthesized)return NaN;
       negative=sign[1]==='-';
@@ -23,20 +23,21 @@
     // Permit one currency symbol only at the amount boundary. Never strip
     // arbitrary letters or punctuation from the middle of a financial value.
     const currencySymbols="$€£¥₹₽₩₺₴₦₪₫₱฿₡₲₵₭₮₸₼₾¤";
-    const symbolPositions=[...s].map((c,i)=>currencySymbols.includes(c)?i:-1).filter(i=>i>=0);
+    const symbolPositions=[];
+    for(let i=0;i<s.length;i++)if(currencySymbols.includes(s[i]))symbolPositions.push(i);
     if(symbolPositions.length>1)return NaN;
     if(symbolPositions.length===1){
       const pos=symbolPositions[0];
       if(pos===0)s=s.slice(1).trim();
-      else if(pos===[...s].length-1)s=[...s].slice(0,-1).join("").trim();
+      else if(pos===s.length-1)s=s.slice(0,-1).trim();
       else return NaN;
     }
     if(!s||[...s].some(c=>currencySymbols.includes(c)))return NaN;
-    if(!/^[0-9,.'’\\t \\u00A0\\u202F]+$/u.test(s)||!/[0-9]/.test(s))return NaN;
+    if(!/^[0-9,.'’\t \u00A0\u202F]+$/u.test(s)||!/[0-9]/.test(s))return NaN;
 
-    const grouping=/[,.'’\\t \\u00A0\\u202F]/u;
-    const badGroupingEdges=/^[,.'’\\t \\u00A0\\u202F]|[,.'’\\t \\u00A0\\u202F]$/u;
-    const repeatedGrouping=/[,.'’\\t \\u00A0\\u202F]{2}/u;
+    const grouping=/[,.'’\t \u00A0\u202F]/u;
+    const badGroupingEdges=/^[,.'’\t \u00A0\u202F]|[,.'’\t \u00A0\u202F]$/u;
+    const repeatedGrouping=/[,.'’\t \u00A0\u202F]{2}/u;
     function validGroupedInteger(part){
       if(!part)return true;
       if(badGroupingEdges.test(part)||repeatedGrouping.test(part))return false;
@@ -49,7 +50,7 @@
     }
 
     const commas=[...s.matchAll(/,/g)].map(match=>match.index);
-    const dots=[...s.matchAll(/\\./g)].map(match=>match.index);
+    const dots=[...s.matchAll(/\./g)].map(match=>match.index);
     let integerPart=s,fraction="",hasDecimal=false;
 
     if(commas.length&&dots.length){
@@ -64,7 +65,7 @@
         const before=s.slice(0,index);
         const after=s.slice(index+1);
         if(!/^[0-9]{1,6}$/.test(after))return NaN;
-        const beforeDigits=before.replace(/[,.'’\\t \\u00A0\\u202F]/gu,"");
+        const beforeDigits=before.replace(/[,.'’\t \u00A0\u202F]/gu,"");
         const zeroLeading=/^0+$/.test(beforeDigits);
         const isGrouping=after.length===3&&!zeroLeading&&before.length>=1&&before.length<=3&&/^[0-9]+$/.test(before);
         if(!isGrouping){
@@ -81,7 +82,7 @@
       return NaN;
     }
 
-    const digits=integerPart.replace(/[,.'’\\t \\u00A0\\u202F]/gu,"");
+    const digits=integerPart.replace(/[,.'’\t \u00A0\u202F]/gu,"");
     if(!digits&&!hasDecimal)return NaN;
     const normalized=(digits||"0")+(hasDecimal?"."+fraction:"");
     const number=Number(normalized);
