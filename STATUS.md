@@ -1,6 +1,7 @@
 ### C661 post-merge CI verification — 2026-11-03 12:04 Asia/Tashkent
 - [x] Confirmed the C658 amount-parser code commit `6eebd386` has successful main Actions [41576029492](https://github.com/matrix12345695-afk/-/actions/runs/41576029492).
 - [x] Confirmed the subsequent main status commit `f06cf7d` has successful Actions [41576141873](https://github.com/matrix12345695-afk/-/actions/runs/41576141873); inspected logs confirm **28/28 regression files PASS** and **39 numeric parser cases PASS**.
+- [x] The C661 status-documentation commit `8bf37d4` also passed main Actions [41594706157](https://github.com/matrix12345695-afk/-/actions/runs/41594706157), with 28/28 regression files PASS.
 - [ ] This closes only the GitHub source/CI gate. Floot hosted parity, public CSV upload/audit/export acceptance, buyer entitlement and commercial release remain open.
 - **Next:** after the Floot action cap resets, compare the hosted parser with GitHub main and run synthetic CSV upload/audit/export acceptance before any publish.
 
