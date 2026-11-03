@@ -3,24 +3,91 @@
     if(typeof value==='number') return Number.isFinite(value)?value:NaN;
     let s=String(value??'').trim();
     if(!s) return NaN;
+
     let negative=false;
-    if(/^\(.*\)$/.test(s)){negative=true;s=s.slice(1,-1).trim();}
-    // Currency symbols and common surrounding labels are tolerated, but a value
-    // containing no digit must never collapse to zero (for example "not-a-number").
-    if(!/\d/.test(s)) return NaN;
-    s=s.replace(/[\u00A0\u202F\s'’]/g,'').replace(/[^0-9,\.\-+]/g,'');
-    if(!s||!/\d/.test(s)) return NaN;
-    if(s.startsWith('-')){negative=!negative;s=s.slice(1);} else if(s.startsWith('+')) s=s.slice(1);
-    s=s.replace(/[+-]/g,'');
-    const comma=s.lastIndexOf(','), dot=s.lastIndexOf('.');
-    let decimal=null;
-    if(comma>=0&&dot>=0) decimal=comma>dot?',':'.';
-    else if(comma>=0){const parts=s.split(',');const tail=parts[parts.length-1];decimal=(parts.length===2&&tail.length!==3)||tail.length===1||tail.length===2?',':null;}
-    else if(dot>=0){const parts=s.split('.');const tail=parts[parts.length-1];decimal=(parts.length===2&&tail.length!==3)||tail.length===1||tail.length===2?'.':null;}
-    if(decimal){const pos=s.lastIndexOf(decimal);const whole=s.slice(0,pos).replace(/[,.]/g,'');const frac=s.slice(pos+1).replace(/[,.]/g,'');s=whole+'.'+frac;}
-    else s=s.replace(/[,.]/g,'');
-    const n=Number(s);return Number.isFinite(n)?(negative?-n:n):NaN;
+    const parenthesized=s.startsWith('(')||s.endsWith(')');
+    if(parenthesized){
+      if(!(s.startsWith('(')&&s.endsWith(')')))return NaN;
+      negative=true;
+      s=s.slice(1,-1).trim();
+    }
+
+    const sign=/^([+-])\\s*/.exec(s);
+    if(sign){
+      if(parenthesized)return NaN;
+      negative=sign[1]==='-';
+      s=s.slice(sign[0].length);
+    }
+    if(!s)return NaN;
+
+    // Permit one currency symbol only at the amount boundary. Never strip
+    // arbitrary letters or punctuation from the middle of a financial value.
+    const currencySymbols="$€£¥₹₽₩₺₴₦₪₫₱฿₡₲₵₭₮₸₼₾¤";
+    const symbolPositions=[...s].map((c,i)=>currencySymbols.includes(c)?i:-1).filter(i=>i>=0);
+    if(symbolPositions.length>1)return NaN;
+    if(symbolPositions.length===1){
+      const pos=symbolPositions[0];
+      if(pos===0)s=s.slice(1).trim();
+      else if(pos===[...s].length-1)s=[...s].slice(0,-1).join("").trim();
+      else return NaN;
+    }
+    if(!s||[...s].some(c=>currencySymbols.includes(c)))return NaN;
+    if(!/^[0-9,.'’\\t \\u00A0\\u202F]+$/u.test(s)||!/[0-9]/.test(s))return NaN;
+
+    const grouping=/[,.'’\\t \\u00A0\\u202F]/u;
+    const badGroupingEdges=/^[,.'’\\t \\u00A0\\u202F]|[,.'’\\t \\u00A0\\u202F]$/u;
+    const repeatedGrouping=/[,.'’\\t \\u00A0\\u202F]{2}/u;
+    function validGroupedInteger(part){
+      if(!part)return true;
+      if(badGroupingEdges.test(part)||repeatedGrouping.test(part))return false;
+      const groups=part.split(grouping);
+      if(groups.some(group=>!/^[0-9]+$/.test(group)))return false;
+      if(groups.length===1)return true;
+      const western=groups[0].length>=1&&groups[0].length<=3&&groups.slice(1).every(group=>group.length===3);
+      const indian=groups.length>=3&&groups[0].length>=1&&groups[0].length<=2&&groups.slice(1,-1).every(group=>group.length===2)&&groups[groups.length-1].length===3;
+      return western||indian;
+    }
+
+    const commas=[...s.matchAll(/,/g)].map(match=>match.index);
+    const dots=[...s.matchAll(/\\./g)].map(match=>match.index);
+    let integerPart=s,fraction="",hasDecimal=false;
+
+    if(commas.length&&dots.length){
+      const decimalIndex=Math.max(commas[commas.length-1],dots[dots.length-1]);
+      integerPart=s.slice(0,decimalIndex);
+      fraction=s.slice(decimalIndex+1);
+      hasDecimal=true;
+    }else{
+      const positions=commas.length?commas:dots;
+      if(positions.length===1){
+        const index=positions[0];
+        const before=s.slice(0,index);
+        const after=s.slice(index+1);
+        if(!/^[0-9]{1,6}$/.test(after))return NaN;
+        const beforeDigits=before.replace(/[,.'’\\t \\u00A0\\u202F]/gu,"");
+        const zeroLeading=/^0+$/.test(beforeDigits);
+        const isGrouping=after.length===3&&!zeroLeading&&before.length>=1&&before.length<=3&&/^[0-9]+$/.test(before);
+        if(!isGrouping){
+          integerPart=before;
+          fraction=after;
+          hasDecimal=true;
+        }
+      }
+    }
+
+    if(hasDecimal){
+      if(!/^[0-9]{1,6}$/.test(fraction)||!validGroupedInteger(integerPart))return NaN;
+    }else if(!validGroupedInteger(integerPart)){
+      return NaN;
+    }
+
+    const digits=integerPart.replace(/[,.'’\\t \\u00A0\\u202F]/gu,"");
+    if(!digits&&!hasDecimal)return NaN;
+    const normalized=(digits||"0")+(hasDecimal?"."+fraction:"");
+    const number=Number(normalized);
+    return Number.isFinite(number)?(negative?-number:number):NaN;
   }
+
   const api={parseAccountingNumber};
   if(typeof module!=='undefined'&&module.exports) module.exports=api;
   root.InvoiceGuardNumbers=api;
