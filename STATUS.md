@@ -1,3 +1,12 @@
+### C654 InvoiceGuard duplicate-header safety — 2026-11-03 05:02 Asia/Tashkent
+- [x] Found and fixed a data-integrity defect: multiple CSV headers resolving to the same canonical invoice field (e.g. `total` and `amount_due`, or a custom mapping to an existing field) previously allowed later columns to overwrite earlier values.
+- [x] `csv-live.js` now rejects duplicate canonical mappings before audit, marks the audit state as error, and shows localized `DUPLICATE_HEADER` copy in EN/RU/UZ/ES/DE/FR/PT.
+- [x] Added seven-language regression coverage in `tests/csv-live-errors.test.js`.
+- [x] [PR #8](https://github.com/matrix12345695-afk/-/pull/8) merged to `main` at `64ad3f567e99771ed8baaf0ce97ee06dace9af02`.
+- [x] Exact PR Actions [41550408269](https://github.com/matrix12345695-afk/-/actions/runs/41550408269) and post-merge main Actions [41550459345](https://github.com/matrix12345695-afk/-/actions/runs/41550459345) both SUCCESS: **28/28 test files PASS**. Changed source and regression test were read back from main.
+- [ ] Hosted Floot and public production browser acceptance remain separate release gates; this GitHub merge did not publish or alter checkout.
+- **Next:** continue hosted parser parity and representative CSV upload/export browser acceptance after Floot quota reset.
+
 ### C653 hosted CSV amount hardening — 2026-11-03 03:57 Asia/Tashkent
 - [x] Fixed financial CSV coercion in the hosted Floot InvoiceGuard parser: arbitrary letters and malformed separators can no longer be stripped into a different numeric value.
 - [x] Currency symbols are allowed only at amount boundaries; malformed non-empty subtotal/tax/total cells now produce localized `INVALID_NUMBER` and stop the audit.
