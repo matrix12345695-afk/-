@@ -42,4 +42,4 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
       - name: Exercise the published Floot preview with synthetic data
-        run: node tests/public-preview-browser-smoke.mjs
+        run: node tests/public-preview-browser.mjs
