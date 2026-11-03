@@ -1,10 +1,17 @@
+### C661 post-merge CI verification — 2026-11-03 12:04 Asia/Tashkent
+- [x] Confirmed the C658 amount-parser code commit `6eebd386` has successful main Actions [41576029492](https://github.com/matrix12345695-afk/-/actions/runs/41576029492).
+- [x] Confirmed the subsequent main status commit `f06cf7d` has successful Actions [41576141873](https://github.com/matrix12345695-afk/-/actions/runs/41576141873); inspected logs confirm **28/28 regression files PASS** and **39 numeric parser cases PASS**.
+- [ ] This closes only the GitHub source/CI gate. Floot hosted parity, public CSV upload/audit/export acceptance, buyer entitlement and commercial release remain open.
+- **Next:** after the Floot action cap resets, compare the hosted parser with GitHub main and run synthetic CSV upload/audit/export acceptance before any publish.
+
 ### C658 InvoiceGuard accounting-number integrity — 2026-11-03
 - [x] Found a financial-integrity defect in the previous converter: arbitrary characters and misplaced signs were stripped before parsing, allowing malformed source text to become a different amount.
 - [x] Replaced permissive cleanup with fail-closed syntax validation. One currency symbol is accepted only at the start/end; supported decimal/grouping formats, spaces/apostrophes, accounting parentheses and a leading sign remain supported.
 - [x] Embedded alphabetic text, multiple/misplaced currency symbols, malformed signs, repeated separators and invalid grouping now return `NaN` and stop the audit from silently changing the amount.
 - [x] Expanded `tests/number-core.test.js` to 39 cases. [PR #9](https://github.com/matrix12345695-afk/-/pull/9) merged to `main` at `6eebd386202480be903792e2d0dd91bab39b069a`.
 - [x] Exact PR Actions [41575925060](https://github.com/matrix12345695-afk/-/actions/runs/41575925060) passed **28/28 test files**; logs confirm `number-core: 39 regression cases passed`.
-- [ ] Separate post-merge main CI, hosted Floot parity, public browser acceptance and commercial release remain open.
+- [x] Independent post-merge main Actions [41576141873](https://github.com/matrix12345695-afk/-/actions/runs/41576141873) passed on main commit `f06cf7d`; inspected logs confirm **28/28 test files PASS** and `number-core: 39 regression cases passed`.
+- [ ] Hosted Floot parity, public browser acceptance and commercial release remain open.
 - **Next:** reconcile the hosted InvoiceGuard parser with this source after the Floot quota reset; do not publish until upload/audit/export evidence passes.
 
 ### C654 InvoiceGuard duplicate-header safety — 2026-11-03 05:02 Asia/Tashkent
