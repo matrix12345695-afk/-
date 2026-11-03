@@ -41,4 +41,35 @@ for(const [lang,expected] of Object.entries(languages)){
   }
 }
 
-console.log("Localized malformed-quote messages pass in EN/RU/UZ/ES/DE/FR/PT.");
+const duplicateHeaderMessages={
+  en:"Two or more CSV columns",
+  ru:"Два или более столбца CSV",
+  uz:"ikki yoki undan ortiq ustun",
+  es:"Dos o más columnas CSV",
+  de:"Zwei oder mehr CSV-Spalten",
+  fr:"Plusieurs colonnes CSV",
+  pt:"Duas ou mais colunas CSV"
+};
+for(const [lang,expected] of Object.entries(duplicateHeaderMessages)){
+  let message="",state="";
+  const window={
+    InvoiceGuardCSV:{parse},
+    invoiceGuardAuditState:{set(value){state=value;}},
+    invoiceGuardI18n:{lang}
+  };
+  const context={
+    window,
+    alert(value){message=String(value);},
+    $(){return {textContent:""};},
+    canonical:value=>value==="amount_due"?"total":value,
+    showUnknown(){}
+  };
+  vm.runInNewContext(source,context);
+  const result=window.parseCSV("invoice_number,vendor,total,amount_due\\nINV-1,Acme,100,100");
+  assert.equal(result.length,0,lang+" must reject duplicate canonical field mappings");
+  assert.equal(state,"error",lang+" must set the audit state to error");
+  assert.ok(message.includes(expected),lang+" must show a localized duplicate-header error");
+  assert.ok(message.includes("1"),lang+" must identify the header row");
+}
+
+console.log("Localized malformed-quote and duplicate-header messages pass in EN/RU/UZ/ES/DE/FR/PT.");
