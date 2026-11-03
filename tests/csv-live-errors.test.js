@@ -88,7 +88,7 @@ console.log("Localized malformed-quote and duplicate-header messages pass in EN/
   };
   const context={window,alert(value){message=String(value);},$(){return {textContent:""};},canonical:value=>value,showUnknown(){}};
   vm.runInNewContext(source,context);
-  assert.equal(window.parseCSV("invoice_number\\n").length,0);
+  assert.equal(window.parseCSV("invoice_number\n").length,0);
   assert.equal(state,"error","header-only input must enter the accessible error state");
   assert.equal(window.invoiceGuardParserErrorShown,false,"header-only input must not claim a specific parser alert was shown");
   assert.equal(message,"","header-only input should leave generic no-rows guidance to app.js");
