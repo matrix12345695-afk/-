@@ -1,6 +1,6 @@
 # Floot reconciliation
 
-Last verified: 2026-10-06
+Last hosted verification: 2026-10-06; GitHub source reconciled: 2026-11-03
 
 GitHub `main` remains the source of truth for InvoiceGuard product and audit logic. The public Floot project is a hosted prototype surface and must not replace the hardened GitHub audit core.
 
@@ -15,6 +15,11 @@ GitHub `main` remains the source of truth for InvoiceGuard product and audit log
 - Project design guidance matches the implemented Light/Dark/System theme instead of the stale `Light-only` instruction.
 - Hosted CSV parsing was hardened on 2026-10-06 to strip UTF-8 BOM, detect comma/semicolon/tab delimiters, preserve quoted multiline fields and escaped quotes, and parse common international accounting-number formats.
 - Hosted duplicate checking was hardened on 2026-10-06 to normalize vendor/invoice identifiers and compare uploads against browser-local prior-audit history. Only normalized duplicate keys are persisted locally, capped at 5,000 keys; demo/sample rows are not written to history. The previous-audit finding is localized for EN/RU/UZ/ES/DE/FR/PT. Floot typecheck was clean after this change and a production republish was started.
+
+## GitHub source update — 2026-11-03
+
+- InvoiceGuard PR #13 merged at `f0f0e7489e09c88970cd61a0f1290b63cee16e07` after exact-head and post-merge CI both passed **29/29 regression files**. The clean CSV export now rejects non-numeric negative expressions instead of treating every leading minus followed by a digit as a safe amount; strict accounting-number parsing preserves valid negative amounts.
+- This is a GitHub source/test update only. The public Floot artifact was not read, edited or republished; its last hosted verification remains 2026-10-06 and hosted parity is still unproven.
 
 ## Source-of-truth release state
 
