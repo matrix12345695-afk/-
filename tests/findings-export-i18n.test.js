@@ -1,6 +1,8 @@
 const fs=require('fs');
 const vm=require('vm');
 const assert=require('assert');
+require('../number-core.js');
+const safeExporter=require('../clean-export.js');
 const source=fs.readFileSync('findings-export-i18n.js','utf8');
 const expected={
  en:['row','invoice','vendor','severity','finding','total','currency'],
@@ -15,7 +17,7 @@ for(const [lang,headers] of Object.entries(expected)){
  let handler;
  const row={cells:['1','INV-1','Vendor','High','Duplicate invoice','USD 10.00'].map(textContent=>({textContent}))};
  const context={
-  window:{invoiceGuardI18n:{lang}},
+  window:{invoiceGuardI18n:{lang},InvoiceGuardCleanExport:safeExporter},
   document:{
    getElementById(id){if(id==='download')return {addEventListener(_event,fn){handler=fn}};if(id==='language')return {value:lang};return null},
    querySelectorAll(selector){return selector==='#findings tr'?[row]:[]},
@@ -26,14 +28,14 @@ for(const [lang,headers] of Object.entries(expected)){
   setTimeout(fn){fn()}
  };
  vm.runInNewContext(source,context);
- assert.equal(typeof handler,'function',`${lang}: download handler missing`);
+ assert.equal(typeof handler,'function',lang+': download handler missing');
  let prevented=false,stopped=false;
  context.Blob=class{constructor(parts){this.parts=parts;context.lastBlob=this}};
  handler({preventDefault(){prevented=true},stopImmediatePropagation(){stopped=true}});
- assert(prevented&&stopped,`${lang}: export must own click event`);
+ assert(prevented&&stopped,lang+': export must own click event');
  const csv=context.lastBlob.parts.join('');
- assert(csv.startsWith('\uFEFF'),`${lang}: UTF-8 BOM missing`);
+ assert(csv.startsWith('\uFEFF'),lang+': UTF-8 BOM missing');
  const headerLine=csv.slice(1).split('\n')[0];
- assert.equal(headerLine,headers.map(h=>'"'+h+'"').join(','),`${lang}: localized header mismatch`);
+ assert.equal(headerLine,headers.map(h=>'"'+h+'"').join(','),lang+': localized header mismatch');
 }
 console.log('✓ findings export headers localized for EN/RU/UZ/ES/DE/FR/PT');
