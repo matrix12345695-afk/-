@@ -21,9 +21,15 @@ GitHub `main` remains the source of truth for InvoiceGuard product and audit log
 - InvoiceGuard PR #13 merged at `f0f0e7489e09c88970cd61a0f1290b63cee16e07` after exact-head and post-merge CI both passed **29/29 regression files**. The clean CSV export now rejects non-numeric negative expressions instead of treating every leading minus followed by a digit as a safe amount; strict accounting-number parsing preserves valid negative amounts.
 - This is a GitHub source/test update only. The public Floot artifact was not read, edited or republished; its last hosted verification remains 2026-10-06 and hosted parity is still unproven.
 
-## Source-of-truth release state
+## Current GitHub source-of-truth state — 2026-11-03
 
-GitHub commit `7eb267798cf389d90ec9db505e2ec7c0b8b86204` is the current fully verified source-of-truth state. GitHub Actions `InvoiceGuard regression` run #166 completed successfully for that exact commit on 2026-10-06. This includes strengthened regression coverage for configurable required fields, including safe defaults, empty policies, unsupported-field rejection, deduplication, and protection against accidentally filtering arithmetic/duplicate findings.
+GitHub main commit `f0f0e7489e09c88970cd61a0f1290b63cee16e07` is the current verified source-of-truth state. InvoiceGuard PR #13 added strict negative-expression handling to the clean CSV export; exact PR Actions run #218 and post-merge main run #219 both passed **29/29 regression files**. The source preserves valid localized negative amounts while neutralizing arithmetic/formula-like values such as `-1+CMD()`.
+
+This is GitHub source/CI evidence only. The hosted Floot artifact was not read, edited or republished; hosted source parity remains unverified.
+
+## Historical source-of-truth release state — 2026-10-06
+
+GitHub commit `7eb267798cf389d90ec9db505e2ec7c0b8b86204` was the verified source-of-truth state at that checkpoint. GitHub Actions `InvoiceGuard regression` run #166 completed successfully for that exact commit on 2026-10-06. It included regression coverage for configurable required fields, including safe defaults, empty policies, unsupported-field rejection, deduplication, and protection against accidentally filtering arithmetic/duplicate findings.
 
 ## Audit-core drift found during reconciliation
 
