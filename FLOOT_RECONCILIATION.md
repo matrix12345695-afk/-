@@ -39,7 +39,7 @@ Therefore:
 
 ## Current provider constraint
 
-A fresh Floot reconciliation attempt on 2026-10-06 was refused by the provider because the account had exhausted its daily build-action allowance. Floot reported a reset at `2026-10-06T22:00:00Z`. Until a fresh post-reset tool call succeeds, no additional hosted code change, test result, checkpoint, or publication should be claimed.
+The current Floot file/build action allowance is exhausted until `2026-11-04 03:00 Asia/Tashkent` (latest confirmed in the C666 workspace check). Until a fresh post-reset tool call succeeds, no additional hosted code change, test result, checkpoint, or publication should be claimed. Do not pay to bypass the cap.
 
 ## Intentional payment boundary
 
