@@ -1,6 +1,13 @@
+## C707 latest evidence — 2026-11-05 02:02 Asia/Tashkent
+
+- **Hosted acceptance:** public-preview run [41719922197](https://github.com/matrix12345695-afk/-/actions/runs/41719922197) failed its 18 export-parity assertions. Upload and duplicate findings work (3 invoices, 2 duplicate findings), but only two findings CSV downloads are available; the clean-invoice CSV and payment-review summary are absent. Findings exports still expose formula-like vendor text, omit UTF-8 BOM, use LF rather than strict CRLF, and do not use localized filenames. DNT/no-network-leak check passed.
+- **Source verification:** PR [#19](https://github.com/matrix12345695-afk/-/pull/19) merged at `ee887fbd59831a9f80fc2d76937c534c219cae3a`. Exact-head regression [41759496282](https://github.com/matrix12345695-afk/-/actions/runs/41759496282) succeeded; the raw job log reports **30/30 regression files**. Local Chromium source acceptance [41759496314](https://github.com/matrix12345695-afk/-/actions/runs/41759496314) succeeded with the four source exports and privacy boundary.
+- **Release gate:** public-preview PR [#16](https://github.com/matrix12345695-afk/-/pull/16) remains open and unmerged. Source CI does not prove Floot parity.
+- **Floot constraint:** at 02:02, the recorded file/build action cap has not yet reset; reset is **2026-11-05 03:00 Asia/Tashkent**. Do not bypass the cap or publish before the public gate passes.
+
 # Floot reconciliation
 
-Last hosted verification: 2026-10-06; GitHub source reconciled: 2026-11-03
+Last hosted code verification: 2026-10-06; latest public-preview acceptance: 2026-11-04 (failed, 18 assertions); GitHub source reconciled: 2026-11-04 at ee887fbd
 
 GitHub `main` remains the source of truth for InvoiceGuard product and audit logic. The public Floot project is a hosted prototype surface and must not replace the hardened GitHub audit core.
 
@@ -21,11 +28,11 @@ GitHub `main` remains the source of truth for InvoiceGuard product and audit log
 - InvoiceGuard PR #13 merged at `f0f0e7489e09c88970cd61a0f1290b63cee16e07` after exact-head and post-merge CI both passed **29/29 regression files**. The clean CSV export now rejects non-numeric negative expressions instead of treating every leading minus followed by a digit as a safe amount; strict accounting-number parsing preserves valid negative amounts.
 - This is a GitHub source/test update only. The public Floot artifact was not read, edited or republished; its last hosted verification remains 2026-10-06 and hosted parity is still unproven.
 
-## Current GitHub source-of-truth state — 2026-11-03
+## Current GitHub source-of-truth state — 2026-11-05
 
-GitHub main commit `f0f0e7489e09c88970cd61a0f1290b63cee16e07` is the current verified source-of-truth state. InvoiceGuard PR #13 added strict negative-expression handling to the clean CSV export; exact PR Actions run #218 and post-merge main run #219 both passed **29/29 regression files**. The source preserves valid localized negative amounts while neutralizing arithmetic/formula-like values such as `-1+CMD()`.
+GitHub main commit `ee887fbd59831a9f80fc2d76937c534c219cae3a` is the current verified source-of-truth state. PR #19 added a shared browser download lifecycle for findings CSV, clean-invoice CSV and payment-review TXT. Exact-head regression run [41759496282](https://github.com/matrix12345695-afk/-/actions/runs/41759496282) passed; the raw log reports **30/30 regression files**. Local-source Chromium acceptance [41759496314](https://github.com/matrix12345695-afk/-/actions/runs/41759496314) passed all four downloads and privacy checks.
 
-This is GitHub source/CI evidence only. The hosted Floot artifact was not read, edited or republished; hosted source parity remains unverified.
+This is GitHub source/CI evidence only. Public Floot preview run [41719922197](https://github.com/matrix12345695-afk/-/actions/runs/41719922197) still fails 18 hosted parity assertions; hosted source parity remains unverified.
 
 ## Historical source-of-truth release state — 2026-10-06
 
@@ -45,7 +52,7 @@ Therefore:
 
 ## Current provider constraint
 
-The current Floot file/build action allowance is exhausted until `2026-11-04 03:00 Asia/Tashkent` (latest confirmed in the C666 workspace check). Until a fresh post-reset tool call succeeds, no additional hosted code change, test result, checkpoint, or publication should be claimed. Do not pay to bypass the cap.
+The current Floot file/build action allowance is recorded as exhausted until `2026-11-05 03:00 Asia/Tashkent` (confirmed in the C706 workspace record). At 02:02 local time the reset is still in the future; until a fresh post-reset file/build action succeeds, no hosted code change, test result, checkpoint, or publication should be claimed. Do not pay to bypass the cap.
 
 ## Intentional payment boundary
 
