@@ -60,6 +60,15 @@ Check EN, RU, UZ, ES, DE, FR and PT independently.
 
 ## Hosted-build gate
 
+### C707 latest hosted acceptance — 2026-11-05
+
+- [x] GitHub source PR #19 is merged at `ee887fbd`; exact-head regression run [41759496282](https://github.com/matrix12345695-afk/-/actions/runs/41759496282) passed (raw log: **30/30** regression files), and local-source Chromium acceptance [41759496314](https://github.com/matrix12345695-afk/-/actions/runs/41759496314) passed all four exports plus privacy checks.
+- [x] Public preview upload and duplicate detection work with the synthetic three-invoice file; DNT/no-network-leak check passed.
+- [ ] Public preview run [41719922197](https://github.com/matrix12345695-afk/-/actions/runs/41719922197) still fails 18 hosted assertions: formula neutralization, UTF-8 BOM, strict CRLF, localized EN/RU filenames, clean-invoice CSV and payment-review summary availability/content. Only two findings downloads are present.
+- [ ] Keep PR [#16](https://github.com/matrix12345695-afk/-/pull/16) open until the published Floot preview passes the exact four-download public acceptance gate.
+- [ ] Reconcile after the recorded Floot action-cap reset at **2026-11-05 03:00 Asia/Tashkent**; do not publish until all 18 public assertions pass.
+
+
 ### C671 public preview evidence and blockers — 2026-11-03
 - [x] Synthetic public upload → audit → findings table works on `https://invoiceguard.floot.app`: 3 invoices reviewed, 2 duplicate findings displayed.
 - [x] Browser privacy check passed: synthetic invoice marker did not appear in a request URL or POST body; Do Not Track was enabled.
