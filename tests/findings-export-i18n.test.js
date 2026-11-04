@@ -19,6 +19,7 @@ for(const [lang,headers] of Object.entries(expected)){
  const context={
   window:{invoiceGuardI18n:{lang},InvoiceGuardCleanExport:safeExporter},
   document:{
+   body:{appendChild(){},removeChild(){}},
    getElementById(id){if(id==='download')return {addEventListener(_event,fn){handler=fn}};if(id==='language')return {value:lang};return null},
    querySelectorAll(selector){return selector==='#findings tr'?[row]:[]},
    createElement(){return {click(){},set href(v){this._href=v},get href(){return this._href}}}
@@ -27,6 +28,7 @@ for(const [lang,headers] of Object.entries(expected)){
   URL:{createObjectURL(){return 'blob:test'},revokeObjectURL(){}},
   setTimeout(fn){fn()}
  };
+ vm.runInNewContext(fs.readFileSync("download-utils.js","utf8"),context,{filename:"download-utils.js"});
  vm.runInNewContext(source,context);
  assert.equal(typeof handler,'function',lang+': download handler missing');
  let prevented=false,stopped=false;
