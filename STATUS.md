@@ -1,10 +1,26 @@
+### C707 — 2026-11-05 02:02 Asia/Tashkent | Source evidence corrected; hosted parity still blocked
+
+- [x] Restored InvoiceGuard repository `matrix12345695-afk/-`, checked `main`, PR #16 and merged PR #19, and re-read the source status.
+- [x] Confirmed PR [#19](https://github.com/matrix12345695-afk/-/pull/19) merged at `ee887fbd59831a9f80fc2d76937c534c219cae3a`.
+- [x] Inspected exact-head regression run [41759496282](https://github.com/matrix12345695-afk/-/actions/runs/41759496282): job completed successfully; the raw log reports **30/30 regression files passed**. This corrects the PR description's earlier 31/31 count.
+- [x] Inspected local-source browser run [41759496314](https://github.com/matrix12345695-afk/-/actions/runs/41759496314): Chromium acceptance completed successfully, including local upload, four exports and privacy boundary checks.
+- [x] Re-read `index.html`, `findings-export-i18n.js`, `clean-export-live.js`, `summary-i18n.js` and `download-utils.js` from `main`. The source contains findings CSV (EN/RU), clean-invoice CSV and payment-review summary export paths; the shared download helper is loaded from source.
+- [x] Re-read the failed public-preview job [41719922197](https://github.com/matrix12345695-afk/-/actions/runs/41719922197): upload and duplicate findings work, but only two findings downloads appear; the hosted build lacks safe formula neutralization, UTF-8 BOM, strict CRLF, localized filenames and the clean/summary exports. The 18 hosted assertions remain failed.
+- [ ] PR [#16](https://github.com/matrix12345695-afk/-/pull/16) remains open and unmerged until the hosted preview passes the four-download acceptance gate.
+- [ ] Floot file/build action cap resets at **2026-11-05 03:00 Asia/Tashkent**. No quota bypass or publish attempted before reset.
+- [ ] No checkout, Paddle, KYC, banking, Shopify buyer-file or customer-data action performed.
+
+**Next:** after 03:00, inspect the InvoiceGuard Floot project and live preview, compare every runtime asset with GitHub `main`, apply only the missing source changes, then rerun all 18 public-preview assertions. Do not publish until the hosted gate passes.
+
+---
+
 ### C685 — shared browser download lifecycle | 2026-11-04
 - [x] Added a shared, dependency-free download helper for InvoiceGuard CSV/TXT exports. It attaches the temporary anchor before click, removes it after the browser has accepted the download, and revokes the object URL on success or failure.
 - [x] Routed findings CSV, clean-invoice CSV and payment-review TXT through the same lifecycle without changing their payloads, filenames, localization, BOM or line-ending contracts.
 - [x] Added lifecycle regressions for successful ordering, anchor creation/attachment failure, click failure, timer failure and DOM-removal failure.
-- [ ] Exact-head GitHub Actions regression and local-source browser acceptance must pass before merge.
+- [x] Exact-head GitHub Actions regression [41759496282](https://github.com/matrix12345695-afk/-/actions/runs/41759496282) passed (raw log: 30/30 regression files); local-source Chromium acceptance [41759496314](https://github.com/matrix12345695-afk/-/actions/runs/41759496314) passed before PR #19 merge.
 - [ ] Floot hosted parity remains a separate release gate. No publish, live payment, KYC, banking, Paddle domain or Shopify buyer-file action was performed.
-- **Next:** inspect exact-head CI; after it passes, resume the hosted InvoiceGuard preview gate when Floot actions and an editor/preview browser are available.
+- **Next:** reconcile the published Floot project with GitHub main after the 2026-11-05 03:00 Asia/Tashkent action-cap reset; keep the hosted four-download gate open until all 18 assertions pass.
 
 ---
 
