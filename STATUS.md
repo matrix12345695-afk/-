@@ -1,3 +1,9 @@
+### C707 verification update — after documentation merge
+
+- [x] InvoiceGuard documentation PR [#20](https://github.com/matrix12345695-afk/-/pull/20) merged at `60dbf511133b42eaee77aca892c62a7e0da273e4`; `STATUS.md`, `FLOOT_RECONCILIATION.md` and `RELEASE_CHECKLIST.md` were read back from `main`.
+- [x] Follow-up regression [41913233049](https://github.com/matrix12345695-afk/-/actions/runs/41913233049) completed successfully; its raw log reports **31/31 regression files**. This is a newer run than PR #19's historical exact-head run [41759496282](https://github.com/matrix12345695-afk/-/actions/runs/41759496282), whose log reported **30/30**. Both runs passed; the counts are run-specific, not contradictory.
+- [ ] Hosted preview remains unchanged and unaccepted: public run [41719922197](https://github.com/matrix12345695-afk/-/actions/runs/41719922197) still fails 18 parity assertions. No Floot edit or publish has occurred before the 03:00 action-cap reset.
+
 ### C707 — 2026-11-05 02:02 Asia/Tashkent | Source evidence corrected; hosted parity still blocked
 
 - [x] Restored InvoiceGuard repository `matrix12345695-afk/-`, checked `main`, PR #16 and merged PR #19, and re-read the source status.
