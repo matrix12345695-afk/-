@@ -1,3 +1,13 @@
+### C685 — shared browser download lifecycle | 2026-11-04
+- [x] Added a shared, dependency-free download helper for InvoiceGuard CSV/TXT exports. It attaches the temporary anchor before click, removes it after the browser has accepted the download, and revokes the object URL on success or failure.
+- [x] Routed findings CSV, clean-invoice CSV and payment-review TXT through the same lifecycle without changing their payloads, filenames, localization, BOM or line-ending contracts.
+- [x] Added lifecycle regressions for successful ordering, anchor creation/attachment failure, click failure, timer failure and DOM-removal failure.
+- [ ] Exact-head GitHub Actions regression and local-source browser acceptance must pass before merge.
+- [ ] Floot hosted parity remains a separate release gate. No publish, live payment, KYC, banking, Paddle domain or Shopify buyer-file action was performed.
+- **Next:** inspect exact-head CI; after it passes, resume the hosted InvoiceGuard preview gate when Floot actions and an editor/preview browser are available.
+
+---
+
 ### C671 public Floot preview browser acceptance — 2026-11-03 22:24 Asia/Tashkent
 - [x] Added a test-only Chromium acceptance path in [PR #16](https://github.com/matrix12345695-afk/-/pull/16). It uploads a synthetic three-invoice CSV containing a formula-like vendor value, verifies duplicate findings, downloads EN/RU findings CSVs, and checks that the synthetic marker is absent from request URLs and POST bodies.
 - [x] The live preview at `https://invoiceguard.floot.app` accepted the synthetic CSV, reviewed 3 invoices and displayed 2 duplicate findings. The browser privacy check passed: no synthetic invoice marker was sent to the server, with Do Not Track enabled.
