@@ -18,6 +18,7 @@ function exportCsv(rows, includeSafeExporter = true) {
       InvoiceGuardCleanExport: includeSafeExporter ? safeExporter : undefined,
     },
     document: {
+      body: { appendChild() {}, removeChild() {} },
       getElementById(id) {
         if (id === "download") return { addEventListener(_event, fn) { handler = fn; } };
         if (id === "language") return { value: "en" };
@@ -49,6 +50,7 @@ function exportCsv(rows, includeSafeExporter = true) {
     setTimeout(fn) { fn(); },
   };
 
+  vm.runInNewContext(fs.readFileSync("download-utils.js", "utf8"), context, { filename: "download-utils.js" });
   vm.runInNewContext(source, context, { filename: "findings-export-i18n.js" });
   assert.equal(typeof handler, "function", "findings CSV download handler must be registered");
   handler({ preventDefault() {}, stopImmediatePropagation() {} });
