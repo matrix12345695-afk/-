@@ -26,6 +26,7 @@ function runScript(file, { lang = 'en', rows = [], count = '2', issues = '1', ri
   const context = {
     window: { invoiceGuardI18n: { lang }, InvoiceGuardCleanExport: safeExporter },
     document: {
+      body: { appendChild() {}, removeChild() {} },
       getElementById: id => elements[id] || null,
       querySelectorAll: selector => selector === '#findings tr' ? rows : [],
       createElement: tag => {
@@ -40,6 +41,7 @@ function runScript(file, { lang = 'en', rows = [], count = '2', issues = '1', ri
     Intl,
     console
   };
+  vm.runInNewContext(fs.readFileSync('download-utils.js', 'utf8'), context, { filename: 'download-utils.js' });
   vm.runInNewContext(fs.readFileSync(file, 'utf8'), context, { filename: file });
   assert.ok(handler, file + ' should register a download handler');
   handler({ preventDefault() {}, stopImmediatePropagation() {} });
