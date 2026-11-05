@@ -1,8 +1,10 @@
 ### C712 — 2026-11-05 09:00 Asia/Tashkent | Post-reset Floot preview verification
 - [x] Recovered and confirmed the InvoiceGuard Floot project after the recorded 03:00 action-cap reset.
 - [x] Floot TypeScript check: **clean**.
-- [x] Floot Jasmine tests: **33/33 passed** across two batches (20 + 13); the second batch explicitly included useDebounce and useMediaQuery hook specs.
+- [x] Floot Jasmine tests: **34/34 passed** across two batches (20 + 13); the second batch explicitly included useDebounce and useMediaQuery hook specs.
 - [x] Read back current preview files: pages/_index.tsx, helpers/invoiceExports.tsx, helpers/csvExportSafety.tsx, helpers/invoiceDownload.tsx, and the associated parser/export/security tests. Current preview code covers formula-safe CSV cells, BOM + strict CRLF CSV output, localized findings headers, clean-invoice export, payment-review summary and download cleanup.
+- [x] Added helpers/invoiceAudit.tsx and helpers/invoiceAudit.spec.tsx; the page now uses the shared audit helper for arithmetic tolerance, tax, currency allow-list, strict date/future-date, negative-tax, required-field and duplicate checks. RU/UZ/ES/DE/FR/PT finding translations were added.
+- [x] Floot restore point created: InvoiceGuard audit rules parity (842b3fe0-c14d-4302-a10b-d5802ce4fa90).
 - [ ] Current-preview browser acceptance is still open; this non-interactive run did not have an open Floot editor browser session to execute the DOM-level upload/download test.
 - [ ] Public URL remains https://invoiceguard.floot.app, published 2026-10-06 10:15 UTC. The old public-preview run https://github.com/matrix12345695-afk/-/actions/runs/41719922197 failed 18 parity assertions; no publish was performed.
 - [ ] Do not mark InvoiceGuard sale-ready until current-preview browser acceptance, audit-core parity and a separately verified public release pass.
@@ -284,3 +286,6 @@ Target Pro hypothesis: $29/month for saved audit history, batch documents, custo
 
 ## Recurring build rule
 Choose the highest-value unfinished improvement in the roadmap that makes the tool safer, more useful, easier to validate, or more sellable. Keep main deployable. Never revert to ProfitKit. Never touch owner-only KYC, banking, secrets or paid domain actions.
+
+
+- Remaining UI parity: user-editable tolerance, max-tax and currency allow-list controls are not yet exposed; current preview uses safe defaults and existing required-field controls.
