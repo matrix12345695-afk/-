@@ -1,4 +1,7 @@
-# QualiSift Commercial Ecosystem — MASTER PLAN
+# QualiSift Commercial Ecosystem — MASTER PLAN (legacy pointer)
+
+> **Canonical QualiSift ecosystem log:** [LeadForge-AI / qualisift-platform / MASTER_PLAN.md](https://github.com/matrix12345695-afk/LeadForge-AI/blob/main/qualisift-platform/MASTER_PLAN.md). Current execution record: [Central Cycle 712](https://github.com/matrix12345695-afk/LeadForge-AI/blob/main/qualisift-platform/CYCLE_712.md).  
+> This InvoiceGuard-repository copy is retained as a historical/provisional snapshot only. Do not append new ecosystem cycles here; update the canonical LeadForge-AI log. InvoiceGuard product-specific implementation and release status remain in this repository's `STATUS.md`.
 
 > Central working log for the QualiSift commercial ecosystem. Product repositories remain independent; this file is the coordination layer and does not move product source into this repository.
 
