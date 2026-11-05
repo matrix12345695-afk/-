@@ -1,3 +1,13 @@
+### C712 — 2026-11-05 09:00 Asia/Tashkent | Post-reset Floot preview verification
+- [x] Recovered and confirmed the InvoiceGuard Floot project after the recorded 03:00 action-cap reset.
+- [x] Floot TypeScript check: **clean**.
+- [x] Floot Jasmine tests: **33/33 passed** across two batches (20 + 13); the second batch explicitly included useDebounce and useMediaQuery hook specs.
+- [x] Read back current preview files: pages/_index.tsx, helpers/invoiceExports.tsx, helpers/csvExportSafety.tsx, helpers/invoiceDownload.tsx, and the associated parser/export/security tests. Current preview code covers formula-safe CSV cells, BOM + strict CRLF CSV output, localized findings headers, clean-invoice export, payment-review summary and download cleanup.
+- [ ] Current-preview browser acceptance is still open; this non-interactive run did not have an open Floot editor browser session to execute the DOM-level upload/download test.
+- [ ] Public URL remains https://invoiceguard.floot.app, published 2026-10-06 10:15 UTC. The old public-preview run https://github.com/matrix12345695-afk/-/actions/runs/41719922197 failed 18 parity assertions; no publish was performed.
+- [ ] Do not mark InvoiceGuard sale-ready until current-preview browser acceptance, audit-core parity and a separately verified public release pass.
+- Paddle review: latest direct seller-support reply remains 2026-10-22; owner must re-upload https://leadforge-ai.floot.app for manual review. Not performed autonomously.
+
 ### C707 verification update — after documentation merge
 
 - [x] InvoiceGuard documentation PR [#20](https://github.com/matrix12345695-afk/-/pull/20) merged at `60dbf511133b42eaee77aca892c62a7e0da273e4`; `STATUS.md`, `FLOOT_RECONCILIATION.md` and `RELEASE_CHECKLIST.md` were read back from `main`.
