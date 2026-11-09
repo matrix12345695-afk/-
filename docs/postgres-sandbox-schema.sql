@@ -1,60 +1,73 @@
--- InvoiceGuard disposable PostgreSQL QA schema.
--- QA ONLY: this file is not a production migration and must not be applied
--- to the connected/shared database without an owner-approved migration.
-BEGIN;
+-- InvoiceGuard disposable PostgreSQL QA fixture.
+-- QA ONLY: TEMP tables mirror the current Paddle sandbox adapter contract.
+-- Run on ONE session connected only to the dedicated disposable database
+-- qualisift_qa_c415. These tables are session-local and disappear when the
+-- connection closes. Never run this file against a shared/production database.
+-- The native QA helper creates equivalent TEMP tables itself; this file is
+-- provided for manual inspection/reproduction, not as a production migration.
 
-CREATE TABLE IF NOT EXISTS billing_events (
-  id BIGSERIAL PRIMARY KEY,
-  provider_event_id TEXT NOT NULL UNIQUE,
+CREATE TEMP TABLE paddle_webhook_events (
+  event_id TEXT PRIMARY KEY,
   event_type TEXT NOT NULL,
-  received_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  processing_status TEXT NOT NULL CHECK (
-    processing_status IN ('received', 'processed', 'failed', 'ignored')
-  ),
-  failure_code TEXT,
-  failure_message TEXT
-);
+  resource_key TEXT NOT NULL,
+  occurred_at TIMESTAMPTZ NOT NULL,
+  processed_at TIMESTAMPTZ NOT NULL
+) ON COMMIT PRESERVE ROWS;
 
-CREATE TABLE IF NOT EXISTS entitlements (
-  id BIGSERIAL PRIMARY KEY,
-  account_ref TEXT NOT NULL,
+CREATE TEMP TABLE paddle_entitlements (
+  resource_key TEXT PRIMARY KEY,
+  customer_id TEXT,
+  subscription_id TEXT,
+  transaction_id TEXT,
+  status TEXT NOT NULL CHECK (
+    status IN ('active', 'past_due', 'paused', 'canceled')
+  ),
+  valid_until TIMESTAMPTZ,
+  occurred_at TIMESTAMPTZ NOT NULL,
+  processed_at TIMESTAMPTZ NOT NULL,
+  source_event_id TEXT NOT NULL
+    REFERENCES paddle_webhook_events(event_id),
+  CONSTRAINT active_requires_paid_through CHECK (
+    status <> 'active'
+    OR (
+      customer_id IS NOT NULL
+      AND subscription_id IS NOT NULL
+      AND valid_until IS NOT NULL
+    )
+  ),
+  CONSTRAINT revoked_has_no_paid_through CHECK (
+    status = 'active' OR valid_until IS NULL
+  )
+) ON COMMIT PRESERVE ROWS;
+
+CREATE TEMP TABLE paddle_account_customers (
+  account_id TEXT PRIMARY KEY,
+  customer_id TEXT NOT NULL UNIQUE,
+  verified_at TIMESTAMPTZ,
+  revoked_at TIMESTAMPTZ,
+  CONSTRAINT paddle_account_customers_verified_before_revoked_check CHECK (
+    revoked_at IS NULL
+    OR verified_at IS NULL
+    OR revoked_at >= verified_at
+  )
+) ON COMMIT PRESERVE ROWS;
+
+CREATE TEMP TABLE paddle_product_bindings (
+  resource_key TEXT PRIMARY KEY,
   product_id TEXT NOT NULL,
-  plan_tier TEXT NOT NULL CHECK (
-    plan_tier IN ('free', 'pro', 'business', 'agency')
-  ),
-  provider_ref TEXT,
-  status TEXT NOT NULL CHECK (
-    status IN ('pending', 'active', 'revoked', 'expired')
-  ),
-  effective_at TIMESTAMPTZ,
-  expires_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  CONSTRAINT entitlements_provider_ref_unique UNIQUE (provider_ref)
-);
+  price_id TEXT NOT NULL,
+  environment TEXT NOT NULL CHECK (environment = 'sandbox'),
+  source_event_id TEXT NOT NULL
+    REFERENCES paddle_webhook_events(event_id)
+) ON COMMIT PRESERVE ROWS;
 
-CREATE TABLE IF NOT EXISTS entitlement_events (
-  id BIGSERIAL PRIMARY KEY,
-  entitlement_id BIGINT NOT NULL REFERENCES entitlements(id) ON DELETE CASCADE,
-  provider_event_id TEXT NOT NULL REFERENCES billing_events(provider_event_id),
-  action TEXT NOT NULL CHECK (
-    action IN ('created', 'activated', 'revoked', 'expired', 'updated')
-  ),
-  status TEXT NOT NULL CHECK (
-    status IN ('pending', 'active', 'revoked', 'expired', 'failed')
-  ),
-  event_at TIMESTAMPTZ NOT NULL,
-  correlation_ref TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
+CREATE INDEX idx_paddle_entitlements_customer
+  ON paddle_entitlements(customer_id);
+CREATE INDEX idx_paddle_entitlements_subscription
+  ON paddle_entitlements(subscription_id);
+CREATE INDEX idx_paddle_product_bindings_product
+  ON paddle_product_bindings(product_id);
 
-CREATE INDEX IF NOT EXISTS idx_billing_events_status
-  ON billing_events(processing_status);
-
-CREATE INDEX IF NOT EXISTS idx_entitlements_account_status
-  ON entitlements(account_ref, status);
-
-CREATE INDEX IF NOT EXISTS idx_entitlement_events_entitlement
-  ON entitlement_events(entitlement_id);
-
-COMMIT;
+-- Failure-injection checks belong only in a separate test fixture. The
+-- native QA probe adds a temporary CHECK constraint for its synthetic
+-- evt_c464_fail event so the adapter can prove atomic rollback.
