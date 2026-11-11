@@ -9,19 +9,20 @@ fr:{title:"INVOICEGUARD — REVUE AVANT PAIEMENT",generated:"Généré",auditTim
 pt:{title:"INVOICEGUARD — REVISÃO ANTES DO PAGAMENTO",generated:"Gerado",auditTime:"Hora da auditoria",session:"ID da auditoria",source:"Origem",settings:"Definições da auditoria",tolerance:"Tolerância de valor",tax:"Taxa máxima de imposto",currencies:"Moedas permitidas",required:"Campos obrigatórios",reviewed:"Faturas revisadas",findings:"Achados",attention:"Faturas que exigem atenção",risk:"Valor em risco",decision:"Decisão de pagamento",hold:"SUSPENDER PAGAMENTO",review:"REVER ANTES DE PAGAR",ready:"PRONTO PARA APROVAÇÃO",action:"Ação recomendada",holdAction:"Resolva todos os achados de alta severidade antes de liberar o pagamento.",reviewAction:"Peça à contabilidade para verificar os achados de revisão antes da aprovação.",readyAction:"As verificações suportadas não encontraram exceções. Continue com os seus controlos habituais de aprovação.",high:"ACHADOS QUE BLOQUEIAM O PAGAMENTO",medium:"ACHADOS PARA REVISÃO",row:"Linha",noneHigh:"Nenhum achado bloqueia o pagamento.",noneMedium:"Nenhum achado para revisão.",sample:"Auditoria de exemplo InvoiceGuard"}
 };
 const locale={en:"en-US",ru:"ru-RU",uz:"uz-UZ",es:"es-ES",de:"de-DE",fr:"fr-FR",pt:"pt-PT"};
+const safeText=value=>String(value??"").replace(/[\u0000-\u001F\u007F-\u009F\u2028\u2029]+/gu," ").replace(/ {2,}/gu," ").trim();
 function activeLang(){return window.invoiceGuardI18n?.lang||document.getElementById("language")?.value||"en"}
 function downloadSummary(e){e?.preventDefault?.();e?.stopImmediatePropagation?.();
  e.preventDefault();e.stopImmediatePropagation();
  const l=activeLang(),t=copy[l]||copy.en,domRows=[...document.querySelectorAll("#findings tr")];
  const rows=domRows.map(tr=>({cells:[...tr.cells].map(td=>td.textContent.trim()),high:!!tr.querySelector(".sev-high"),medium:!!tr.querySelector(".sev-medium")})).filter(r=>r.cells.length>=6),highRows=rows.filter(r=>r.high),mediumRows=rows.filter(r=>r.medium);
  const attention=new Set(rows.filter(r=>r.high||r.medium).map(r=>r.cells[0]+"|"+r.cells[1]+"|"+r.cells[2])).size;
- const count=document.getElementById("count")?.textContent?.trim()||"0",issues=document.getElementById("issues")?.textContent?.trim()||"0",risk=document.getElementById("risk")?.textContent?.trim()||"0";
+ const count=safeText(document.getElementById("count")?.textContent||"0")||"0",issues=safeText(document.getElementById("issues")?.textContent||"0")||"0",risk=safeText(document.getElementById("risk")?.textContent||"0")||"0";
  const decision=highRows.length?t.hold:(mediumRows.length?t.review:t.ready),action=highRows.length?t.holdAction:(mediumRows.length?t.reviewAction:t.readyAction);
- const root=document.documentElement,source=root?.dataset?.auditSource||document.getElementById("file")?.files?.[0]?.name||t.sample;
- const auditAt=root?.dataset?.auditTimestamp,session=root?.dataset?.auditSession||"—",auditDate=auditAt?new Date(auditAt):new Date();
- const tolerance=document.getElementById("tolerance")?.value||"0.02",tax=document.getElementById("maxTaxRate")?.value||"30",currencies=document.getElementById("allowedCurrencies")?.value||"";
- const required=[...document.querySelectorAll("[data-required-field]:checked")].map(x=>document.querySelector?.(`[data-required-label="${x.dataset.requiredField}"]`)?.textContent?.trim()||x.dataset.requiredField).join(", ")||"—";
- const fmt=r=>`${t.row} ${r.cells[0]} | ${r.cells[2]} | ${r.cells[1]} | ${r.cells[4]} | ${r.cells[5]}`;
+ const root=document.documentElement,source=safeText(root?.dataset?.auditSource||document.getElementById("file")?.files?.[0]?.name||t.sample);
+ const auditAt=root?.dataset?.auditTimestamp,session=safeText(root?.dataset?.auditSession||"—"),auditDate=auditAt?new Date(auditAt):new Date();
+ const tolerance=safeText(document.getElementById("tolerance")?.value||"0.02"),tax=safeText(document.getElementById("maxTaxRate")?.value||"30"),currencies=safeText(document.getElementById("allowedCurrencies")?.value||"");
+ const required=safeText([...document.querySelectorAll("[data-required-field]:checked")].map(x=>document.querySelector?.(`[data-required-label="${x.dataset.requiredField}"]`)?.textContent?.trim()||x.dataset.requiredField).join(", ")||"—");
+ const fmt=r=>`${t.row} ${safeText(r.cells[0])} | ${safeText(r.cells[2])} | ${safeText(r.cells[1])} | ${safeText(r.cells[4])} | ${safeText(r.cells[5])}`;
  const lines=[t.title,`${t.generated}: ${new Date().toLocaleString(locale[l]||l)}`,`${t.auditTime}: ${auditDate.toLocaleString(locale[l]||l)}`,`${t.session}: ${session}`,`${t.source}: ${source}`,"",t.settings,`${t.tolerance}: ${tolerance}`,`${t.tax}: ${tax}%`,`${t.currencies}: ${currencies||"—"}`,`${t.required}: ${required}`,"",`${t.decision}: ${decision}`,`${t.action}: ${action}`,"",`${t.reviewed}: ${count}`,`${t.findings}: ${issues} (${highRows.length} ${window.invoiceGuardI18n?.t?.("high")||"High"}, ${mediumRows.length} ${window.invoiceGuardI18n?.t?.("medium")||"Medium"})`,`${t.attention}: ${attention}`,`${t.risk}: ${risk}`,"",t.high,...(highRows.length?highRows.map(fmt):[t.noneHigh]),"",t.medium,...(mediumRows.length?mediumRows.map(fmt):[t.noneMedium])];
  const blob=new Blob(["\uFEFF"+lines.join("\n")],{type:"text/plain;charset=utf-8"});
  window.InvoiceGuardDownload.downloadBlob(blob,`invoiceguard-payment-review-${l}.txt`);
