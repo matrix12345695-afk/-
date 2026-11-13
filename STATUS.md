@@ -300,3 +300,18 @@ Choose the highest-value unfinished improvement in the roadmap that makes the to
 
 
 - Remaining UI parity: user-editable tolerance, max-tax and currency allow-list controls are not yet exposed; current preview uses safe defaults and existing required-field controls.
+
+
+### C874 — 2026-11-13 | InvoiceGuard commercial contract merged
+
+- [x] Recovered the current InvoiceGuard source state, PR #25, current preview evidence and fresh Paddle mailbox state before integration.
+- [x] Verified PR #25 was limited to `tests/commercial-contract.mjs` and `package.json`, adding a deterministic UI/commercial contract without changing payment mode or runtime audit behavior.
+- [x] Executed the contract in Node 22.23.4 against the current fetched source snapshot: **PASS** for the required commercial controls, 11 local script files, seven locales, browser-local/no-signup privacy contract and default `test`/`smoke` wiring.
+- [x] PR #25 was mergeable and was squash-merged to `main` at `eca0849cb0a5c26d241a4145ad5490a590143bd3`.
+- [x] This merge is source-level hardening only. It does **not** establish hosted four-export parity, native PostgreSQL/Kysely acceptance, live payment readiness or sale-ready status.
+- [ ] Hosted four-export byte/network parity remains open.
+- [ ] Native Kysely/PostgreSQL acceptance against the isolated QA target remains open.
+- [ ] Manual browser/device/accessibility acceptance remains open.
+- [ ] Paddle owner-controlled re-upload remains pending; no live payments, KYC, banking, secrets or owner-only action performed.
+
+**Next:** use a browser-capable preview session to execute the InvoiceGuard four-export hosted acceptance; in parallel, obtain a credential-enabled isolated QA runtime for native Kysely persistence. Do not publish or mark sale-ready from source/VM evidence alone.
