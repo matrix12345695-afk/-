@@ -315,3 +315,13 @@ Choose the highest-value unfinished improvement in the roadmap that makes the to
 - [ ] Paddle owner-controlled re-upload remains pending; no live payments, KYC, banking, secrets or owner-only action performed.
 
 **Next:** use a browser-capable preview session to execute the InvoiceGuard four-export hosted acceptance; in parallel, obtain a credential-enabled isolated QA runtime for native Kysely persistence. Do not publish or mark sale-ready from source/VM evidence alone.
+
+
+### C883 — 2026-11-14 | InvoiceGuard regression contract verified and merged
+- [x] Floot preview Jasmine suite: **36/36 spec files passed, 0 failed**; TypeScript check clean.
+- [x] InvoiceGuard PR #26's initial CI failure was a syntax error in the added test assertion, not a product-runtime regression. The assertion was corrected to compare the explicit sanitizer contract.
+- [x] Corrected PR head run [43516911894](https://github.com/matrix12345695-afk/-/actions/runs/43516911894): **32/32 regression files passed** and the commercial UI/export contract passed.
+- [x] PR #26 squash-merged at `affecdf560897e652bba808be0bec7e447c32891`; the test-only change does not alter runtime/payment behavior.
+- [ ] Hosted four-export byte/network parity and credential-enabled native Kysely/PostgreSQL acceptance remain open. The current InvoiceGuard app database contains auth/session tables only; no Paddle persistence tables are present and the draft adapter is not connected to the public webhook.
+- [ ] Manual browser/device/accessibility acceptance remains open.
+- **Safety:** no DB migration, payment configuration, live payment, KYC, banking, secret, customer entitlement or production publish changed.
