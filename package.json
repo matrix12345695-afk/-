@@ -4,8 +4,8 @@
   "private": true,
   "description": "Browser-local pre-payment invoice audit for SMB finance teams.",
   "scripts": {
-    "test": "node tests/run-all.mjs",
-    "smoke": "node tests/run-all.mjs",
+    "test": "node tests/run-all.mjs && node tests/commercial-contract.mjs",
+    "smoke": "node tests/run-all.mjs && node tests/commercial-contract.mjs",
     "test:commercial": "node tests/commercial-contract.mjs"
   },
   "engines": {
