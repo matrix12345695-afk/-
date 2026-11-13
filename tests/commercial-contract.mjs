@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
@@ -35,18 +35,19 @@ const requiredScripts = [
 ];
 
 for (const script of requiredScripts) {
-  assert.match(html, new RegExp('src="' + script.replace(".", "\\.") + '"'), "missing required script: " + script);
+  assert.match(html, new RegExp('src="' + script.replace(".", "\\.") + '"'), "missing required script tag: " + script);
+  assert.ok(existsSync(new URL("../" + script, import.meta.url)), "missing local script file: " + script);
 }
 
 for (const locale of ["en", "ru", "uz", "es", "de", "fr", "pt"]) {
   assert.match(html, new RegExp('option value="' + locale + '"'), "missing locale selector: " + locale);
 }
 
-assert.match(html, /type="file"[^>]*accept="\.csv,text\/csv"/, "CSV upload contract changed");
+assert.match(html, /type="file"[^>]*accept="\\.csv,text\\/csv"/, "CSV upload contract changed");
 assert.match(html, /No signup/, "privacy-first no-signup onboarding contract missing");
 assert.match(html, /Your CSV stays in your browser/, "browser-local privacy contract missing");
 
 console.log("InvoiceGuard commercial UI contract: PASS");
 console.log("Required controls: " + requiredIds.length);
-console.log("Required scripts: " + requiredScripts.length);
+console.log("Required scripts and local files: " + requiredScripts.length);
 console.log("Locales: 7");
