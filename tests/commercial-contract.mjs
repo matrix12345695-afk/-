@@ -44,13 +44,13 @@ for (const locale of ["en", "ru", "uz", "es", "de", "fr", "pt"]) {
   assert.match(html, new RegExp('option value="' + locale + '"'), "missing locale selector: " + locale);
 }
 
-assert.match(html, /type="file"[^>]*accept="\\.csv,text\\/csv"/, "CSV upload contract changed");
+assert.match(html, /type="file"[^>]*accept="\.csv,text\/csv"/, "CSV upload contract changed");
 assert.match(html, /No signup/, "privacy-first no-signup onboarding contract missing");
 assert.match(html, /Your CSV stays in your browser/, "browser-local privacy contract missing");
 
 // Payment-review TXT exports must remain single-physical-line safe even when
 // localized/untrusted fields contain Unicode line separators.
-const expectedSanitizer = 'const safeText=value=>String(value??"").replace(/[\\\\u0000-\\\\u001F\\\\u007F-\\\\u009F\\\\u2028\\\\u2029]+/gu," ")';
+const expectedSanitizer = 'const safeText=value=>String(value??"").replace(/[\\u0000-\\u001F\\u007F-\\u009F\\u2028\\u2029]+/gu," ")';
 assert.ok(
   summaryI18n.includes(expectedSanitizer),
   "summary export sanitizer must strip C0/C1 controls and U+2028/U+2029",
