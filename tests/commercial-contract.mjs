@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+const summaryI18n = readFileSync(new URL("../summary-i18n.js", import.meta.url), "utf8");
 
 const requiredIds = [
   "file",
@@ -47,7 +48,16 @@ assert.match(html, /type="file"[^>]*accept="\.csv,text\/csv"/, "CSV upload contr
 assert.match(html, /No signup/, "privacy-first no-signup onboarding contract missing");
 assert.match(html, /Your CSV stays in your browser/, "browser-local privacy contract missing");
 
+// Payment-review TXT exports must remain single-physical-line safe even when
+// localized/untrusted fields contain Unicode line separators.
+assert.match(
+  summaryI18n,
+  /safeText=value=>String\(value\?\?""\)\.replace\(\/[\\u0000-\\u001F\\u007F-\\u009F\\u2028\\u2029]+/gu/,
+  "summary export sanitizer must strip C0/C1 controls and U+2028/U+2029",
+);
+
 console.log("InvoiceGuard commercial UI contract: PASS");
 console.log("Required controls: " + requiredIds.length);
 console.log("Required scripts and local files: " + requiredScripts.length);
 console.log("Locales: 7");
+console.log("Payment-review export sanitizer: U+2028/U+2029 covered");
