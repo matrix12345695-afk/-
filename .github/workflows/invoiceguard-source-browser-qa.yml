@@ -1,4 +1,4 @@
-name: InvoiceGuard local-source browser QA
+name: InvoiceGuard source and hosted browser QA
 
 on:
   push:
@@ -12,7 +12,9 @@ on:
       - 'findings-export-i18n.js'
       - 'summary-i18n.js'
       - 'tests/source-browser-acceptance.mjs'
+      - 'tests/hosted-floot-browser-acceptance.mjs'
       - '.github/workflows/invoiceguard-source-browser-qa.yml'
+  workflow_dispatch:
   pull_request:
     paths:
       - 'index.html'
@@ -30,7 +32,7 @@ permissions:
 
 jobs:
   local-source-browser:
-    name: Local source upload and export acceptance
+    name: Source and hosted upload/export acceptance
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -58,3 +60,7 @@ jobs:
         env:
           INVOICEGUARD_SOURCE_URL: http://127.0.0.1:8765/
         run: node tests/source-browser-acceptance.mjs
+      - name: Test the published Floot build, four exports and privacy
+        env:
+          INVOICEGUARD_HOSTED_URL: https://invoiceguard.floot.app/
+        run: node tests/hosted-floot-browser-acceptance.mjs
