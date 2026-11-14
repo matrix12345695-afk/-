@@ -9,9 +9,9 @@ const privateMarker = "QUALISIFT_HOSTED_PRIVATE_MARKER";
 const hostileVendor = '=HYPERLINK("https://example.invalid","' + privateMarker + '")';
 const csv = [
   "Invoice No,Supplier,Invoice Date,Net Amount,VAT,Amount Due,Currency Code",
-  'INV-001,"' + hostileVendor.replaceAll('"', '""') + '",2026-11-01,100.00,10.00,110.00,USD',
-  'INV-002,"Northstar Supply",2026-11-02,200.00,20.00,220.00,USD',
-  'INV-002,"Northstar Supply",2026-11-03,200.00,20.00,220.00,USD',
+  'INV-001,"Northstar Supply",2026-11-01,100.00,10.00,110.00,USD',
+  'INV-002,"' + hostileVendor.replaceAll('"', '""') + '",2026-11-02,200.00,20.00,220.00,USD',
+  'INV-002,"' + hostileVendor.replaceAll('"', '""') + '",2026-11-03,200.00,20.00,220.00,USD',
 ].join("\r\n");
 
 const leakedRequests = [];
@@ -128,6 +128,7 @@ try {
   const findingsRuHasEvidence = findingsRu.text.includes(privateMarker);
   const cleanHasEvidence = cleanRu.text.includes(privateMarker);
 
+  await page.waitForTimeout(150);
   const failures = [];
   if (!findingsEnBom) failures.push("English findings CSV is missing UTF-8 BOM");
   if (!findingsRuBom) failures.push("Russian findings CSV is missing UTF-8 BOM");
