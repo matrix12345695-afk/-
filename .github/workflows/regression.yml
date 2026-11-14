@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -21,3 +22,24 @@ jobs:
           node-version: 22
       - name: Run regression suite
         run: npm test
+
+  public-preview-smoke:
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'qualisift/c671-invoiceguard-public-browser-smoke-')) }}
+    name: Public preview upload and export acceptance
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      INVOICEGUARD_PUBLIC_URL: https://invoiceguard.floot.app
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install isolated browser runner
+        run: npm install --no-save --package-lock=false playwright@1.56.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Exercise the published Floot preview with synthetic data
+        run: node tests/public-preview-browser.mjs
