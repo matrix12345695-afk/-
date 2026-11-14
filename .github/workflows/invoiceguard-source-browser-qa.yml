@@ -25,6 +25,7 @@ on:
       - 'findings-export-i18n.js'
       - 'summary-i18n.js'
       - 'tests/source-browser-acceptance.mjs'
+      - 'tests/hosted-floot-browser-acceptance.mjs'
       - '.github/workflows/invoiceguard-source-browser-qa.yml'
 
 permissions:
